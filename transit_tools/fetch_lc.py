@@ -1,11 +1,73 @@
 import os
 import pickle
 import matplotlib.pyplot as plt
+from astroquery.mast import Observations
 
 sector = 13
 tic = 254113311
 
-def fetch_ffi_ml(tic, sector):
+def 2min_pdcsap(tic, sector, thresh=None):
+
+    #Query MAST for all instances of observations associated with TIC
+    obsTable = Observations.query_criteria(dataproduct_type=['timeseries'], 
+                                           target_name=tic,
+                                           obs_collection='TESS')
+
+    lc_str = "lc.fits"
+    good_ind = []
+
+    if thresh: #get sectors from gt or lt range
+        for i in range(len(obsTable['dataURL'])):
+            if (thresh[:2] == 'lt' and
+                str(obsTable['dataURL'][i]).find(lc_str) > 0 and
+                int(obsTable['dataURL'][i][37:41]) < int(thresh[2:])):
+                good_ind.append(i)
+            if (thresh[:2] == 'gt' and
+                str(obsTable['dataURL'][i]).find(lc_str) > 0 and
+                int(obsTable['dataURL'][i][37:41]) > int(thresh[2:])):
+                good_ind.append(i)
+    
+    elif sectors != 'all': #get just specified sectors
+        for sec in sectors:
+            sec_str = "s" + str(sec).zfill(4)
+            for i in range(len(obsTable['dataURL'])):
+                if (str(obsTable['dataURL'][i]).find(lc_str) > 0 and
+                    str(obsTable['dataURL'][i]).find(sec_str) > 0):
+                    good_ind.append(i)
+
+    elif sectors == 'all': #get all sectors from list
+        for i in range(len(obsTable['dataURL'])):
+            if str(obsTable['dataURL'][i]).find(lc_str) > 0:
+                good_ind.append(i)
+
+    if len(good_ind) == 0:
+        #print("WARNING: NO VALID SECTORS IN GIVEN RANGE!!")
+        raise ValueError("ERROR: No valid sectors in given range!! " +
+                         "Try running the command again with a different " +
+                         "sector range.")
+                
+    obsTable=obsTable[good_ind] #returns only good indices for table
+
+    #get lightcurve from MAST
+    id = str(tic).zfill(16)
+    for i in range(len(good_ind)):
+        sec_str = "s" + str(obsTable['dataURL'][i][37:41])
+        lc_loc=("https://archive.stsci.edu/missions/tess/tid/" + str(sec_str) +
+                "/" + id[:4] + "/" + id[4:8] + "/" + id[8:12] + "/" +
+                id[12:16] + "/" + str(obsTable['dataURL'][i])[18:])
+
+        if i == 0:
+            lc = (TessLightCurveFile(lc_loc).PDCSAP_FLUX.normalize().
+                  remove_nans())
+            
+        else:
+            lc_new = (TessLightCurveFile(lc_loc).PDCSAP_FLUX.normalize().
+                  remove_nans())
+            lc = lc.append(lc_new)
+
+    return lc
+    
+def ffi_ml(tic, sector): #edit to iterate through sectors
 
     # Gather all light curve file paths and TICs for specified sector
     light_curve_files = []
