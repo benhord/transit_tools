@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 sector = 13
 tic = 254113311
 
-def fetch_ffi(tic, sector):
+def fetch_ffi_ml(tic, sector):
 
     # Gather all light curve file paths and TICs for specified sector
     light_curve_files = []
