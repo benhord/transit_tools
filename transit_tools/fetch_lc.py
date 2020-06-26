@@ -67,7 +67,7 @@ def 2min_pdcsap(tic, sector, thresh=None):
 
     return lc
     
-def ffi_ml(tic, sector): #edit to iterate through sectors
+def ffi_ml(tic, sector): #### edit to iterate through sectors ####
 
     # Gather all light curve file paths and TICs for specified sector
     light_curve_files = []
@@ -107,6 +107,16 @@ def ffi_ml(tic, sector): #edit to iterate through sectors
     pca_flux = pca_flux[q]
     
     return time, raw_flux, corr_flux, pca_flux, flux_err, ra, dec, Tmag, camera, chip
+
+def ffi_eleanor(tic, sectors): #add keyword to specify which lc to use
+    #organize sectors
+    if sectors == None:
+        sectors = 'all'
+    elif not isinstance(sectors, list):
+        sectors = [sectors]
+    star = eleanor.multi_sectors(tic=tic, sectors=sectors)
     
+    #Call eleanor to 
+
 #plt.scatter(time, corr_flux)
 #plt.show()

@@ -30,10 +30,10 @@ class lightcurve(LightCurve):
             return self._sector
 
         @sector.setter
-        def sector(self, values):
-            if not isinstance(values, list) and (values != None):
-                values = np.array(values)
-            self._sector = values
+        def sector(self, value):
+            if not isinstance(value, list) and (value != None):
+                values = np.array(value)
+            self._sector = value
 
         @property
         def method(self):
