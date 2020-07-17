@@ -2,7 +2,7 @@ import numpy
 import pandas as pd
 from lightkurve import LightCurve
 
-from transit_tools.fetch_lc import ffi_ml, ffi_eleanor, 2min_pdcsap
+from .fetch_lc import gather_lc
 
 class lightcurve(LightCurve):
     """Description
@@ -45,7 +45,8 @@ class lightcurve(LightCurve):
             if not method in ['2min', 'ffi_ml', 'eleanor']:
                 raise ValueError('Please specify a supported light curve type.')
             return self.method = method
-            
+
+        lc = gather_lc(self.method, self.sector)
     #Method to process light curve
         
     #Method to run TLS
