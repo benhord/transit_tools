@@ -27,24 +27,25 @@ class lightcurve(LightCurve):
         @property
         def sector(self):
             """The TESS sector(s) being used"""
-            return self._sector
+            return self.sector
 
         @sector.setter
-        def sector(self, value):
-            if not isinstance(value, list) and (value != None):
-                values = np.array(value)
-            self._sector = value
+        def sector(self, sector):
+            if not isinstance(sector, list) and (value != None):
+                values = np.array(sector)
+            self.sector = sector
 
         @property
         def method(self):
             """The method for acquiring the TESS light curve"""
-            return self._method
+            return self.method
 
         @method.setter
         def method(self, method):
             if not method in ['2min', 'ffi_ml', 'eleanor']:
-                
-
+                raise ValueError('Please specify a supported light curve type.')
+            return self.method = method
+            
     #Method to process light curve
         
     #Method to run TLS
@@ -59,3 +60,7 @@ class lightcurve(LightCurve):
     #Method to run VESPA?
 
     #Method to generate river plot?
+
+    #method to implement REBOUND
+
+    #method to implement exoplanet
