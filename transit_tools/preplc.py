@@ -6,7 +6,7 @@ from lightkurve import TessLightCurveFile
 # from the header (or infers if header is unavailable) to be passed as part of
 # lightkurve object.
 
-def gather_lc(tic, method='2min', sectors='all', **kwargs): #add **kwargs
+def gather_lc(tic, method='2min', sectors='all', **kwargs):
     """
     Function to gather the light curve of a given TIC using the specified 
     method. Currently, 2 minute SPOC pipeline light curves, machine learning FFI
