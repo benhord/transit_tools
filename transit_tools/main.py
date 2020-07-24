@@ -44,7 +44,7 @@ class lightcurve(LightCurve):
         def method(self, method):
             if not method in ['2min', 'ffi_ml', 'eleanor']:
                 raise ValueError('Please specify a supported light curve type.')
-            return self.method = method
+            self.method = method
 
         lc = gather_lc(self.method, self.sector)
     #Method to process light curve
