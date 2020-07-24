@@ -6,26 +6,52 @@ from lightkurve import TessLightCurveFile
 # from the header (or infers if header is unavailable) to be passed as part of
 # lightkurve object.
 
-def gather_lc(method, sectors):
+def gather_lc(tic, method='2min', sectors='all', **kwargs): #add **kwargs
+    """
+    Function to gather the light curve of a given TIC using the specified 
+    method. Currently, 2 minute SPOC pipeline light curves, machine learning FFI
+    light curves, and eleanor light curves are supported.
+
+    Parameters
+    ----------
+    tic : int
+       TESS Input Catalog ID for desired target. At this time, common names are
+       not accepted input, only TIC IDs.
+    method : str
+       The method with which the light curve will be acquired. Options are 
+       '2min', 'ffi_ml', and 'eleanor'.
+    sectors : str or list or numpy array
+       List of sectors to be included in the fetching of the light curve. If
+       'all' or None is passed, all available light curves will be fetched. 
+       Thresholds can be passed according to the valid syntax of the method
+       specified.
+    **kwargs
+       Additional arguments to be passed to the selected method fetching 
+       function.
+    """
+    if sectors == None: sectors = 'all'
+    
     if method == '2min':
         try:
-            lc = get_2minlc(sectors)
+            lc = get_2minlc(tic, sectors)
         except:
             print('No TESS 2 minute light curves found! Trying FFIs...')
             method = 'ffi_ml'
             
     elif method == 'ffi_ml':
         try:
-            lc = get_mlffi(sectors)
+            lc = get_mlffi(tic, sectors)
         except:
             print('No ML light curves found locally. Trying with eleanor...')
             method = 'eleanor'
             
     elif method == 'eleanor':
         try:
-            lc = get_eleanor(sectors)
+            lc = get_eleanor(tic, sectors, **kwargs)
         except:
             raise ValueError('No light curves found for the specified sectors!')
+
+    return lc
             
 def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
     """
