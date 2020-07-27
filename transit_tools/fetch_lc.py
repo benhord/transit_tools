@@ -1,14 +1,88 @@
-import os
-import pickle
-import matplotlib.pyplot as plt
+import numpy as np
 from astroquery.mast import Observations
+from lightkurve import TessLightCurveFile
 
-sector = 13
-tic = 254113311
+#misc to-do: add lc.cadence attribute for each method that gathers the cadnece
+# from the header (or infers if header is unavailable) to be passed as part of
+# lightkurve object.
 
-def 2min_pdcsap(tic, sector, thresh=None):
+def gather_lc(tic, method='2min', sectors='all', **kwargs):
+    """
+    Function to gather the light curve of a given TIC using the specified 
+    method. Currently, 2 minute SPOC pipeline light curves, machine learning FFI
+    light curves, and eleanor light curves are supported.
 
-    #Query MAST for all instances of observations associated with TIC
+    Parameters
+    ----------
+    tic : int
+       TESS Input Catalog ID for desired target. At this time, common names are
+       not accepted input, only TIC IDs.
+    method : str
+       The method with which the light curve will be acquired. Options are 
+       '2min', 'ffi_ml', and 'eleanor'.
+    sectors : str or list or numpy array
+       List of sectors to be included in the fetching of the light curve. If
+       'all' or None is passed, all available light curves will be fetched. 
+       Thresholds can be passed according to the valid syntax of the method
+       specified.
+    **kwargs
+       Additional arguments to be passed to the selected method fetching 
+       function.
+    """
+    if sectors == None: sectors = 'all'
+    
+    if method == '2min':
+        try:
+            lc = get_2minlc(tic, sectors)
+        except:
+            print('No TESS 2 minute light curves found! Trying FFIs...')
+            method = 'ffi_ml'
+            
+    elif method == 'ffi_ml':
+        try:
+            lc = get_mlffi(tic, sectors)
+        except:
+            print('No ML light curves found locally. Trying with eleanor...')
+            method = 'eleanor'
+            
+    elif method == 'eleanor':
+        try:
+            lc = get_eleanor(tic, sectors, **kwargs)
+        except:
+            raise ValueError('No light curves found for the specified sectors!')
+
+    return lc
+            
+def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
+    """
+    Function to retrieve 2 minute cadence TESS lightcurve for a given TIC ID 
+    and given sectors. Returns a combined lightcurve in the form of a
+    lightkurve object. If light curves from multiple sectors are combined, each
+    light curve is individually normalized prior to combining.
+
+    Parameters
+    ----------
+    tic : integer
+       TESS Input Catalog ID for desired target. At this time, common names are
+       not accepted input, only TIC IDs.
+    sectors : list, numpy array or 'all'
+       List of desired sectors to include when fetching the SPOC-processed light
+       curve. If 'all' is specified, all available 2 minute PDCSAP light curves
+       will be downloaded.
+    thresh : string of form AA##
+       Threshold to specify a range of sectors without knowing the specific 
+       sectors that contain the target. 'AA' should be either 'gt' or 'lt' for 
+       'greater than' and 'less than', respectively. ## is the threshold sector.
+       The sector number specified in the threshold will not be included in the
+       sector query. EX: 'lt13' will return all 2 minute light curves of the 
+       target from sectors prior to, but not including, sector 13.
+    out_sec : boolean
+       A flag to determine whether the sectors from which light curves were
+       downloaded are included as an output. If True, command will provide two
+       outputs, the light curve object and a numpy array of sectors, in that 
+       order.
+    """
+
     obsTable = Observations.query_criteria(dataproduct_type=['timeseries'], 
                                            target_name=tic,
                                            obs_collection='TESS')
@@ -26,7 +100,7 @@ def 2min_pdcsap(tic, sector, thresh=None):
                 str(obsTable['dataURL'][i]).find(lc_str) > 0 and
                 int(obsTable['dataURL'][i][37:41]) > int(thresh[2:])):
                 good_ind.append(i)
-    
+
     elif sectors != 'all': #get just specified sectors
         for sec in sectors:
             sec_str = "s" + str(sec).zfill(4)
@@ -34,7 +108,7 @@ def 2min_pdcsap(tic, sector, thresh=None):
                 if (str(obsTable['dataURL'][i]).find(lc_str) > 0 and
                     str(obsTable['dataURL'][i]).find(sec_str) > 0):
                     good_ind.append(i)
-
+                    
     elif sectors == 'all': #get all sectors from list
         for i in range(len(obsTable['dataURL'])):
             if str(obsTable['dataURL'][i]).find(lc_str) > 0:
@@ -65,58 +139,11 @@ def 2min_pdcsap(tic, sector, thresh=None):
                   remove_nans())
             lc = lc.append(lc_new)
 
-    return lc
-    
-def ffi_ml(tic, sector): #### edit to iterate through sectors ####
+    if out_sec:
+        return lc, sec
+    else:
+        return lc
 
-    # Gather all light curve file paths and TICs for specified sector
-    light_curve_files = []
-    path='/data/tessraid/bppowel1/tesslcs_sector_'+str(sector)+'_104'
+#search for ML FFIs
 
-    for (dirpath,dirnames,filenames) in os.walk(path):
-        for name in filenames:
-            light_curve_files.append(os.path.join(dirpath,name))
-
-    light_curve_files=[t for t in light_curve_files if 'tesslc_' in t]
-    tics=[int(t.split('.')[0].split('_')[-1]) for t in light_curve_files]
-
-    # Find path to individual light curve
-    path = [s for s in light_curve_files if str(tic) in s]
-    print("Light curve found at %s" % path[0])
-
-    # Import light curve from pickle file
-    fp = open(str(path[0]), 'rb')
-    data = pickle.load(fp)
-    fp.close()
-
-    ra = data[1]
-    dec = data[2]
-    Tmag = data[3]
-    camera = data[4]
-    chip = data[5]
-    time = data[6]
-    raw_flux = data[7]
-    corr_flux = data[8] #use this one
-    pca_flux = data[9]
-    flux_err = data[10]
-
-    q = data[11] == 0
-    time = time[q]
-    raw_flux = raw_flux[q]
-    corr_flux = corr_flux[q]
-    pca_flux = pca_flux[q]
-    
-    return time, raw_flux, corr_flux, pca_flux, flux_err, ra, dec, Tmag, camera, chip
-
-def ffi_eleanor(tic, sectors): #add keyword to specify which lc to use
-    #organize sectors
-    if sectors == None:
-        sectors = 'all'
-    elif not isinstance(sectors, list):
-        sectors = [sectors]
-    star = eleanor.multi_sectors(tic=tic, sectors=sectors)
-    
-    #Call eleanor to 
-
-#plt.scatter(time, corr_flux)
-#plt.show()
+#eleanor
