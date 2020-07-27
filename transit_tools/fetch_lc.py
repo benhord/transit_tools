@@ -4,9 +4,10 @@ from lightkurve import TessLightCurveFile
 
 #misc to-do: add lc.cadence attribute for each method that gathers the cadnece
 # from the header (or infers if header is unavailable) to be passed as part of
-# lightkurve object.
+# lightkurve object (could be gathered by helper function later)
 
-def gather_lc(tic, method='2min', sectors='all', **kwargs):
+def gather_lc(tic, method='2min', sectors='all', return_method=False,
+              return_sectors=False, **kwargs):
     """
     Function to gather the light curve of a given TIC using the specified 
     method. Currently, 2 minute SPOC pipeline light curves, machine learning FFI
@@ -25,15 +26,33 @@ def gather_lc(tic, method='2min', sectors='all', **kwargs):
        'all' or None is passed, all available light curves will be fetched. 
        Thresholds can be passed according to the valid syntax of the method
        specified.
+    return_method : bool
+       A flag to indicate whether the method used to gather the light curve 
+       will be returned. Useful if the chosen method is not known or expected to
+       return a valid light curve. An additional output will be expected.
+    return_sectors : bool
+       A flag to indicate the sectors that the light curve was recovered from.
+       An additional output will be expected. Currently in progress for most
+       methods.
     **kwargs
        Additional arguments to be passed to the selected method fetching 
        function.
+
+    Returns
+    -------
+    lc : 'LightCurve'
+       Light curve containing light curves from all sectors contained within the
+       query of sectors.
+    method : str, optional
+       The method with which the output light curve was gathered.
+    sectors : numpy array, optional
+       The sectors that the light curve was gathered from.
     """
     if sectors == None: sectors = 'all'
     
     if method == '2min':
         try:
-            lc = get_2minlc(tic, sectors)
+            lc, sectors = get_2minlc(tic, sectors, out_sec=True)
         except:
             print('No TESS 2 minute light curves found! Trying FFIs...')
             method = 'ffi_ml'
@@ -51,7 +70,14 @@ def gather_lc(tic, method='2min', sectors='all', **kwargs):
         except:
             raise ValueError('No light curves found for the specified sectors!')
 
-    return lc
+    if return_method and not return_sectors:
+        return lc, method
+    elif not return_method and return_sectors:
+        return lc, sectors
+    elif return_method and return_sectors:
+        return lc, method, sectors
+    elif not return_method and not return_sectors:
+        return lc
             
 def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
     """
@@ -81,6 +107,14 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
        downloaded are included as an output. If True, command will provide two
        outputs, the light curve object and a numpy array of sectors, in that 
        order.
+
+    Returns
+    -------
+    lc : 'LightCurve'
+       Combined light curve of all available light curves at TESS 2 minute 
+       cadence for specified TIC ID.
+    secs : numpy array, optional
+       List of sectors from which light curve was gathered.
     """
 
     obsTable = Observations.query_criteria(dataproduct_type=['timeseries'], 
@@ -89,6 +123,7 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
 
     lc_str = "lc.fits"
     good_ind = []
+    secs = []
 
     if thresh: #get sectors from gt or lt range
         for i in range(len(obsTable['dataURL'])):
@@ -121,11 +156,12 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
                          "sector range.")
                 
     obsTable=obsTable[good_ind] #returns only good indices for table
-
+    
     #get lightcurve from MAST
     id = str(tic).zfill(16)
     for i in range(len(good_ind)):
         sec_str = "s" + str(obsTable['dataURL'][i][37:41])
+        secs.append(int(obsTable['dataURL'][i][37:41]))
         lc_loc=("https://archive.stsci.edu/missions/tess/tid/" + str(sec_str) +
                 "/" + id[:4] + "/" + id[4:8] + "/" + id[8:12] + "/" +
                 id[12:16] + "/" + str(obsTable['dataURL'][i])[18:])
@@ -140,7 +176,7 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
             lc = lc.append(lc_new)
 
     if out_sec:
-        return lc, sec
+        return lc, np.array(secs)
     else:
         return lc
 
