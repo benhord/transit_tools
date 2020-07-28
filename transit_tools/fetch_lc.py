@@ -52,21 +52,21 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
     
     if method == '2min':
         try:
-            lc, sectors = get_2minlc(tic, sectors, out_sec=True)
+            lc, sectors = get_2minlc(tic, sectors, out_sec=True, **kwargs)
         except:
             print('No TESS 2 minute light curves found! Trying FFIs...')
             method = 'ffi_ml'
             
     elif method == 'ffi_ml':
         try:
-            lc = get_mlffi(tic, sectors)
+            lc, sectors = get_mlffi(tic, sectors, out_sec=True, **kwargs)
         except:
             print('No ML light curves found locally. Trying with eleanor...')
             method = 'eleanor'
             
     elif method == 'eleanor':
         try:
-            lc = get_eleanor(tic, sectors, **kwargs)
+            lc, sectors = get_eleanor(tic, sectors, out_sec=True, **kwargs)
         except:
             raise ValueError('No light curves found for the specified sectors!')
 

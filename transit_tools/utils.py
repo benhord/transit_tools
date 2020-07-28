@@ -14,3 +14,5 @@ from astroquery.mast import Catalogs, Observations
 #function to find and report data on planets already-known in the system
 
 #function to update stellar params of lightcurve object
+
+#common name processing so that a TIC isn't the only thing that can be passed

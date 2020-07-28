@@ -3,6 +3,7 @@ import pandas as pd
 from lightkurve.lightcurve import *
 
 from .fetch_lc import gather_lc
+from .search import *
 
 class lightcurve(LightCurve):
     """Description
