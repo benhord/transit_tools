@@ -100,6 +100,9 @@ class lightcurve(LightCurve):
            for Box Least Squares.
         """
 
+        print(routine)
+        self.routine = routine
+        
         @property
         def routine(self):
             """The routine for searching for periodic signals"""
@@ -111,6 +114,8 @@ class lightcurve(LightCurve):
                 raise ValueError('Please specify a supported routine type.')
             self.routine = routine
 
+        print(self.routine)
+            
         self.results = []
         self.cleanlc = []
         run = 0
@@ -118,11 +123,12 @@ class lightcurve(LightCurve):
         #start iteration loop here and enclose both TLS and BLS code in it
         while run < max_runs:
             print('Run ' + str(run + 1))
-            if routine == 'tls' or routine == 'TLS':
+            
+            if self.routine == 'tls' or self.routine == 'TLS':
                 if not hasattr(self, 'star_params_tls'):
                     self.star_params_tls = None
 
-                if len(cleanlc) == 0:
+                if len(self.cleanlc) == 0:
                     time = self.time
                     flux = self.flux
                     flux_err = self.flux_err
