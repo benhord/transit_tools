@@ -13,6 +13,8 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
     method. Currently, 2 minute SPOC pipeline light curves, machine learning FFI
     light curves, and eleanor light curves are supported.
 
+    !!Add ability to support common names as inputs in absence of TIC!!
+
     Parameters
     ----------
     tic : int

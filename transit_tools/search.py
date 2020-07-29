@@ -99,7 +99,7 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
         else:
             print('No flux errors provided')
             
-    if rms_calc == True and not isinstance(dy, list):
+    if rms_calc == True and not isinstance(dy, np.ndarray):
         dy = np.ones(len(flux)) * rms(flux, norm_val=norm_val)
         print('RMS will be used for errors')
 

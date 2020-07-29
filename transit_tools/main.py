@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from .fetch_lc import gather_lc
 from .search import *
-from .utils import search_summary
+from .utils import search_summary, name_to_tic
 
 class lightcurve(LightCurve):
     """Description
@@ -19,14 +19,37 @@ class lightcurve(LightCurve):
     param : description
     """
     
-    def __init__(self, tic, method="2min", sector=None, mission='TESS'):
+    def __init__(self, obj, method="2min", sector=None, mission='TESS'):
         #Have 2min, ffi_ml (which points to Brian's lcs), and eleanor.
         #This assumes you're looking for TESS lcs, can be generalized later.
         #Defaults to looking for 2min lc using get_2minlc script from
         #vespa_wrapper but falls back to ffi_ml then to eleanor in this order
         #if 2min is specified with some explanatory messages. Use property
         #decorators to control which sectors can be used and the cadence.
-        self.tic = int(tic)
+
+        #!!Make conversion to name robust for other missions!!!
+        #!!Enable IDs other than TIC to be used and cross-referenced to find
+        #  the correct ID for the requested mission!!
+        
+        if isinstance(obj, str):
+            try:
+                self.tic = name_to_tic(obj)
+                self.name = str(obj)
+            except:
+                raise ValueError('For some reason, the name provided was not ' +
+                                 'found on the MAST. Please try again.')
+
+        elif isinstance(obj, int):
+            try:
+                self.name = tic_to_name(obj)
+                self.tic = int(obj)
+            except:
+                print('For some reason, the name provided was not found on ' +
+                      'the MAST. Proceeding with just the TIC.')
+
+        #self.tic = int(tic)
+        #self.name = str(name)
+        
         self.sector = sector
         self.method = method
         
@@ -158,17 +181,15 @@ class lightcurve(LightCurve):
             if plot_live:
                 print('Please be patient. This feature is being worked on!')
 
-
             run += 1
-                
-        #search until signal is no longer significant. Dumps results into arrays
-        #to account for finding multiple planets
 
     ###Method to plot vetting sheet based off of "search_method" property flag
     #which will be tls_def, tls_grz, tls_box, or bls
        #requires signal_search to run first, spits out error otherwise.
        #make it customizeable so it doesn't print a ton of stuff each time?
        #ie allow the user to say 'not XYZ' or 'include XYZ' beyond defaults.
+       ##Individual method to save all diagnostic plots and other methods to
+       #   view each individually.
 
     ###Method to run DAVE
 
@@ -179,6 +200,9 @@ class lightcurve(LightCurve):
     #method to implement REBOUND
 
     #method to implement exoplanet
+
+    #method to implement BATMAN? (likely separate tool, or initialize object as
+    #   simulated BATMAN light curve)
 
     #print formatted catalog info
 
@@ -193,8 +217,8 @@ class lightcurve(LightCurve):
         
         for i in range(len(self.results)):
             if  ['tls', 'TLS'].count(self.routine):
-                print('TLS results')
-                print('-----------')
+                print('TLS results for Source ' + str(self.tic))
+                print('---------------------------------')
                 print(str(len(self.results)) + ' significant signals found')
                 print('')
                 print('Signal ' + str(i+1))

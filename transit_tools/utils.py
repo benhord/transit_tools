@@ -20,6 +20,58 @@ from astroquery.mast import Catalogs, Observations
 #   keyword to update in the fetch command?)
 
 #common name processing so that a TIC isn't the only thing that can be passed
+   #maybe first have general parser that gives canonical name then second stage
+   # that queries TIC for canonical name
+def name_to_tic(name):
+    """
+    Function to convert common name to TIC ID. Queries the MAST for TIC entry
+    nearest to known position for common name.
+
+    Parameters
+    ----------
+    name : str
+       Common name to be converted to TIC.
+
+    Returns
+    -------
+    tic : int
+       TIC ID of closest match to input name's position from TIC on MAST.
+    """
+    if not isinstance(name, str):
+        raise ValueError('Name must be a string.')
+
+    cat = Catalogs.query_object(name, radius=0.02, catalog="TIC")
+    tic = int(cat[0]['ID'])
+    
+    return tic
+
+def tic_to_name(tic):
+    """
+    Function to determine the common name of a TIC ID, if it has one.
+
+    Parameters
+    ----------
+    tic : int
+       The TIC ID of the object for which the common name is desired.
+
+    Returns
+    -------
+    name : str
+       The common name of the input TIC ID.
+    """
+    if not isinstance(tic, int):
+        raise ValueError('TIC must be an integer')
+
+    cat = Catalogs.query_criteria(catalog="TIC", ID=int(tic))
+    ra = cat[0]['ra']
+    dec = cat[0]['dec']
+    
+    results = Simbad.query_region(coord.SkyCoord(ra, dec, unit=(u.deg, u.deg)),
+                                  radius='0d0m5s')
+
+    name = str(results[0]['MAIN_ID'].decode('utf-8'))
+    
+    return str(name)
 
 #calculate rms of a data set
 def rms(data, norm_val=1.):
