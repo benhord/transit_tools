@@ -27,7 +27,8 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
        'LightCurve' object with at least two columns, labeled 'time' and 'flux',
        respectively, with an optional 'flux_err' column as the third column. If 
        the len of *args > 1, then it is assumed the user is passing time, flux, 
-       and flux_err (optional), respectively.
+       and flux_err (optional), respectively. These columns or arguments should 
+       be arrays of equal length.
     tic : int or None
        TIC ID of the source that the light curve comes from. This will be used 
        to query the TIC for the stellar parameters of the system. May be set to
@@ -77,7 +78,7 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
     dy = None
 
     #processing inputs
-    if not tic and len(star_params) != 7:
+    if not tic and (not star_params or len(star_params) != 7):
         raise ValueError('Either tic or full star_params dictionary must' +
                          ' be given!')
 
@@ -97,8 +98,8 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
             dy = args[2]
         else:
             print('No flux errors provided')
-
-    if rms_calc and not dy:
+            
+    if rms_calc == True and not isinstance(dy, list):
         dy = np.ones(len(flux)) * rms(flux, norm_val=norm_val)
         print('RMS will be used for errors')
 

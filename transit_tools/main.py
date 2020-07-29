@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 from .fetch_lc import gather_lc
 from .search import *
+from .utils import search_summary
 
 class lightcurve(LightCurve):
     """Description
@@ -89,8 +90,6 @@ class lightcurve(LightCurve):
 
         !!Update to allow for search of known planets first and rejection of 
         signal until known signal is found. Quit after X trials!!
-        !!Update to automatically include and process any stellar params that
-        exist as a property of the light curve during the search!!
 
         Parameters
         ----------
@@ -99,8 +98,6 @@ class lightcurve(LightCurve):
            light curve. Options are 'tls' for Transit Least Squares and 'bls'
            for Box Least Squares.
         """
-
-        print(routine)
         self.routine = routine
         
         @property
@@ -113,16 +110,14 @@ class lightcurve(LightCurve):
             if not routine in ['tls', 'TLS', 'bls', 'BLS']:
                 raise ValueError('Please specify a supported routine type.')
             self.routine = routine
-
-        print(self.routine)
             
-        self.results = []
+        self.results = np.array([])
         self.cleanlc = []
         run = 0
         
         #start iteration loop here and enclose both TLS and BLS code in it
         while run < max_runs:
-            print('Run ' + str(run + 1))
+            print('Run ' + str(run + 1) + ' for source ' + str(self.tic))
             
             if self.routine == 'tls' or self.routine == 'TLS':
                 if not hasattr(self, 'star_params_tls'):
@@ -133,9 +128,9 @@ class lightcurve(LightCurve):
                     flux = self.flux
                     flux_err = self.flux_err
                 else:
-                    time = cleanlc[run-1].time
-                    flux = cleanlc[run-1].flux
-                    flux_err = cleanlc[run-1].flux_err
+                    time = self.cleanlc[run-1].time
+                    flux = self.cleanlc[run-1].flux
+                    flux_err = self.cleanlc[run-1].flux_err
                     
                 results_i, cleanlc_i, self.star_params_tls = tls_search(
                     time,
@@ -147,13 +142,15 @@ class lightcurve(LightCurve):
                     starparams_out=True,
                     **kwargs
                 )
-
-                if results_i.SDE >= 7.0:
-                    print('No further significant signals found.')
+                
+                if results_i.SDE < 7.0:
+                    print('No further significant signals found. ' + str(run) +
+                          ' total signals recovered')
                     break
                 
-                self.results.append(results_i)
-                self.cleanlc.append(cleanlc_i)
+                self.results = np.append(self.results, results_i)
+                self.cleanlc.append(LightCurve(cleanlc_i.time, cleanlc_i.flux,
+                                               cleanlc_i.flux_err))
                 
             if routine == 'bls' or routine == 'BLS':
                 print('BLS is not implemented yet. Please be patient!')
@@ -184,3 +181,25 @@ class lightcurve(LightCurve):
     #method to implement exoplanet
 
     #print formatted catalog info
+
+    #print formatted search summary
+    def searchsum(self):
+        """
+        Function to display periodic signal search results in a user-friendly
+        format. Wraps search_summary from utils.py.
+        """
+        if not hasattr(self, 'results'):
+            raise ValueError('Please run a signal search first.')
+        
+        for i in range(len(self.results)):
+            if  ['tls', 'TLS'].count(self.routine):
+                print('TLS results')
+                print('-----------')
+                print(str(len(self.results)) + ' significant signals found')
+                print('')
+                print('Signal ' + str(i+1))
+                
+                search_summary(self.results[i], routine='tls')
+
+            if ['bls', 'BLS'].count(self.routine):
+                search_summary(self.results[i], routine='bls')
