@@ -1,5 +1,9 @@
 import numpy as np
 from astroquery.mast import Catalogs, Observations
+from astroquery.simbad import Simbad
+from urllib import request
+import astropy.coordinates as coord
+import astropy.units as u
 
 #function to import catalog info for source
    #stellar information
@@ -15,6 +19,105 @@ from astroquery.mast import Catalogs, Observations
    #observation information based on self.method keyword (eg ccd, sector, etc.)
 
 #function to find and report data on planets already-known in the system
+def known_pls(name=None, ra=None, dec=None, verbose=False):
+    """
+    A function to gather information on any known planets in a given system. 
+    Queries Simbad for objects and queries the Gaia catalog if RA/Dec are not
+    provided.
+
+    Parameters
+    ----------
+    name : str
+       Common name of the system being checked. Optional if RA/Dec are provided.
+    ra : float
+       RA in decimal degrees. Optional if name is provided. If provided, Dec is
+       also required.
+    Dec : float
+       Dec in decimal degrees. Optional if name is provided. If provided, RA is
+       also required.
+    verbose : bool
+       Flag to determine whether some of the parameters of the known planets in
+       the system are printed.
+
+    Returns
+    -------
+    pl_info : list of dicts
+       List containing a dictionary of all known planet parameters for each 
+       planet in the queried system.
+    """
+    if not name and not ra and not dec:
+        raise ValueError('Either name or both RA & Dec must be provided')
+
+    if not ra and not dec:
+        results = Catalogs.query_object(str(name), radius=0.02, catalog="Gaia")
+        ra = results[0]['ra']
+        dec = results[0]['dec']
+
+    cat = Simbad.query_region(coord.SkyCoord(ra, dec, unit=(u.deg, u.deg)),
+                              radius='0d0m5s')
+
+    pls = len(cat) - 1
+    if verbose:
+        print(str(pls) + ' known planets found in system')
+        print('Gathering info for each planet...')
+
+    pl_info = []
+        
+    if pls > 0:
+        alphastr = 'abcdefghijklmnopqrstuvwxyz'
+        null = None
+        true = True
+        false = False
+
+        for i in range(pls):
+            pl = str(cat[i+1]['MAIN_ID'].decode('utf-8'))
+            urlname = (pl[:-1] + "%20" + pl[-1])
+
+            link = ("https://exo.mast.stsci.edu/api/v0.1/exoplanets/" +
+                    urlname + "/properties")
+            info = request.urlopen(link).read().decode('utf-8')
+            info = eval(info)
+
+            pl_info.append(info[0])
+            
+        if verbose:
+            pl = pl_info
+            for n in range(pls):
+                print(pl[n]['canonical_name'])
+                print('Period = %.5f +/- %.5f %s' %
+                      (pl[n]['orbital_period'],
+                       pl[n]['orbital_period_upper'],
+                       pl[n]['orbital_period_unit']))
+                if pl[n]['transit_time']:
+                    print('t0 = %.5f +2457000 BTJD +/- %.5f' %
+                          (pl[n]['transit_time']-56999.5,
+                           pl[n]['transit_time_upper']))
+                else:
+                    print('t0 = None')
+                print('Duration = %.5f +/- %.5f %s' %
+                      (float(pl[n]['transit_duration'] or 0),
+                       float(pl[n]['transit_duration_upper'] or 0),
+                       str(pl[n]['transit_duration_unit'] or 'None')))
+                print('Transit depth = %.5f +/- %.5f' %
+                      (float(pl[n]['transit_depth'] or 0),
+                       float(pl[n]['transit_depth_upper'] or 0)))
+                print('Orbital distance = %.5f +/- %.5f %s' %
+                      (float(pl[n]['orbital_distance'] or 0),
+                       float(pl[n]['orbital_distance_upper'] or 0),
+                       str(pl[n]['orbital_distance_unit'] or 'None')))
+                print('Rp/Rs = %.5f +/- %.5f' %
+                      (float(pl[n]['Rp/Rs'] or 0),
+                       float(pl[n]['Rp/Rs_upper'] or 0)))
+                print('Radius = %.5f +/- %.5f %s' %
+                      (float(pl[n]['Rp'] or 0), float(pl[n]['Rp_upper'] or 0),
+                       str(pl[n]['Rp_unit'] or 'None')))
+                print('Mass = %.5f +/- %.5f %s' %
+                      (float(pl[n]['Mp'] or 0), float(pl[n]['Mp_upper'] or 0),
+                       str(pl[n]['Mp_unit'] or 'None')))
+                print('Disposition: %s' % pl[n]['disposition'])
+                print('')
+            
+    return pl_info
 
 #function to update stellar params of lightcurve object (do automatically?,
 #   keyword to update in the fetch command?)
@@ -45,14 +148,19 @@ def name_to_tic(name):
     
     return tic
 
-def tic_to_name(tic):
+def tic_to_name(tic, ra=None, dec=None):
     """
-    Function to determine the common name of a TIC ID, if it has one.
+    Function to determine the common name of a TIC ID or given RA/Dec position, 
+    if it has one. Queries the MAST and Simbad to gather this information.
 
     Parameters
     ----------
     tic : int
        The TIC ID of the object for which the common name is desired.
+    ra : float
+       The RA in decimal degrees. Optional with Dec to circumvent querying MAST.
+    dec : float
+       The Dec in decimal degrees. Optional with TA to circumvent querying MAST.
 
     Returns
     -------
@@ -62,9 +170,10 @@ def tic_to_name(tic):
     if not isinstance(tic, int):
         raise ValueError('TIC must be an integer')
 
-    cat = Catalogs.query_criteria(catalog="TIC", ID=int(tic))
-    ra = cat[0]['ra']
-    dec = cat[0]['dec']
+    if not ra and not dec:
+        cat = Catalogs.query_criteria(catalog="TIC", ID=int(tic))
+        ra = cat[0]['ra']
+        dec = cat[0]['dec']
     
     results = Simbad.query_region(coord.SkyCoord(ra, dec, unit=(u.deg, u.deg)),
                                   radius='0d0m5s')
@@ -72,6 +181,8 @@ def tic_to_name(tic):
     name = str(results[0]['MAIN_ID'].decode('utf-8'))
     
     return str(name)
+
+#def name_processing(): #wrap all name processing into one fn, search for TOIs
 
 #calculate rms of a data set
 def rms(data, norm_val=1.):
@@ -118,10 +229,10 @@ def search_summary(results, routine='tls'):
        the outputs.
     """
     if routine == 'tls':
-        print('Period = %.5f +/- %.5f' %
+        print('Period = %.5f +/- %.5f d' %
               (results.period, results.period_uncertainty))
-        print('t0 = %.5f' % results.T0)
-        print('Duration = %.5f' % results.duration)
+        print('t0 = %.5f BTJD' % results.T0)
+        print('Duration = %.5f d' % results.duration)
         print('Avg depth = %.5f +/- %.5f' %
               (results.depth_mean[0], results.depth_mean[1]))
         print('SDE = %.5f' % results.SDE)
@@ -134,3 +245,24 @@ def search_summary(results, routine='tls'):
 
     if routine == 'bls':
         print('Still working on this functionality! Please be patient.')
+
+#def overlap(range1, range2):
+    """
+    Function to determine if two value ranges overlap.
+
+    !!Revisit later. Not urgent right now!!
+
+    Parameters
+    ----------
+    range1 : list
+       2 element list with the lower and upper bounds of the first range, 
+       respectively.
+    range2 : list
+       2 element list with the lower and upper bound of the second range,
+       respectively.
+
+    Returns
+    -------
+    intersect : bool
+       Boolean indicating whether the ranges overlap or not.
+    """

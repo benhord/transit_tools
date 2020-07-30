@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from .fetch_lc import gather_lc
 from .search import *
-from .utils import search_summary, name_to_tic
+from .utils import *
 
 class lightcurve(LightCurve):
     """Description
@@ -46,9 +46,6 @@ class lightcurve(LightCurve):
             except:
                 print('For some reason, the name provided was not found on ' +
                       'the MAST. Proceeding with just the TIC.')
-
-        #self.tic = int(tic)
-        #self.name = str(name)
         
         self.sector = sector
         self.method = method
@@ -95,6 +92,8 @@ class lightcurve(LightCurve):
         super().__init__(time=self.lc.time, flux=self.lc.flux,
                          flux_err=self.lc.flux_err)
 
+        self.known_pls = known_pls(self.name)
+
         
     ###Method to process light curve
 
@@ -136,6 +135,7 @@ class lightcurve(LightCurve):
             
         self.results = np.array([])
         self.cleanlc = []
+        self.bad_search = np.array([])
         run = 0
         
         #start iteration loop here and enclose both TLS and BLS code in it
@@ -169,6 +169,7 @@ class lightcurve(LightCurve):
                 if results_i.SDE < 7.0:
                     print('No further significant signals found. ' + str(run) +
                           ' total signals recovered')
+                    self.bad_search = np.append(self.bad_search, results_i)
                     break
                 
                 self.results = np.append(self.results, results_i)
@@ -211,6 +212,8 @@ class lightcurve(LightCurve):
         """
         Function to display periodic signal search results in a user-friendly
         format. Wraps search_summary from utils.py.
+
+        !!Include indication if any result matches up with known planet!!
         """
         if not hasattr(self, 'results'):
             raise ValueError('Please run a signal search first.')
