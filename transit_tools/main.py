@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from .fetch_lc import gather_lc
 from .search import *
 from .utils import *
+from .plotting import *
 
 class lightcurve(LightCurve):
     """Description
@@ -30,6 +31,7 @@ class lightcurve(LightCurve):
         #!!Make conversion to name robust for other missions!!!
         #!!Enable IDs other than TIC to be used and cross-referenced to find
         #  the correct ID for the requested mission!!
+        #!!Enable passing custom light curves as separate method option!!
         
         if isinstance(obj, str):
             try:
@@ -103,7 +105,7 @@ class lightcurve(LightCurve):
     ###Method to run TLS
     ###Method to run BLS
        ###combine with TLS into single search function
-    def signal_search(self, routine='tls', plot_live=False, max_runs=5,
+    def signal_search(self, routine='tls', plot_live=False, max_runs=5, sde=7.0,
                       **kwargs):
         """
         Method to search the light curve for periodic signals using a variety of
@@ -112,6 +114,7 @@ class lightcurve(LightCurve):
 
         !!Update to allow for search of known planets first and rejection of 
         signal until known signal is found. Quit after X trials!!
+        !!Update incomplete docustring!!
 
         Parameters
         ----------
@@ -121,6 +124,7 @@ class lightcurve(LightCurve):
            for Box Least Squares.
         """
         self.routine = routine
+        self.sde = sde
         
         @property
         def routine(self):
@@ -166,7 +170,7 @@ class lightcurve(LightCurve):
                     **kwargs
                 )
                 
-                if results_i.SDE < 7.0:
+                if results_i.SDE < sde:
                     print('No further significant signals found. ' + str(run) +
                           ' total signals recovered')
                     self.bad_search = np.append(self.bad_search, results_i)
@@ -191,6 +195,34 @@ class lightcurve(LightCurve):
        #ie allow the user to say 'not XYZ' or 'include XYZ' beyond defaults.
        ##Individual method to save all diagnostic plots and other methods to
        #   view each individually.
+
+    def plot_vet(self, pls='all', **kwargs):
+        """
+        Function to plot the vetting sheet for a given set of signal_search
+        results.
+
+        Parameters
+        ----------
+        pls : int or str
+           signal_search iteration to display results for. If set to 'all', all
+           significant results will be displayed in separate windows. If set to
+           -1, the most recent set of results that did not meet the significance
+           threshold will be displayed.
+        """
+        if pls == 'all':
+            results = range(len(self.results))
+        elif pls >= 0:
+            results = [pls]
+        
+        for i in results:
+            tls_vetsheet(self, results=self.results[i])
+
+    #def save_fullplots(self): #flag to both display and save
+        #output vetting sheet
+        #vet = tls_vetsheet()
+        #output river plot
+        #others?
+        #combine
 
     ###Method to run DAVE
 
