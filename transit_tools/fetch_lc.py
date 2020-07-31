@@ -1,6 +1,7 @@
 import numpy as np
 from astroquery.mast import Observations
 from lightkurve import TessLightCurveFile
+import eleanor
 
 #misc to-do: add lc.cadence attribute for each method that gathers the cadnece
 # from the header (or infers if header is unavailable) to be passed as part of
@@ -185,3 +186,44 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
 #search for ML FFIs
 
 #eleanor
+def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False):
+    """
+    Function to get a light curve from the TESS full frame images (FFIs) using
+    the Python package eleanor.
+
+    Parameters
+    ----------
+    sectors : str or array or list
+       The sectors that eleanor will use to produce the light curve. If set to 
+       'all', then all available sectors will be used in the light curve
+       production.
+    tic : int or None
+       TIC ID for the object that a light curve is desired for. If set to None,
+       coords must have a valid input.
+    coords : tuple of floats
+       The RA and Dec of the object that a light curve is desired for. Must be
+       of the form (RA, Dec) in decimal degrees. If set to None, the tic 
+       argument cannot be None.
+    out_sec : bool
+       Flag controlling whether an array containing the sectors used to extract
+       the light curve will be output. If True, an additional output will be 
+       expected.
+
+    Returns
+    -------
+    lc : 'LightCurve' object
+       The combined light curve from each sector for the coordinates or TIC ID 
+       requested.
+    sectors : array
+       Optional output array containing the sectors that the combined light 
+       curve was extracted from.
+    """
+    if tic is None and coords is None:
+        raise ValueError('Please make sure either tic or coords have valid ' +
+                         'input')
+    
+    if tic:
+        star = eleanor.multi_sectors(tic=tic, sectors=sectors)
+    else:
+        star = eleanor.multi_sectors(coords=coords, sectors=sectors)
+    

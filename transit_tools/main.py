@@ -197,7 +197,7 @@ class lightcurve(LightCurve):
        ##Individual method to save all diagnostic plots and other methods to
        #   view each individually.
 
-    def plot_vet(self, pls='all', **kwargs):
+    def vet_sheet(self, pls='all', **kwargs):
         """
         Function to plot the vetting sheet for a given set of signal_search
         results.
