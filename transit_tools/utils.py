@@ -266,3 +266,55 @@ def search_summary(results, routine='tls'):
     intersect : bool
        Boolean indicating whether the ranges overlap or not.
     """
+
+def fold(time, flux, period, flux_err=None, midpoint=None):
+    """
+    Folds a timeseries based on a given period with the option to provide a 
+    midpoint around which to fold.
+
+    Parameters
+    ----------
+    time : array
+       The time of the timeseries that is to be folded. Must be identical in
+       length to the flux array.
+    flux : array
+       The flux of the timeseries that is to be folded. Must be identical in 
+       length to the time array.
+    period : float
+       The period with which the timeseries will be folded. Must be given in the
+       same units as the time array.
+    flux_err : array or None
+       The corresponding error values for the timeseries. Must be identical in
+       length to the time and flux arrays. If not None, an additional output
+       will be expected.
+    midpoint : float or None
+       The point around which the timeseries will be folded. If set to None, the
+       first element in the time array will be used.
+
+    Returns
+    -------
+    folded_time : array
+       Array with the folded time values.
+    folded_flux : array
+       Array with the folded flux values.
+    folded_flux_err : array
+       Array with the folded flux_err values.
+    """
+    if not midpoint:
+        midpoint = time[0]
+
+    epoch = np.floor((time - midpoint) / period)
+    folded_time = (time - midpoint) / period - epoch
+
+    sortIndi = np.argsort(folded_time)
+    folded_time = folded_time[sortIndi]
+    folded_flux = np.roll(flux[sortIndi], len(flux) // 2)
+    if flux_err is None:
+        pass
+    else:
+        folded_flux_err = np.roll(flux_err[sortIndi], len(flux_err) // 2)
+
+    if flux_err is None:
+        return folded_time, folded_flux
+    else:
+        return folded_time, folded_flux, folded_flux_err

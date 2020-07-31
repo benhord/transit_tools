@@ -51,6 +51,7 @@ class lightcurve(LightCurve):
         
         self.sector = sector
         self.method = method
+        self.star_params = None
         
         @property
         def sector(self):
@@ -215,7 +216,7 @@ class lightcurve(LightCurve):
             results = [pls]
         
         for i in results:
-            tls_vetsheet(self, results=self.results[i])
+            tls_vetsheet(self, results=i)
 
     #def save_fullplots(self): #flag to both display and save
         #output vetting sheet
