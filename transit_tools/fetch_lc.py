@@ -186,10 +186,13 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
 #search for ML FFIs
 
 #eleanor
-def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False):
+def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
+                width=15, bkg_size=31, do_psf=False, do_pca=False):
     """
     Function to get a light curve from the TESS full frame images (FFIs) using
     the Python package eleanor.
+
+    !!Add more docustrings for all keywords!!
 
     Parameters
     ----------
@@ -227,3 +230,23 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False):
     else:
         star = eleanor.multi_sectors(coords=coords, sectors=sectors)
     
+    secs = []
+    data = []
+
+    for s in star:
+        datum = eleanor.TargetData(s, height=height, width=width,
+                                   bkg_size=bkg_size, do_psf=do_psf,
+                                   do_pca=do_pca)
+        data.append(datum)
+        
+        sec = s.sector
+        secs.append(sec)
+
+    for sector, datum in enumerate(data):
+        q = datum.quality
+        #append lcs to each other here as LightCurve objects
+
+
+
+    #return lc
+    #return lc, secs
