@@ -1,5 +1,5 @@
 import numpy as np
-from astroquery.mast import Catalogs, Observations
+from astroquery.mast import Catalogs, Observations, Tesscut
 from astroquery.simbad import Simbad
 from urllib import request
 import astropy.coordinates as coord
@@ -17,8 +17,57 @@ import astropy.units as u
 
 #function to import observation information
    #observation information based on self.method keyword (eg ccd, sector, etc.)
+def tessobs_info(tic=None, ra=None, dec=None):
+    """
+    Function to retrieve observation information for objects observed by TESS.
 
-#function to find and report data on planets already-known in the system
+    !!Update to include exp time, pixel location, other observation-specific
+      quantities!!
+
+    Parameters
+    ----------
+    tic : int or None
+       TIC ID of target to be queried. Must not be None if ra and dec are None.
+    ra : float or None
+       RA of target to be queried. Must not be None if tic is None.
+    dec : float or None
+       Dec of target to be queried. Must not be None if tic is None.
+
+    Returns
+    -------
+    info : dict
+       Dictionary continaing TESS observation info.
+    """
+    if not tic and not ra and not dec:
+        raise ValueError('Please provide either a TIC ID or both RA and Dec')
+
+    if not ra or not dec:
+        cat = Catalogs.query_criteria(catalog="TIC", ID=int(tic))
+        ra = cat[0]['ra']
+        dec = cat[0]['dec']
+
+    coords = coord.SkyCoord(ra, dec, unit='deg')
+    sector_table = Tesscut.get_sectors(coordinates=coords)
+    
+    if len(sector_table) == 0:
+        print('Object not observed by TESS')
+
+    sec_name = []
+    sec = []
+    cam = []
+    ccd = []
+
+    for i in range(len(sector_table)):
+        sec_name.append(sector_table[i]['sectorName'])
+        sec.append(sector_table[i]['sector'])
+        cam.append(sector_table[i]['camera'])
+        ccd.append(sector_table[i]['ccd'])
+
+    info = {'sectorName' : sec_name, 'sector' : sec, 'camera' : cam,
+            'ccd' : ccd}
+
+    return info
+
 def known_pls(name=None, ra=None, dec=None, verbose=False):
     """
     A function to gather information on any known planets in a given system. 
@@ -191,9 +240,8 @@ def tic_to_name(tic, ra=None, dec=None):
     
     return str(name)
 
-#def name_processing(): #wrap all name processing into one fn, search for TOIs
+##def name_processing(): #wrap all name processing into one fn, search for TOIs
 
-#calculate rms of a data set
 def rms(data, norm_val=1.):
     """
     Calculates the Root Mean Square of the provided data.
@@ -216,7 +264,6 @@ def rms(data, norm_val=1.):
 
     return rms
 
-#method to display best fit planet parameters from search
 def search_summary(results, routine='tls'):
     """
     Function to display periodic signal search results in a user-friendly 

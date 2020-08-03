@@ -201,7 +201,7 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
         return lc
 
 #search for ML FFIs
-def get_mlffi(tic, sectors='all', flux_type='corr_flux'):
+def get_mlffi(tic=None, ra=None, dec=None, sectors='all', flux_type='corr_flux'):
     """
     For use on tesseract only. Fetches FFI light curves made by Brian Powell.
     """
