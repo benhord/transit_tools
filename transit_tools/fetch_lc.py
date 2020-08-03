@@ -5,7 +5,7 @@ import eleanor
 import os
 import pickle
 
-from .utils import rms
+from .utils import rms, tessobs_info, coord_to_tic
 
 #misc to-do: add lc.cadence attribute for each method that gathers the cadnece
 # from the header (or infers if header is unavailable) to be passed as part of
@@ -201,23 +201,111 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
         return lc
 
 #search for ML FFIs
-def get_mlffi(tic=None, ra=None, dec=None, sectors='all', flux_type='corr_flux'):
+def get_mlffi(tic=None, ra=None, dec=None, sectors='all',
+              flux_type='corr_flux', out_sec=False):
     """
     For use on tesseract only. Fetches FFI light curves made by Brian Powell.
+
+    Parameters
+    ----------
+    tic : int or None
+       TIC ID of target. If None, both ra and dec must not be None.
+    ra : float or None
+       RA of target. If None, tic must not be None. If not None, dec must also
+       not be None.
+    dec : float or None
+       Dec of target. If None, tic must not be None. If not None, ra must also 
+       not be None.
+    sectors : str or list or array
+       The desired sectors to make the light curve from. May be set to 'all' to
+       use all available light curves.
+    flux_type : str
+       The type of correction applied to the light curve. Options are 'raw', 
+       'corr', and 'pca'.
+    out_sec : bool
+       Flag determining whether or not the sectors that the light curve was
+       generated from are output. If True, an additional output will be 
+       expected.
+
+    Returns
+    -------
+    lc : 'LightCurve' object
+       The combined light curve.
+    sectors : array
+       The sectors from which the output light curve was generated.
     """
-    #search for which sectors the source was observed in. Separate utils command
-    #if 'all', run through all sectors it was observed in
-    #if sectors specified, loop through all sectors
-    #if file for sector not found, return warning, but continue
+    if not tic and not ra and not dec:
+        raise ValueError('Please provide valid input for either tic or ra/dec')
+
+    if sectors == 'all':
+        if not ra and not dec:
+            info = tessobs_info(tic=tic)
+        else:
+            info = tessobs_info(ra=ra, dec=dec)
+
+        sectors = list(set(info['sector']))
+
+    if not isinstance(sectors, list):
+        raise ValueError('Sectors must be a list!')
+
+    if not tic:
+        tic = coord_to_tic(ra, dec)
+
+    camera_arr = []
+    chip_arr = []
+    Tmag_arr = []
     
-    lc_files = []
-    path = '/data/tessraid/bppowel1/tesslcs_sector_'+str(sector)+'_104'
+    for i in range(len(sectors)):
+        path = '/data/tessraid/bppowel1/tesslcs_sector_'+str(sectors[i])+'_104'
+        lc_files = []
+        
+        for (dirpath, dirnames, filenames) in os.walk(path):
+            for name in filenames:
+                lc_files.append(os.path.join(dirpath, name))
 
+        lc_files = [t for t in lc_files if 'tesslc_' in t]
+        tics = [int(t.split('.')[0].split('_')[-1]) for t in lc_files]
 
+        path = [s for s in lc_files if str(tic) in s]
 
-    
-    raise ValueError('Not yet implemented!')
+        try:
+            fp = open(str(path[0]), 'rb')
+        except:
+            print('Target not found in Sector %s' % sectors[i])
+            sectors.remove(sectors[i])
+            continue
+            
+        data = pickle.load(fp)
+        fp.close()
 
+        Tmag_arr.append(data[2])
+        camera_arr.append(data[4])
+        chip_arr.append(data[5])
+        
+        time = data[6]
+        flux_err = data[10]
+
+        if flux_type == 'corr':
+            flux = data[8]
+        elif flux_type == 'raw':
+            flux = data[7]
+        elif flux_type == 'pca':
+            flux = data[9]
+
+        if i == 0:
+            lc = LightCurve(time, flux, flux_err=flux_err)
+        else:
+            sec_lc = LightCurve(time, flux, flux_err=flux_err)
+            lc.append(sec_lc)
+
+    lc.Tmag = Tmag_arr
+    lc.camera = camera_arr
+    lc.chip = chip_arr
+
+    if out_sec:
+        return lc, sectors
+    else:
+        return lc
 
 #eleanor
 def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,

@@ -68,6 +68,28 @@ def tessobs_info(tic=None, ra=None, dec=None):
 
     return info
 
+def coord_to_tic(ra, dec):
+    """
+    Function to convert input RA and Dec coordinates to the nearest TIC ID from 
+    the TESS Input Catalog (TIC).
+
+    Parameters
+    ----------
+    ra : float
+       The RA of the target source.
+    dec : float
+       The Dec of the target source.
+
+    Returns
+    -------
+    tic : int
+       TIC ID of the source nearest to the input RA and Dec from the TIC.
+    """
+    cat = Catalogs.query_region((str(ra) + ' ' + str(dec)), catalog="TIC")
+    tic = int(cat[0]['ID'])
+    
+    return tic
+
 def known_pls(name=None, ra=None, dec=None, verbose=False):
     """
     A function to gather information on any known planets in a given system. 
@@ -241,6 +263,7 @@ def tic_to_name(tic, ra=None, dec=None):
     return str(name)
 
 ##def name_processing(): #wrap all name processing into one fn, search for TOIs
+  #intake coords as well.
 
 def rms(data, norm_val=1.):
     """
