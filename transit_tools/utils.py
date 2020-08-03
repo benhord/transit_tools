@@ -78,9 +78,14 @@ def known_pls(name=None, ra=None, dec=None, verbose=False):
             info = request.urlopen(link).read().decode('utf-8')
             info = eval(info)
 
-            pl_info.append(info[0])
-            
-        if verbose:
+            try:
+                pl_info.append(info[0])
+                query_fault = False
+            except:
+                query_fault = True
+                pl_info.append(str(pl))
+                
+        if verbose and not query_fault:
             pl = pl_info
             for n in range(pls):
                 print(pl[n]['canonical_name'])
@@ -116,7 +121,11 @@ def known_pls(name=None, ra=None, dec=None, verbose=False):
                        str(pl[n]['Mp_unit'] or 'None')))
                 print('Disposition: %s' % pl[n]['disposition'])
                 print('')
-            
+
+        elif verbose and query_fault:
+            print('Known planet found but parameters were not found in MAST' +
+                  'for some reason.')
+                
     return pl_info
 
 #function to update stellar params of lightcurve object (do automatically?,
@@ -271,6 +280,8 @@ def fold(time, flux, period, flux_err=None, midpoint=None):
     """
     Folds a timeseries based on a given period with the option to provide a 
     midpoint around which to fold.
+
+    !!Doesn't work with current version. Needs update!!
 
     Parameters
     ----------

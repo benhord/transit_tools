@@ -95,8 +95,11 @@ class lightcurve(LightCurve):
         super().__init__(time=self.lc.time, flux=self.lc.flux,
                          flux_err=self.lc.flux_err)
 
-        self.known_pls = known_pls(self.name)
-
+        try:
+            self.known_pls = known_pls(self.name)
+        except:
+            self.known_pls = None
+            
         
     ###Method to process light curve
 
@@ -189,11 +192,11 @@ class lightcurve(LightCurve):
 
             run += 1
 
+    #Method to save signal_search results as new csv or to append to existing
+            
     ###Method to plot vetting sheet based off of "search_method" property flag
     #which will be tls_def, tls_grz, tls_box, or bls
        #requires signal_search to run first, spits out error otherwise.
-       #make it customizeable so it doesn't print a ton of stuff each time?
-       #ie allow the user to say 'not XYZ' or 'include XYZ' beyond defaults.
        ##Individual method to save all diagnostic plots and other methods to
        #   view each individually.
 
@@ -210,6 +213,9 @@ class lightcurve(LightCurve):
            -1, the most recent set of results that did not meet the significance
            threshold will be displayed.
         """
+        if not isattr(self, routine):
+            raise ValueError('Please run signal_search first')
+        
         if pls == 'all':
             results = range(len(self.results))
         elif pls >= 0:

@@ -1,7 +1,11 @@
 import numpy as np
 from astroquery.mast import Observations
-from lightkurve import TessLightCurveFile
+from lightkurve import TessLightCurveFile, LightCurve
 import eleanor
+import os
+import pickle
+
+from .utils import rms
 
 #misc to-do: add lc.cadence attribute for each method that gathers the cadnece
 # from the header (or infers if header is unavailable) to be passed as part of
@@ -55,21 +59,34 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
     
     if method == '2min':
         try:
-            lc, sectors = get_2minlc(tic, sectors, out_sec=True, **kwargs)
+            if return_sectors:
+                lc, sectors = get_2minlc(tic, sectors, out_sec=return_sectors,
+                                         **kwargs)
+            else:
+                lc = get_2minlc(tic, sectors, out_sec=return_sectors, **kwargs)
         except:
             print('No TESS 2 minute light curves found! Trying FFIs...')
             method = 'ffi_ml'
             
-    elif method == 'ffi_ml':
+    if method == 'ffi_ml':
         try:
-            lc, sectors = get_mlffi(tic, sectors, out_sec=True, **kwargs)
+            if return_sectors:
+                lc, sectors = get_mlffi(tic, sectors, out_sec=return_sectors,
+                                        **kwargs)
+            else:
+                lc = get_mlffi(tic, sectors, out_sec=return_sectors, **kwargs)
         except:
             print('No ML light curves found locally. Trying with eleanor...')
             method = 'eleanor'
             
-    elif method == 'eleanor':
+    if method == 'eleanor':
         try:
-            lc, sectors = get_eleanor(tic, sectors, out_sec=True, **kwargs)
+            if return_sectors:
+                lc, sectors = get_eleanor(tic=tic, sectors=sectors,
+                                          out_sec=return_sectors, **kwargs)
+            else:
+                lc = get_eleanor(tic=tic, sectors=sectors,
+                                 out_sec=return_sectors, **kwargs)
         except:
             raise ValueError('No light curves found for the specified sectors!')
 
@@ -158,16 +175,16 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
                          "Try running the command again with a different " +
                          "sector range.")
                 
-    obsTable=obsTable[good_ind] #returns only good indices for table
+    obsTable = obsTable[good_ind] #returns only good indices for table
     
     #get lightcurve from MAST
     id = str(tic).zfill(16)
     for i in range(len(good_ind)):
         sec_str = "s" + str(obsTable['dataURL'][i][37:41])
         secs.append(int(obsTable['dataURL'][i][37:41]))
-        lc_loc=("https://archive.stsci.edu/missions/tess/tid/" + str(sec_str) +
-                "/" + id[:4] + "/" + id[4:8] + "/" + id[8:12] + "/" +
-                id[12:16] + "/" + str(obsTable['dataURL'][i])[18:])
+        lc_loc = ("https://archive.stsci.edu/missions/tess/tid/" + str(sec_str)
+                  + "/" + id[:4] + "/" + id[4:8] + "/" + id[8:12] + "/" +
+                  id[12:16] + "/" + str(obsTable['dataURL'][i])[18:])
 
         if i == 0:
             lc = (TessLightCurveFile(lc_loc).PDCSAP_FLUX.normalize().
@@ -175,7 +192,7 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
             
         else:
             lc_new = (TessLightCurveFile(lc_loc).PDCSAP_FLUX.normalize().
-                  remove_nans())
+                      remove_nans())
             lc = lc.append(lc_new)
 
     if out_sec:
@@ -184,15 +201,34 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
         return lc
 
 #search for ML FFIs
+def get_mlffi(tic, sectors='all', flux_type='corr_flux'):
+    """
+    For use on tesseract only. Fetches FFI light curves made by Brian Powell.
+    """
+    #search for which sectors the source was observed in. Separate utils command
+    #if 'all', run through all sectors it was observed in
+    #if sectors specified, loop through all sectors
+    #if file for sector not found, return warning, but continue
+    
+    lc_files = []
+    path = '/data/tessraid/bppowel1/tesslcs_sector_'+str(sector)+'_104'
+
+
+
+    
+    raise ValueError('Not yet implemented!')
+
 
 #eleanor
 def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
-                width=15, bkg_size=31, do_psf=False, do_pca=False):
+                width=15, bkg_size=31, do_psf=False, do_pca=False,
+                out_flux='corr_flux', norm=True, errorcalc=False):
     """
     Function to get a light curve from the TESS full frame images (FFIs) using
     the Python package eleanor.
 
     !!Add more docustrings for all keywords!!
+    !!Add common name processing instead of just tic!!
 
     Parameters
     ----------
@@ -211,6 +247,32 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
        Flag controlling whether an array containing the sectors used to extract
        the light curve will be output. If True, an additional output will be 
        expected.
+    height : int
+       Height in pixels of the postage stamp with which to extract the light 
+       curve.
+    width : int
+       Height in pixels of the postage stamp with which to extract the light
+       curve.
+    bkg_size : int
+       Background size to be considered for the background subtraction from the
+       light curve.
+    do_psf : bool
+       Flag to determine whether a PSF-corrected light curve will be generated
+       as an additional option to the corrected light curve.
+    do_pca : bool
+       Flag to deteremine whether a PCA-corrected light curve will be generated
+       as an additional option to the corrected light curve.
+    out_flux : str
+       Which of the light curves to output. Options are 'corr_flux', 'psf_flux',
+       and 'pca_flux'. Only one may be selected. If either 'psf_flux' or 
+       'pca_flux' are selected, the do_psf and do_pca flags must be set to True,
+       respectively.
+    norm : bool
+       Flag determining whether the light curve will be normalized prior to 
+       output.
+    errorcalc : bool
+       Flag determining whether the RMS errors will be calculated for the light
+       curve.
 
     Returns
     -------
@@ -242,11 +304,31 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
         sec = s.sector
         secs.append(sec)
 
-    for sector, datum in enumerate(data):
-        q = datum.quality
-        #append lcs to each other here as LightCurve objects
+    for i in range(len(data)):
+        q = data[i].quality == 0
+        time = data[i].time[q]
 
+        if out_flux == 'corr_flux':
+            flux = data[i].corr_flux[q]
+        elif out_flux == 'pca_flux':
+            flux = data[i].pca_flux[q]
+        elif out_flux == 'psf_flux':
+            flux = data[i].psf_flux[q]
 
+        if norm:
+            flux = flux/np.median(flux)
 
-    #return lc
-    #return lc, secs
+        flux_err = None
+        if errorcalc:
+            flux_err = np.ones(len(flux)) * rms(flux)
+            
+        if i == 0:
+            lc = LightCurve(time, flux, flux_err=flux_err)
+        else:
+            sec_lc = LightCurve(time, flux, flux_err=flux_err)
+            lc = lc.append(lc)
+
+    if out_sec:
+        return lc, secs
+    else:
+        return lc
