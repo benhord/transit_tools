@@ -86,10 +86,8 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename=None):
     ax.set_ylabel('Raw Relative Flux')
     ax.set_xlim(lc.time.min(), lc.time.max())
 
-    #lc.scatter(ax=ax, c='b', s=0.2)
-
-    #if lc.trend:
-        #plot trend
+    if hasattr(lc, 'trend'):
+        plt.plot(time, lc.trend, c='b')
 
     #processed light curve with transit model
     ax = fig.add_subplot(gs[2, :])

@@ -20,7 +20,8 @@ class lightcurve(LightCurve):
     param : description
     """
     
-    def __init__(self, obj, method="2min", sector=None, mission='TESS'):
+    def __init__(self, obj, method="2min", sector=None, mission='TESS',
+                 find_knownpls=True):
         #Have 2min, ffi_ml (which points to Brian's lcs), and eleanor.
         #This assumes you're looking for TESS lcs, can be generalized later.
         #Defaults to looking for 2min lc using get_2minlc script from
@@ -95,13 +96,62 @@ class lightcurve(LightCurve):
         super().__init__(time=self.lc.time, flux=self.lc.flux,
                          flux_err=self.lc.flux_err)
 
-        try:
-            self.known_pls = known_pls(self.name)
-        except:
-            self.known_pls = None
+        if find_knownpls:
+            try:
+                self.known_pls = known_pls(self.name)
+            except:
+                self.known_pls = None
             
         
     ###Method to process light curve
+    def process(self, **kwargs):
+        """
+        Method to process light curve for further analysis. Must be performed on
+        a LightCurve object.
+
+        Parameters
+        ----------
+        kwargs
+           Arguments to be passed to the process_lc.
+        """
+        lc = process_lc(self, **kwargs)
+
+        self.updatelc(lc)
+
+    #method to update lc
+    def updatelc(self, lc):
+        """
+        Function to update the light curve that will be used if manual
+        alteration is performed that the user wishes to save without completely 
+        overriding the original light curve.
+
+        Parameters
+        ----------
+        lc : 'LightCurve' object
+        """
+        #check for self.flux_err attribute
+        raw_lc = LightCurve(self.time, self.flux, flux_err=self.flux_err)
+
+        self.raw_lc = raw_lc
+
+        self.time = lc.time
+        self.flux = lc.flux
+        #check if lc.flux_err exists
+        self.flux_err = lc.flux_err
+
+        #check for lc.trend and make it self.trend
+
+    def resetlc(self):
+        """
+        Function to bring the raw, original light curve back as the main, 
+        working light curve. Useful if the user is testing different processing
+        methods and does not wish to reload a 'lightcurve' instance after each
+        one.
+        """
+        #check that lc.raw_lc exists
+        #make time, flux, flux_err=self.raw_lc.time, flux, flux_err
+        #remove self.raw_lc to prevent recursion
+        
 
     ###Method for user-provided stellar params (utils.py), input is a dict
        #these will be used as default and override any other gathered params
@@ -269,3 +319,5 @@ class lightcurve(LightCurve):
 
             if ['bls', 'BLS'].count(self.routine):
                 search_summary(self.results[i], routine='bls')
+
+    ##Method to update known_pls attribute with user-provided values
