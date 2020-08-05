@@ -21,8 +21,8 @@ class lightcurve(LightCurve):
     param : description
     """
     
-    def __init__(self, obj, method="2min", sector=None, mission='TESS',
-                 find_knownpls=True):
+    def __init__(self, lc=None, *args, obj=None, method="2min", sector=None,
+                 mission='TESS', find_knownpls=True, **kwargs):
         #Have 2min, ffi_ml (which points to Brian's lcs), and eleanor.
         #This assumes you're looking for TESS lcs, can be generalized later.
         #Defaults to looking for 2min lc using get_2minlc script from
@@ -35,6 +35,14 @@ class lightcurve(LightCurve):
         #  the correct ID for the requested mission!!
         #!!Enable passing custom light curves as separate method option!!
         #!!**kwargs to pass to gather_lc command!!
+
+        self.sector = sector
+        self.method = method
+        self.star_params = None
+        
+        if lc is not None or len(args) != 0:
+            print('here')
+            self.method = 'custom'
         
         if isinstance(obj, str):
             try:
@@ -51,14 +59,10 @@ class lightcurve(LightCurve):
             except:
                 print('For some reason, the name provided was not found on ' +
                       'the MAST. Proceeding with just the TIC.')
-        
-        self.sector = sector
-        self.method = method
-        self.star_params = None
-        
+        """
         @property
         def sector(self):
-            """The TESS sector(s) being used"""
+            """'The TESS sector(s) being used'"""
             return self.sector
 
         @sector.setter
@@ -69,7 +73,7 @@ class lightcurve(LightCurve):
 
         @property
         def method(self):
-            """The method for acquiring the TESS light curve"""
+            """'The method for acquiring the TESS light curve'"""
             return self.method
         
         @method.setter
@@ -88,17 +92,40 @@ class lightcurve(LightCurve):
             if not mission in ['Tess', 'tess', 'TESS']:
                 raise ValueError('Specified mission not currently supported!')
             self.mission = mission
+        """
 
-        self.lc, self.method, self.sector = gather_lc(self.tic,
-                                                      method=str(self.method),
-                                                      sectors=self.sector,
-                                                      return_method=True,
-                                                      return_sectors=True)
+        if self.method != 'custom' and self.method != 'batman':
+            self.lc, self.method, self.sector = gather_lc(
+                self.tic,
+                method=str(self.method),
+                sectors=self.sector,
+                return_method=True,
+                return_sectors=True
+            )
 
+        if self.method == 'batman' or self.method == 'BATMAN' or self.method == 'Batman':
+            print('Working on BATMAN implementation right now!')
+
+        if self.method == 'custom':
+            #self.method = 'custom'
+            
+            if lc is not None:
+                self.lc = lc
+            elif len(args) == 1:
+                raise ValueError('Please make sure you provide both time ' +
+                                 'and flux or an object name to query')
+            elif len(args) > 1:
+                self.time = args[0]
+                self.flux = args[1]
+                self.flux_err = None
+                
+                if len(args) == 3:
+                    self.flux_err = args[2]
+            
         super().__init__(time=self.lc.time, flux=self.lc.flux,
                          flux_err=self.lc.flux_err)
 
-        if find_knownpls:
+        if find_knownpls and self.method != 'custom' and self.method !='batman':
             try:
                 self.known_pls = known_pls(self.name)
             except:
