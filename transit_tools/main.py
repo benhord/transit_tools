@@ -267,6 +267,8 @@ class lightcurve(LightCurve):
         Function to plot the vetting sheet for a given set of signal_search
         results.
 
+        !!Maybe plot failed run if no significant signals are found?!!
+
         Parameters
         ----------
         pls : int or str
