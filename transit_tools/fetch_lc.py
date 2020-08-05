@@ -19,6 +19,7 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
     light curves, and eleanor light curves are supported.
 
     !!Add ability to support common names as inputs in absence of TIC!!
+    !!Add ability for sector cuts in FFI light curves!!
 
     Parameters
     ----------

@@ -308,10 +308,10 @@ class lightcurve(LightCurve):
     #   prioritizes exoplanet values over initial fit values but will take
     #   initial fit values if exoplanet wasn't run or explicity told to
 
-    #method to implement exoplanet
+    ###method to implement exoplanet
 
-    #method to implement BATMAN? (likely separate tool, or initialize object as
-    #   simulated BATMAN light curve)
+    ###method to implement BATMAN? (likely separate tool, or initialize object
+    #   as simulated BATMAN light curve)
     #   Make whatever was simulated the self.known_pls parameter
 
     #print formatted catalog info

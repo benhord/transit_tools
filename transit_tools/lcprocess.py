@@ -88,3 +88,5 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
     
 
 #light curve update function (could this just be self = lc in main.py?)
+
+#median absolute deviation (MAD) function

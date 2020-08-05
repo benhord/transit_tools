@@ -14,7 +14,7 @@ from .utils import rms
 #def tls_search(lc, time=None, flux=None, dy=None, shape='default'):
 def tls_search(*args, tic=None, shape='default', star_params=None,
                rms_calc=True, norm_val=1., clean_lc=False, starparams_out=False,
-               verbose=False, **kwargs):
+               del_dur=1., verbose=False, **kwargs):
     """
     Function to perform a search for periodic signals using the Transit Least 
     Squares (TLS) algorithm developed by Hippke & Heller 2018. While slower than
@@ -61,6 +61,11 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
        Flag to indicate whether or not to output the dictionary of stellar
        parameters used in the TLS search. Results in an additional expected
        output.
+    del_dur : float
+       How many durations worth of data points should be excluded from cleaned
+       light curve centered on the transit center. Default is 1. Values < 1 will
+       result in some in-transit points remaining whild values > 1 will remove
+       some points outside the transit.
     verbose : bool
        Flag to have function print more while it runs.
     **kwargs
@@ -150,8 +155,8 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
 
     #cleaning light curve if lc_clean flag
     if clean_lc:
-        intransit = tls.transit_mask(time, results.period, results.duration,
-                                     results.T0)
+        intransit = tls.transit_mask(time, results.period,
+                                     del_dur * results.duration, results.T0)
         time2 = time[~intransit]
         flux2 = flux[~intransit]
         time2, flux2 = tls.cleaned_array(time2, flux2)
