@@ -4,6 +4,7 @@ from astroquery.simbad import Simbad
 from urllib import request
 import astropy.coordinates as coord
 import astropy.units as u
+import operator
 
 #function to import catalog info for source
    #stellar information
@@ -141,7 +142,9 @@ def known_pls(name=None, ra=None, dec=None, verbose=False):
         false = False
 
         for i in range(pls):
-            pl = str(cat[i+1]['MAIN_ID'].decode('utf-8'))
+            #pl = str(cat[i+1]['MAIN_ID'].decode('utf-8'))
+            pl = (str(sorted(cat, key=operator.itemgetter('MAIN_ID'))[i+1]
+                      ['MAIN_ID'].decode('utf-8')))
             urlname = (pl[:-1] + "%20" + pl[-1])
 
             link = ("https://exo.mast.stsci.edu/api/v0.1/exoplanets/" +

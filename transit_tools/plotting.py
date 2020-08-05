@@ -43,15 +43,17 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename=None):
        Output matplotlib plot object. Optional if show is set to False or 
        'both'.
     """
-    if results == -1:
-        res = lc.bad_search[0]
+    if results == -1 and len(lc.results) > 0:
         time = lc.cleanlc[-1].time
         flux = lc.cleanlc[-1].flux
         flux_err = lc.cleanlc[-1].flux_err
-    else:
+    elif len(lc.results) > 0:
         res = lc.results[results]
 
-    if results == 0:
+    if results == -1:
+        res = lc.bad_search[0]
+
+    if results == 0 or len(lc.results) == 0:
         time = lc.time
         flux = lc.flux
         flux_err = lc.flux_err
