@@ -41,7 +41,6 @@ class lightcurve(LightCurve):
         self.star_params = None
         
         if lc is not None or len(args) != 0:
-            print('here')
             self.method = 'custom'
         
         if isinstance(obj, str):
@@ -107,7 +106,6 @@ class lightcurve(LightCurve):
             print('Working on BATMAN implementation right now!')
 
         if self.method == 'custom':
-            #self.method = 'custom'
             
             if lc is not None:
                 self.lc = lc
