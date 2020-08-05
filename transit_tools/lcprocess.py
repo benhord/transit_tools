@@ -79,7 +79,7 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
 
                 full_mask = [any(tup) for tup in zip(full_mask, mask)]
                 
-        lc, trend = lc.flatten(window_length=flatten_length, return_trend,
+        lc, trend = lc.flatten(window_length=flatten_length, return_trend=True,
                                mask=full_mask, **kwargs)
 
         lc.trend = trend

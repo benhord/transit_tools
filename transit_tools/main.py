@@ -7,6 +7,7 @@ from .fetch_lc import gather_lc
 from .search import *
 from .utils import *
 from .plotting import *
+from .lcprocess import *
 
 class lightcurve(LightCurve):
     """Description
@@ -33,6 +34,7 @@ class lightcurve(LightCurve):
         #!!Enable IDs other than TIC to be used and cross-referenced to find
         #  the correct ID for the requested mission!!
         #!!Enable passing custom light curves as separate method option!!
+        #!!**kwargs to pass to gather_lc command!!
         
         if isinstance(obj, str):
             try:
@@ -139,19 +141,25 @@ class lightcurve(LightCurve):
         #check if lc.flux_err exists
         self.flux_err = lc.flux_err
 
-        #check for lc.trend and make it self.trend
+        if hasattr(lc, 'trend'):
+            self.trend = lc.trend
 
-    def resetlc(self):
+    def reset(self):
         """
         Function to bring the raw, original light curve back as the main, 
         working light curve. Useful if the user is testing different processing
         methods and does not wish to reload a 'lightcurve' instance after each
         one.
         """
-        #check that lc.raw_lc exists
-        #make time, flux, flux_err=self.raw_lc.time, flux, flux_err
-        #remove self.raw_lc to prevent recursion
-        
+        if not hasattr(self, 'raw_lc'):
+            print('Working light curve already raw light curve')
+
+        else:
+            self.time = self.raw_lc.time
+            self.flux = self.raw_lc.flux
+            self.flux_err = self.raw_lc.flux_err
+
+            delattr(self, 'raw_lc')
 
     ###Method for user-provided stellar params (utils.py), input is a dict
        #these will be used as default and override any other gathered params
@@ -179,6 +187,10 @@ class lightcurve(LightCurve):
         """
         self.routine = routine
         self.sde = sde
+
+        if not hasattr(self, 'raw_lc'):
+            self.raw_lc = LightCurve(self.time, self.flux,
+                                     flux_err=self.flux_err)
         
         @property
         def routine(self):
@@ -250,7 +262,7 @@ class lightcurve(LightCurve):
        ##Individual method to save all diagnostic plots and other methods to
        #   view each individually.
 
-    def vet_sheet(self, pls='all', **kwargs):
+    def vetsheet(self, pls='all', **kwargs):
         """
         Function to plot the vetting sheet for a given set of signal_search
         results.
@@ -262,17 +274,22 @@ class lightcurve(LightCurve):
            significant results will be displayed in separate windows. If set to
            -1, the most recent set of results that did not meet the significance
            threshold will be displayed.
+        kwargs
+           Additional arguments to be passed to the tls_vetsheet command.
         """
-        if not isattr(self, routine):
+        if not hasattr(self, 'routine'):
             raise ValueError('Please run signal_search first')
         
         if pls == 'all':
             results = range(len(self.results))
         elif pls >= 0:
             results = [pls]
-        
-        for i in results:
-            tls_vetsheet(self, results=i)
+
+        if pls == -1:
+            tls_vetsheet(self, results=-1, **kwargs)
+        else:
+            for i in results:
+                tls_vetsheet(self, results=i, **kwargs)
 
     #def save_fullplots(self): #flag to both display and save
         #output vetting sheet
@@ -287,12 +304,15 @@ class lightcurve(LightCurve):
 
     ###Method to generate river plot? Implemented in plot method?
 
-    #method to implement REBOUND
+    ###method to implement REBOUND
+    #   prioritizes exoplanet values over initial fit values but will take
+    #   initial fit values if exoplanet wasn't run or explicity told to
 
     #method to implement exoplanet
 
     #method to implement BATMAN? (likely separate tool, or initialize object as
     #   simulated BATMAN light curve)
+    #   Make whatever was simulated the self.known_pls parameter
 
     #print formatted catalog info
 
@@ -306,13 +326,16 @@ class lightcurve(LightCurve):
         """
         if not hasattr(self, 'results'):
             raise ValueError('Please run a signal search first.')
+
+        print('Search results for Source ' + str(self.tic))
+        print('---------------------------------------')
+        print(str(len(self.results)) + ' significant signals found')
+        print('Used routine ' + str(self.routine))
+        print('')
         
         for i in range(len(self.results)):
             if  ['tls', 'TLS'].count(self.routine):
-                print('TLS results for Source ' + str(self.tic))
-                print('---------------------------------')
-                print(str(len(self.results)) + ' significant signals found')
-                print('')
+                
                 print('Signal ' + str(i+1))
                 
                 search_summary(self.results[i], routine='tls')

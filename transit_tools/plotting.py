@@ -16,6 +16,8 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename=None):
     standard 8"x11" sheet of paper.
 
     !!Add functionality to plot without having to run search?!!
+    !!Add vertical lines for expected transit times!!
+    !!Change x-axis phase values for odd-even plot!!
 
     Parameters
     ----------
@@ -71,7 +73,7 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename=None):
             alpha=0.7)
     ax.scatter(res.folded_phase, res.folded_y, color='blue', s=0.2, alpha=0.5,
             zorder=2)
-    ax.scatter(fold.time, fold.flux, s=1.5, c='k')
+    ax.scatter(fold.time, fold.flux, s=2., c='k')
     
     ax.set_xlim(0.45, 0.55)
     ax.set_xlabel('Phase')
@@ -80,14 +82,14 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename=None):
     #raw light curve
     ax = fig.add_subplot(gs[1, :])
 
-    ax.scatter(lc.time, lc.flux, s=0.2, c='b', alpha=0.5)
+    ax.scatter(lc.raw_lc.time, lc.raw_lc.flux, s=0.2, c='b', alpha=0.5)
     
     ax.set_xlabel('Time [BTJD]')
     ax.set_ylabel('Raw Relative Flux')
-    ax.set_xlim(lc.time.min(), lc.time.max())
+    ax.set_xlim(lc.raw_lc.time.min(), lc.raw_lc.time.max())
 
     if hasattr(lc, 'trend'):
-        plt.plot(time, lc.trend, c='b')
+        plt.plot(lc.trend.time, lc.trend.flux, c='g')
 
     #processed light curve with transit model
     ax = fig.add_subplot(gs[2, :])
