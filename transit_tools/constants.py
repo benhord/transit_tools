@@ -5,3 +5,5 @@
 Rsolar_m = 696342000
 Rjup_m = 71492000
 Rearth_m = 6371008
+
+default_star_params = {}

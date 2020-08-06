@@ -9,47 +9,47 @@ from .fetch_lc import gather_lc
 ###function to fetch batman lc according to user params (single transit, noise
 #   type, pl/star params, etc.)
 #   inject noise here
-def full_batlc(period, rp, a, noise='obs', lc=None, t0=None, sectors='all',
+def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
                **kwargs):
     """
     Function to retrive a full simulated BATMAN light curve complete with 
     injected noise.
 
     !!Allow custom noise model!!
-    !!Allow injection into custom light curve w/ lc arg instead of tic!!
     !!Update name processing once name processing wrapper function written!!
-    !!subtract 1 from simulated lc then add it to real lc!!
+    !!Utilize actual stellar params somehow?!!
+    !!Search for known planets in the real system and pass those on as well!!
 
     Parameters
     ----------
     """
-    if not lc and noise == 'obs':
+    if not inlc and noise == 'obs':
         #randomly choose lc to inject into from preselected list
         path = Path(__file__).parent / "./files/lc_list.csv"
         lc_list = np.genfromtxt(path, delimiter=',')
         lc_list = np.delete(lc_list, 0, 0)[:, 0]
 
-        lc = int(np.random.choice(lc_list))
-        tic = lc
+        inlc = int(np.random.choice(lc_list))
+        tic = inlc
         print(tic)
 
-    if isinstance(lc, str):
+    if isinstance(inlc, str):
         #perform name processing and set lc to TIC ID
-        lc = name_to_tic(str(lc))
-        tic = lc
+        inlc = name_to_tic(str(inlc))
+        tic = inlc
         
-    if isinstance(lc, int):
+    if isinstance(inlc, int):
         #inject into chosen TIC ID using gather_lc
-        tic = lc
-        lc, sectors = gather_lc(lc, sectors=sectors, return_sectors=True)
+        tic = inlc
+        inlc, sectors = gather_lc(inlc, sectors=sectors, return_sectors=True)
         
-    if lc is not None:
+    if inlc is not None:
         #inject into chosen lc
-        time = lc.time
-        flux = lc.flux
+        time = inlc.time
+        flux = inlc.flux
         flux_err = None
-        if hasattr(lc, 'flux_err'):
-            flux_err = lc.flux_err
+        if hasattr(inlc, 'flux_err'):
+            flux_err = inlc.flux_err
 
         if not t0:
             t0_range = time[time < (time[0] + period)]
@@ -62,14 +62,14 @@ def full_batlc(period, rp, a, noise='obs', lc=None, t0=None, sectors='all',
 
         flux = flux + model.flux - 1
 
-        lc = LightCurve(time, flux, flux_err=flux_err)
+        inlc = LightCurve(time, flux, flux_err=flux_err)
         
-    else:
-        lc = batman_transit(period=period, rp=rp, a=a, **kwargs)
+    elif noise == None:
+        inlc = batman_transit(period=period, rp=rp, a=a, **kwargs)
 
     #add sim params to dict and add as attr to lc
         
-    return lc
+    return inlc
         #return clean BATMAN light curve w/o noise
         
 def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
@@ -134,7 +134,7 @@ def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
     if not length:
         length = period
 
-    if time.all() is None:
+    if time is None:
         t = np.linspace(-period/2, length-(period/2),
                         int((period*24*60)//cadence))
     else:

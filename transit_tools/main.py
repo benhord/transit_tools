@@ -8,6 +8,8 @@ from .search import *
 from .utils import *
 from .plotting import *
 from .lcprocess import *
+from .batman import *
+import .constants as c
 
 class lightcurve(LightCurve):
     """Description
@@ -18,7 +20,8 @@ class lightcurve(LightCurve):
 
     Parameters
     ----------
-    param : description
+    param : type
+       description
     """
     
     def __init__(self, lc=None, *args, obj=None, method="2min", sector=None,
@@ -91,7 +94,6 @@ class lightcurve(LightCurve):
             if not mission in ['Tess', 'tess', 'TESS']:
                 raise ValueError('Specified mission not currently supported!')
             self.mission = mission
-        
 
         if self.method != 'custom' and self.method != 'batman':
             self.lc, self.method, self.sector = gather_lc(
@@ -101,11 +103,26 @@ class lightcurve(LightCurve):
                 return_method=True,
                 return_sectors=True
             )
+            self.id = self.tic
 
         if self.method == 'batman' or self.method == 'BATMAN' or self.method == 'Batman':
-            print('Working on BATMAN implementation right now!')
+            self.id = 'batman'
+            self.tic = None
+            self.star_params_tls = c.default_star_params
+            
+            lc = full_batlc(**kwargs)
+            self.lc = lc
+            
+            self.time = lc.time
+            self.flux = lc.flux
+            self.flux_err = lc.flux_err
 
+            #update known pls w/ simulated params
+            
         if self.method == 'custom':
+            self.id = 'custom'
+            self.tic = None
+            self.star_params_tls = c.default_star_params
             
             if lc is not None:
                 self.lc = lc
@@ -119,7 +136,7 @@ class lightcurve(LightCurve):
                 
                 if len(args) == 3:
                     self.flux_err = args[2]
-            
+                    
         super().__init__(time=self.lc.time, flux=self.lc.flux,
                          flux_err=self.lc.flux_err)
 
@@ -235,12 +252,14 @@ class lightcurve(LightCurve):
         
         #start iteration loop here and enclose both TLS and BLS code in it
         while run < max_runs:
-            print('Run ' + str(run + 1) + ' for source ' + str(self.tic))
+            print('Run ' + str(run + 1) + ' for source ' + str(self.id))
             
             if self.routine == 'tls' or self.routine == 'TLS':
                 if not hasattr(self, 'star_params_tls'):
                     self.star_params_tls = None
 
+                #change so tic or star params don't have to be passed for sims
+                    
                 if len(self.cleanlc) == 0:
                     time = self.time
                     flux = self.flux
