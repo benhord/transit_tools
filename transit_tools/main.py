@@ -58,7 +58,7 @@ class lightcurve(LightCurve):
             except:
                 print('For some reason, the name provided was not found on ' +
                       'the MAST. Proceeding with just the TIC.')
-        """
+        
         @property
         def sector(self):
             """'The TESS sector(s) being used'"""
@@ -91,7 +91,7 @@ class lightcurve(LightCurve):
             if not mission in ['Tess', 'tess', 'TESS']:
                 raise ValueError('Specified mission not currently supported!')
             self.mission = mission
-        """
+        
 
         if self.method != 'custom' and self.method != 'batman':
             self.lc, self.method, self.sector = gather_lc(
