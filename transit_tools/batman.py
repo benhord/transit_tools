@@ -8,7 +8,7 @@ from lightkurve import LightCurve
 
 ###function to instantiate a batman transit
 def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
-                   w=90., limb_dark='quadratic', cadence=0.01):
+                   w=90., limb_dark='quadratic', cadence=0.01, length=None):
     """
     Function to instantiate a simulated 'LightCurve' object using the BATMAN
     package developed by Laura Kreidberg. Please see BATMAN documentation for a
@@ -26,7 +26,7 @@ def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
        Limb darkening coefficients. Defaults to a G2V star in the Kepler 
        bandpass.
     t0 : float
-       Mid-transit time.
+       Mid-transit time of the first transit.
     inc : float
        Orbital inclination in degrees.
     ecc : float
@@ -38,12 +38,16 @@ def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
        Limb darkening model.
     cadence : float
        Cadence of data points in minutes.
+    length : float or None
+       Length of output light curve in days. If set to None, defaults to one 
+       orbital period in length centered on the first transit.
 
     Returns
     -------
     lc : 'LightCurve' object
        The light curve of the simulated planet transit for one full orbital 
-       period.
+       period. Light curve will have attribute 'params' that is an object
+       containing all of the input simulated parameters.
     """
     params = batman.TransitParams()
     params.t0 = t0
@@ -56,7 +60,11 @@ def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
     params.u = u
     params.limb_dark = str(limb_dark)
 
-    t = np.linspace(-period/2, period/2, int((period*24*60)//cadence))
+    if not length:
+        length = period
+    
+    t = np.linspace(-period/2, length-(period/2),
+                    int((period*24*60)//cadence))
 
     m = batman.TransitModel(params, t)
     flux = m.light_curve(params)
@@ -66,6 +74,6 @@ def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
     lc.params = params
     
     return lc
-
-    
+   
 ###function to extend transit to arbitrary length
+#UNNECESSARY
