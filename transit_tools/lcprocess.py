@@ -85,8 +85,60 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
         lc.trend = trend
     
     return lc
-    
-
-#light curve update function (could this just be self = lc in main.py?)
 
 #median absolute deviation (MAD) function
+
+#mask function
+def mask(lc, upper=None, lower=None, out_mask=True):
+    """
+    Function to mask out sections of the user-provided light curve.
+
+    !!Add interpolation option to fill in gaps with noise!!
+    !!Add option to input a mask that can then be altered with further
+      removals from light curve!!
+    
+    Parameters
+    ----------
+    lc : 'LightCurve' object
+       The light curve to be masked.
+    upper : float
+       Upper limit timestamp of the masked region. If lower is None, all 
+       timestamps before this value will be masked out. This value is not
+       inclusive and will remain in the light curve.
+    lower : float
+       Lower limit timestamp of the masked region. If upper is None, all 
+       timestamps after this value will be masked out. This value is not 
+       inclusive and will remain in the light curve.
+    out_mask : bool
+       Flag to determine whether the mask generated will be output. If True, an
+       additional output will be expected.
+
+    Returns
+    -------
+    masked_lc : 'LightCurve' object
+       The light curve with the specified portions masked out.
+    mask : array, optional
+       A boolean array of identical length to the time array from the input 
+       light curve with masked portions set to False and everything else set to 
+       True.
+    """
+    if not isinstance(lc, object):
+        raise ValueError('Please make sure that the input light curve is a ' +
+                         'LightCurve object')
+        
+    time = lc.time
+
+    if upper is not None and lower is not None:
+        mask = ((time < lower) | (time > upper))
+    
+    elif upper is not None and lower is None:
+        mask = (time > upper)
+    elif upper is None and lower is not None:
+        mask = (time < lower)
+
+    masked_lc = lc[mask]
+        
+    if out_mask:
+        return masked_lc, mask
+    else:
+        return lc

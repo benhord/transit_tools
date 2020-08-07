@@ -204,7 +204,33 @@ class lightcurve(LightCurve):
             self.flux_err = self.raw_lc.flux_err
 
             delattr(self, 'raw_lc')
+            delattr(self, 'mask_arr')
 
+    def mask(self, **kwargs):
+        """
+        Function to mask out parts of the light curve. Wraps the lcprocess.mask
+        function. Can be performed iteratively to mask out multiple areas or
+        ranges of times in the light curve.
+
+        Parameters
+        ----------
+        kwargs
+           Arguments to be passed to lcprocess.mask, with the exception of the
+           out_mask argument.
+        """
+        if not hasattr(self, 'raw_lc'):
+            raw_lc = LightCurve(self.time, self.flux, self.flux_err)
+            self.raw_lc = raw_lc
+
+        lc, mask_arr = mask(lc=self, out_mask=True, **kwargs)
+
+        self.updatelc(lc)
+
+        if hasattr(self, 'mask_arr'):
+            self.mask_arr = [all(tup) for tup in zip(self.mask_arr, mask_arr)]
+        else:
+            self.mask_arr = mask_arr
+            
     ###Method for user-provided stellar params (utils.py), input is a dict
        #these will be used as default and override any other gathered params
     
