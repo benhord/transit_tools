@@ -9,7 +9,7 @@ from .utils import *
 from .plotting import *
 from .lcprocess import *
 from .batman import *
-import .constants as c
+from .constants import *
 
 class lightcurve(LightCurve):
     """Description
@@ -108,7 +108,7 @@ class lightcurve(LightCurve):
         if self.method == 'batman' or self.method == 'BATMAN' or self.method == 'Batman':
             self.id = 'batman'
             self.tic = None
-            self.star_params_tls = c.default_star_params
+            self.star_params_tls = default_star_params
             
             lc = full_batlc(**kwargs)
             self.lc = lc
@@ -122,7 +122,7 @@ class lightcurve(LightCurve):
         if self.method == 'custom':
             self.id = 'custom'
             self.tic = None
-            self.star_params_tls = c.default_star_params
+            self.star_params_tls = default_star_params
             
             if lc is not None:
                 self.lc = lc
@@ -141,8 +141,10 @@ class lightcurve(LightCurve):
                          flux_err=self.lc.flux_err)
 
         if find_knownpls and self.method != 'custom' and self.method !='batman':
+            #print('here')
             try:
                 self.known_pls = known_pls(self.name)
+                #print('here')
             except:
                 self.known_pls = None
             

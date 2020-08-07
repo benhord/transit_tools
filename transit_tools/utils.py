@@ -128,6 +128,8 @@ def known_pls(name=None, ra=None, dec=None, verbose=False):
     cat = Simbad.query_region(coord.SkyCoord(ra, dec, unit=(u.deg, u.deg)),
                               radius='0d0m5s')
 
+    print(cat)
+    
     pls = len(cat) - 1
     if verbose:
         print(str(pls) + ' known planets found in system')
@@ -147,6 +149,8 @@ def known_pls(name=None, ra=None, dec=None, verbose=False):
                       ['MAIN_ID'].decode('utf-8')))
             urlname = (pl[:-1] + "%20" + pl[-1])
 
+            print(urlname)
+            
             link = ("https://exo.mast.stsci.edu/api/v0.1/exoplanets/" +
                     urlname + "/properties")
             info = request.urlopen(link).read().decode('utf-8')
