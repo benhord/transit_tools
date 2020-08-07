@@ -97,6 +97,9 @@ def known_pls(name=None, ra=None, dec=None, verbose=False):
     Queries Simbad for objects and queries the Gaia catalog if RA/Dec are not
     provided.
 
+    !!Possible to streamline by removing Simbad query and just trying until an
+      exception occurs?!!
+
     Parameters
     ----------
     name : str
@@ -127,8 +130,6 @@ def known_pls(name=None, ra=None, dec=None, verbose=False):
 
     cat = Simbad.query_region(coord.SkyCoord(ra, dec, unit=(u.deg, u.deg)),
                               radius='0d0m5s')
-
-    print(cat)
     
     pls = len(cat) - 1
     if verbose:
@@ -138,30 +139,40 @@ def known_pls(name=None, ra=None, dec=None, verbose=False):
     pl_info = []
         
     if pls > 0:
-        alphastr = 'abcdefghijklmnopqrstuvwxyz'
+        alphastr = 'bcdefghijklmnopqrstuvwxyz'
         null = None
         true = True
         false = False
 
         for i in range(pls):
-            #pl = str(cat[i+1]['MAIN_ID'].decode('utf-8'))
             pl = (str(sorted(cat, key=operator.itemgetter('MAIN_ID'))[i+1]
                       ['MAIN_ID'].decode('utf-8')))
             urlname = (pl[:-1] + "%20" + pl[-1])
-
-            print(urlname)
+            urlname = ' '.join(urlname.split()).replace(' ', '%20')
             
             link = ("https://exo.mast.stsci.edu/api/v0.1/exoplanets/" +
                     urlname + "/properties")
             info = request.urlopen(link).read().decode('utf-8')
             info = eval(info)
-
+            
             try:
                 pl_info.append(info[0])
                 query_fault = False
             except:
-                query_fault = True
-                pl_info.append(str(pl))
+                try:
+                    urlname = (' '.join(name.split()).replace(' ', '%20') +
+                               '%20' + alphastr[i])
+                    link = ("https://exo.mast.stsci.edu/api/v0.1/exoplanets/" +
+                            urlname + "/properties")
+                    info = request.urlopen(link).read().decode('utf-8')
+                    info = eval(info)
+
+                    pl_info.append(info[0])
+                    query_fault=False
+                except:
+                    query_fault = True
+                    if i == 0:
+                        pl_info.append(str(pl))
                 
         if verbose and not query_fault:
             pl = pl_info
