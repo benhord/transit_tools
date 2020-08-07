@@ -80,6 +80,9 @@ def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
     package developed by Laura Kreidberg. Please see BATMAN documentation for a
     more in-depth description of each parameter.
 
+    !!Fix length argument. Make it remove parts of light curve from boths sides
+      of transit!!
+
     Parameters
     ----------
     period : float
