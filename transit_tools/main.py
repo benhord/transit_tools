@@ -176,9 +176,9 @@ class lightcurve(LightCurve):
         lc : 'LightCurve' object
         """
         #check for self.flux_err attribute
-        raw_lc = LightCurve(self.time, self.flux, flux_err=self.flux_err)
-
-        self.raw_lc = raw_lc
+        if not hasattr(self, 'raw_lc'):
+            raw_lc = LightCurve(self.time, self.flux, flux_err=self.flux_err)
+            self.raw_lc = raw_lc
 
         self.time = lc.time
         self.flux = lc.flux
