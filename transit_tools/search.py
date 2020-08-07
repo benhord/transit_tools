@@ -14,7 +14,7 @@ from .utils import rms
 #def tls_search(lc, time=None, flux=None, dy=None, shape='default'):
 def tls_search(*args, tic=None, shape='default', star_params=None,
                rms_calc=True, norm_val=1., clean_lc=False, starparams_out=False,
-               del_dur=1., verbose=False, **kwargs):
+               del_dur=1., verbose=False, nthreads=6, **kwargs):
     """
     Function to perform a search for periodic signals using the Transit Least 
     Squares (TLS) algorithm developed by Hippke & Heller 2018. While slower than
@@ -68,7 +68,11 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
        some points outside the transit.
     verbose : bool
        Flag to have function print more while it runs.
-    **kwargs
+    nthreads : int
+       Number of threads to be used for running the signal search. Many times,
+       cores have the capability to run multiple threads, so be sure to check
+       your machine to optimize this parameter.
+    kwargs
        Optional arguments passed to the transitleastsquares.power function.
 
     Returns
@@ -151,7 +155,8 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
     model = tls.transitleastsquares(t=time, y=flux, dy=dy)
     results = model.power(R_star=dc['rstar'], R_star_min=rmin, R_star_max=rmax,
                           M_star=dc['mstar'], M_star_min=mmin, M_star_max=mmax,
-                          u=dc['ab'], transit_template=shape, **kwargs)
+                          u=dc['ab'], transit_template=shape,
+                          use_threads=nthreads, **kwargs)
 
     #cleaning light curve if lc_clean flag
     if clean_lc:
