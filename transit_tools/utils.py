@@ -251,6 +251,8 @@ def tic_to_name(tic, ra=None, dec=None):
     Function to determine the common name of a TIC ID or given RA/Dec position, 
     if it has one. Queries the MAST and Simbad to gather this information.
 
+    !!Keysort so planet doesn't come first?!!
+
     Parameters
     ----------
     tic : int
