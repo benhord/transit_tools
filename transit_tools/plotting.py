@@ -16,8 +16,10 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename=None):
     standard 8"x11" sheet of paper.
 
     !!Add functionality to plot without having to run search?!!
-    !!Add vertical lines for expected transit times!!
+    !!Add vertical lines for expected transit times on unprocessed LC!!
     !!Change x-axis phase values for odd-even plot!!
+    !!Make processed and unprocessed x-axes line up, especially when LC is 
+      masked. Maybe include grayed-out parts that were masked!!
 
     Parameters
     ----------
