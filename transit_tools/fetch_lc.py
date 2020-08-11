@@ -258,7 +258,6 @@ def get_mlffi(tic=None, ra=None, dec=None, sectors='all',
     
     for i in range(len(sectors)):
         path = '/data/tessraid/bppowel1/tesslcs_sector_'+str(sectors[i])+'_104'
-        #path = '/Users/bhord/Desktop/tesslcs_sector_'+str(sectors[i])+'_104'
         lc_files = []
         
         for (dirpath, dirnames, filenames) in os.walk(path):
