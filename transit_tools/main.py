@@ -247,7 +247,8 @@ class lightcurve(LightCurve):
         !!Update to allow for search of known planets first and rejection of 
         signal until known signal is found. Quit after X trials!!
         !!Update incomplete docustring!!
-
+        !!If periods too close, increase del_dur and run again!!
+        
         Parameters
         ----------
         routine : str
@@ -418,3 +419,74 @@ class lightcurve(LightCurve):
                 search_summary(self.results[i], routine='bls')
 
     ##Method to update known_pls attribute with user-provided values
+    def update_pls(self, name=None, per=None, t0=None, dur=None, params=None,
+                   append=False):
+        """
+        Function to update the 'known_pls' attribute with user-defined values or
+        a provided dictionary.
+
+        Parameters
+        ----------
+        name : str or list or None
+           Name(s) of the planets.
+        per : float or array or None
+           Period of the planet(s). Will expect a period in days.
+        t0 : float or array or None
+           Mid-transit time(s) of the first transit(s). Will expect a value in 
+           MJD.
+        dur : float or array or None
+           Duration of transit(s). Will expect a value in days.
+        params : dict or list or None
+           Dictionary of additional parameters or all orbital parameters. Will
+           expect keys similar to those output by tt.utils.known_pls.
+        append : bool
+           Flag whether or not to append provided planet parameters as a new 
+           entry in self.known_pls or to overwrite the current entry with the
+           user-provided values.
+        """
+        if name is None and per is None and t0 is None and dur is None and params is not None:
+            if not append:
+                self.known_pls = params
+            elif isinstance(params, list):
+                for i in range(len(params)):
+                    self.known_pls.append(params[i])
+            else:
+                self.known_pls.append(params)
+                
+        elif isinstance(any(name, per, t0, dur), list):
+            conv = lambda i : i or ''
+            [name, per, t0, dur] = [conv(i) for i in [name, per, t0, dur]]
+            #turn all non-lists into lists
+            if not isinstance(name, list): name = [name]
+            if not isinstance(per, list): per = [per]
+            if not isinstance(t0, list): t0 = [t0]
+            if not isinstance(dur, list): dur = [dur]
+            
+            entries = max([len(i) for i in [name, per, t0, dur]])
+
+            name += [''] * (entries - len(name))
+            per += [''] * (entries - len(per))
+            t0 += [''] * (entries - len(t0))
+            dur += [''] * (entries - len(dur))
+            
+            #check if params is None and break up into separate dicts or just
+            #   append each individually like above
+            if params is None:
+                pls = []
+                
+                for i in range(entries):
+                    dic = {}
+                    dic['canonical_name'] = name[i]
+                    dic['orbital_period'] = per[i]
+                    dic['transit_time'] = t0[i]
+                    dic['transit_duration'] = dur[i]
+
+                    pls.append(dic)
+
+                self.known_pls = pls
+                    
+            
+        #elif they're just floats or ints:
+
+        else:
+            pass
