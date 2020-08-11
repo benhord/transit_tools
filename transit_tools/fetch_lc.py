@@ -72,8 +72,8 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
     if method == 'ffi_ml':
         try:
             if return_sectors:
-                lc, sectors = get_mlffi(tic, sectors, out_sec=return_sectors,
-                                        **kwargs)
+                lc, sectors = get_mlffi(tic=tic, sectors=sectors,
+                                        out_sec=return_sectors, **kwargs)
             else:
                 lc = get_mlffi(tic, sectors, out_sec=return_sectors, **kwargs)
         except:
@@ -203,7 +203,7 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
 
 #search for ML FFIs
 def get_mlffi(tic=None, ra=None, dec=None, sectors='all',
-              flux_type='corr_flux', out_sec=False):
+              flux_type='corr', out_sec=False):
     """
     For use on tesseract only. Fetches FFI light curves made by Brian Powell.
 
@@ -245,7 +245,7 @@ def get_mlffi(tic=None, ra=None, dec=None, sectors='all',
             info = tessobs_info(ra=ra, dec=dec)
 
         sectors = list(set(info['sector']))
-
+        
     if not isinstance(sectors, list):
         raise ValueError('Sectors must be a list!')
 
@@ -258,6 +258,7 @@ def get_mlffi(tic=None, ra=None, dec=None, sectors='all',
     
     for i in range(len(sectors)):
         path = '/data/tessraid/bppowel1/tesslcs_sector_'+str(sectors[i])+'_104'
+        #path = '/Users/bhord/Desktop/tesslcs_sector_'+str(sectors[i])+'_104'
         lc_files = []
         
         for (dirpath, dirnames, filenames) in os.walk(path):
@@ -266,9 +267,9 @@ def get_mlffi(tic=None, ra=None, dec=None, sectors='all',
 
         lc_files = [t for t in lc_files if 'tesslc_' in t]
         tics = [int(t.split('.')[0].split('_')[-1]) for t in lc_files]
-
+        
         path = [s for s in lc_files if str(tic) in s]
-
+        
         try:
             fp = open(str(path[0]), 'rb')
         except:
@@ -299,6 +300,8 @@ def get_mlffi(tic=None, ra=None, dec=None, sectors='all',
             sec_lc = LightCurve(time, flux, flux_err=flux_err)
             lc.append(sec_lc)
 
+    lc = lc.normalize()
+            
     lc.Tmag = Tmag_arr
     lc.camera = camera_arr
     lc.chip = chip_arr
