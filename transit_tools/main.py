@@ -425,6 +425,8 @@ class lightcurve(LightCurve):
         Function to update the 'known_pls' attribute with user-defined values or
         a provided dictionary.
 
+        !!Not finished. Revisit. Appending might not be working!!
+
         Parameters
         ----------
         name : str or list or None
