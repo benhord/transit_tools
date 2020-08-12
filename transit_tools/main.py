@@ -94,7 +94,7 @@ class lightcurve(LightCurve):
             if not mission in ['Tess', 'tess', 'TESS']:
                 raise ValueError('Specified mission not currently supported!')
             self.mission = mission
-
+            
         if self.method != 'custom' and self.method != 'batman':
             self.lc, self.method, self.sector = gather_lc(
                 self.tic,
@@ -141,10 +141,8 @@ class lightcurve(LightCurve):
                          flux_err=self.lc.flux_err)
 
         if find_knownpls and self.method != 'custom' and self.method !='batman':
-            #print('here')
             try:
                 self.known_pls = known_pls(self.name)
-                #print('here')
             except:
                 self.known_pls = None
             

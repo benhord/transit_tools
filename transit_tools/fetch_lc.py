@@ -57,14 +57,16 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
        The sectors that the light curve was gathered from.
     """
     if sectors == None: sectors = 'all'
+
+    secs = sectors
     
     if method == '2min':
         try:
             if return_sectors:
-                lc, sectors = get_2minlc(tic, sectors, out_sec=return_sectors,
+                lc, sectors = get_2minlc(tic, secs, out_sec=return_sectors,
                                          **kwargs)
             else:
-                lc = get_2minlc(tic, sectors, out_sec=return_sectors, **kwargs)
+                lc = get_2minlc(tic, secs, out_sec=return_sectors, **kwargs)
         except:
             print('No TESS 2 minute light curves found! Trying FFIs...')
             method = 'ffi_ml'
@@ -72,21 +74,22 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
     if method == 'ffi_ml':
         try:
             if return_sectors:
-                lc, sectors = get_mlffi(tic=tic, sectors=sectors,
+                lc, sectors = get_mlffi(tic=tic, sectors=secs,
                                         out_sec=return_sectors, **kwargs)
             else:
-                lc = get_mlffi(tic, sectors, out_sec=return_sectors, **kwargs)
+                lc = get_mlffi(tic=tic, sectors=secs, out_sec=return_sectors,
+                               **kwargs)
         except:
             print('No ML light curves found locally. Trying with eleanor...')
             method = 'eleanor'
-            
+        
     if method == 'eleanor':
         try:
             if return_sectors:
-                lc, sectors = get_eleanor(tic=tic, sectors=sectors,
+                lc, sectors = get_eleanor(tic=tic, sectors=secs,
                                           out_sec=return_sectors, **kwargs)
             else:
-                lc = get_eleanor(tic=tic, sectors=sectors,
+                lc = get_eleanor(tic=tic, sectors=secs,
                                  out_sec=return_sectors, **kwargs)
         except:
             raise ValueError('No light curves found for the specified sectors!')
@@ -255,9 +258,14 @@ def get_mlffi(tic=None, ra=None, dec=None, sectors='all',
     camera_arr = []
     chip_arr = []
     Tmag_arr = []
+
+    sects = sectors
+
+    if not os.path.isdir('/data/tessraid/bppowel1/'):
+        raise ValueError('Not on tesseract')
     
-    for i in range(len(sectors)):
-        path = '/data/tessraid/bppowel1/tesslcs_sector_'+str(sectors[i])+'_104'
+    for i in range(len(sects)):
+        path = '/data/tessraid/bppowel1/tesslcs_sector_'+str(sects[i])+'_104'
         lc_files = []
         
         for (dirpath, dirnames, filenames) in os.walk(path):
@@ -272,10 +280,10 @@ def get_mlffi(tic=None, ra=None, dec=None, sectors='all',
         try:
             fp = open(str(path[0]), 'rb')
         except:
-            print('Target not found in Sector %s' % sectors[i])
-            sectors.remove(sectors[i])
+            print('Target not found in Sector %s' % sects[i])
+            sects.remove(sects[i]) #trouble line, may cause silent error
             continue
-            
+        
         data = pickle.load(fp)
         fp.close()
 
@@ -298,15 +306,15 @@ def get_mlffi(tic=None, ra=None, dec=None, sectors='all',
         else:
             sec_lc = LightCurve(time, flux, flux_err=flux_err)
             lc.append(sec_lc)
-
-    lc = lc.normalize()
             
+    lc = lc.normalize()
+    
     lc.Tmag = Tmag_arr
     lc.camera = camera_arr
     lc.chip = chip_arr
-
+    
     if out_sec:
-        return lc, sectors
+        return lc, sects
     else:
         return lc
 
@@ -385,7 +393,7 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
     
     secs = []
     data = []
-
+    
     for s in star:
         datum = eleanor.TargetData(s, height=height, width=width,
                                    bkg_size=bkg_size, do_psf=do_psf,
