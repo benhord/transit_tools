@@ -321,7 +321,8 @@ def get_mlffi(tic=None, ra=None, dec=None, sectors='all',
 #eleanor
 def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
                 width=15, bkg_size=31, do_psf=False, do_pca=False,
-                out_flux='corr_flux', norm=True, errorcalc=True):
+                out_flux='corr_flux', norm=True, errorcalc=True,
+                qual_flag=True):
     """
     Function to get a light curve from the TESS full frame images (FFIs) using
     the Python package eleanor.
@@ -372,6 +373,9 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
     errorcalc : bool
        Flag determining whether the RMS errors will be calculated for the light
        curve.
+    qual_flag : bool
+       Flag determining whether the timestamps with bad quality flags will be 
+       excluded automatically.
 
     Returns
     -------
@@ -405,15 +409,20 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
 
     for i in range(len(data)):
         q = data[i].quality == 0
-        time = data[i].time[q]
-
+        time = data[i].time
+            
         if out_flux == 'corr_flux':
-            flux = data[i].corr_flux[q]
+            flux = data[i].corr_flux
         elif out_flux == 'pca_flux':
-            flux = data[i].pca_flux[q]
+            flux = data[i].pca_flux
         elif out_flux == 'psf_flux':
-            flux = data[i].psf_flux[q]
+            flux = data[i].psf_flux
 
+        if qual_flag:
+            print('here')
+            time = time[q]
+            flux = flux[q]
+            
         if norm:
             flux = flux/np.median(flux)
 

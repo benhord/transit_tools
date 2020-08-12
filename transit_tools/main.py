@@ -101,7 +101,8 @@ class lightcurve(LightCurve):
                 method=str(self.method),
                 sectors=self.sector,
                 return_method=True,
-                return_sectors=True
+                return_sectors=True,
+                **kwargs
             )
             self.id = self.tic
 
