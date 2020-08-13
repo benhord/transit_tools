@@ -388,7 +388,34 @@ class lightcurve(LightCurve):
     #   as simulated BATMAN light curve)
     #   Make whatever was simulated the self.known_pls parameter
 
-    #print formatted catalog info
+    #gather stellar catalog info
+    def get_starparams(self, cat='all'):
+        """
+        Function to gather stellar parameters and save them as the star_params
+        and stellar_params_tls attributes.
+
+        !!Check if star_params have already been collected or not!!
+        !!Add full docstrings!!
+
+        Parameters
+        ----------
+        kwargs
+           Additional arguments to be passed to the 'utils.catalog_info' 
+           command.
+        """
+        #check to see if star_params already exist and if so, just skip to
+        #   printing or something
+        
+        info, catalogs = catalog_info(tic=self.tic, cat=cat, out_cat=True)
+
+        self.star_params = info
+        self.catalogs = catalogs
+
+        #need to check each value for NaNs or bad values
+        #star_params_tls = {'mstar' : info[]}
+
+    #print formatted star_params
+        
 
     #print formatted search summary
     def searchsum(self):
