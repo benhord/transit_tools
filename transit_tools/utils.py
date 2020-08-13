@@ -15,6 +15,69 @@ import operator
    #break into separate functions to provide greater flexibility?
    #for any stellar information, put any relevant info into both a self.star
    #  attribute but also a self.star_params_tls attribute
+def catalog_info(tic=None, ra=None, dec=None, cat='all', out_cat=False):
+    """
+    Function to fetch catalog info about the target system from various 
+    catalogs. The GAIA catalog takes precedence over the TIC in the values
+    where they overlap, such as RA and Dec.
+
+    !!Change tic to full name processing!!
+
+    Parameters
+    ----------
+    tic : int or None
+       TIC ID of target object. If None, ra and dec must both not be None.
+    ra : float or None
+       RA of target object. If None, tic must not be None.
+    dec : float or None
+       Dec of target object. If None, tic must not be None.
+    cat : string
+       Catalog(s) to be queried. Currently, only 'tic' and 'gaia' are supported.
+    out_cat : bool
+       Flag determining whether the catagories searched will be output as an 
+       array of strings. If True, an additional output will be expected.
+
+    Returns
+    -------
+    info : dict
+       Dictionary of stellar parameters for target object.
+    catalogs : array, optional
+       Array containing strings denoting which catalogs were queried for stellar
+       parameters.
+    """
+    if tic is None and (ra is None or dec is None):
+        raise ValueError('Please enter either a TIC ID or RA/Dec pair')
+
+    catalogs = []
+    info = None
+    
+    if tic and (ra is None or dec is None):
+        query = Catalogs.query_object(('TIC ' + str(tic)), catalog='TIC')
+        info = [dict(zip(query.colnames, row)) for row in query][0]
+        
+        ra = info['ra']
+        dec = info['dec']
+
+    if info is None and (cat == 'tic' or cat == 'TIC' or cat == 'all'):
+        query = Catalogs.query_object((str(ra) + ' ' + str(dec)), catalog='TIC')
+        info = [dict(zip(query.colnames, row)) for row in query][0]
+        
+        catalogs.append('tic')
+
+    if cat == 'gaia' or cat == 'GAIA' or cat == 'all':
+        query = Catalogs.query_object((str(ra) + ' ' + str(dec)),
+                                      catalog='gaia')
+        if info is not None:
+            info.update([dict(zip(query.colnames, row)) for row in query][0])
+        else:
+            info = [dict(zip(query.colnames, row)) for row in query][0]
+
+        catalogs.append('gaia')
+
+    if out_cat:
+        return info, catalogs
+    else:
+        return info
 
 #function to import observation information
    #observation information based on self.method keyword (eg ccd, sector, etc.)
