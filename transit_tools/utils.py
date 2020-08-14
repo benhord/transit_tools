@@ -58,6 +58,11 @@ def catalog_info(tic=None, ra=None, dec=None, cat='all', out_cat=False):
         ra = info['ra']
         dec = info['dec']
 
+        if cat != 'tic' and cat != 'TIC' and cat != 'all':
+            info = None
+        else:
+            catalogs.append('tic')
+        
     if info is None and (cat == 'tic' or cat == 'TIC' or cat == 'all'):
         query = Catalogs.query_object((str(ra) + ' ' + str(dec)), catalog='TIC')
         info = [dict(zip(query.colnames, row)) for row in query][0]

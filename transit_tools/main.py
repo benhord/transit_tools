@@ -396,6 +396,7 @@ class lightcurve(LightCurve):
 
         !!Check if star_params have already been collected or not!!
         !!Add full docstrings!!
+        !!Add verbose option to call other function to print nicely!!
 
         Parameters
         ----------
