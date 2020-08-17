@@ -109,6 +109,7 @@ class lightcurve(LightCurve):
         if self.method == 'batman' or self.method == 'BATMAN' or self.method == 'Batman':
             self.id = 'batman'
             self.tic = None
+            self.name = self.id
             self.star_params_tls = default_star_params
             
             lc = full_batlc(**kwargs)
@@ -123,6 +124,7 @@ class lightcurve(LightCurve):
         if self.method == 'custom':
             self.id = 'custom'
             self.tic = None
+            self.name = self.id
             self.star_params_tls = default_star_params
             
             if lc is not None:

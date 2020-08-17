@@ -19,6 +19,8 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
     !!Update name processing once name processing wrapper function written!!
     !!Utilize actual stellar params somehow?!!
     !!Search for known planets in the real system and pass those on as well!!
+    !!Write docstrings!!
+    !!Pass which TIC ID was used!!
 
     Parameters
     ----------
@@ -31,7 +33,6 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
 
         inlc = int(np.random.choice(lc_list))
         tic = inlc
-        print(tic)
 
     if isinstance(inlc, str):
         #perform name processing and set lc to TIC ID
