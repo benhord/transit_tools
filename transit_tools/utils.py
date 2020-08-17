@@ -22,6 +22,8 @@ def catalog_info(tic=None, ra=None, dec=None, cat='all', out_cat=False):
     where they overlap, such as RA and Dec.
 
     !!Change tic to full name processing!!
+    !!Change to iterable catalog queries based on user input!!
+    !!Allow for addition of new keywords rather than updating!!
 
     Parameters
     ----------

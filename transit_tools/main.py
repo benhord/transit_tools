@@ -412,9 +412,13 @@ class lightcurve(LightCurve):
         self.star_params = info
         self.catalogs = catalogs
 
-        #need to check each value for NaNs or bad values
-        #star_params_tls = {'mstar' : info[]}
+        #need to check each value for NaNs or bad values?
+        self.star_params_tls = {'mstar' : info['mass'], 'mlow' : info['e_mass'],
+                                'mhigh' : info['e_mass'], 'rstar' : info['rad'],
+                                'rlow' : info['e_rad'], 'rhigh' : info['e_rad']}
 
+    #update star params command to allow user-input star params
+        
     #print formatted star_params
         
 
