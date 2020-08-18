@@ -21,9 +21,36 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
     !!Search for known planets in the real system and pass those on as well!!
     !!Write docstrings!!
     !!Pass which TIC ID was used!!
+    !!Allow for generation of gaussian noise!!
+    !!Allow custom lc for inlc!!
 
     Parameters
     ----------
+    period : float
+       Orbital period to be simulated. Should be in days.
+    rp : float
+       Radius of planet in units of host star radii. Essentially Rp/Rs.
+    a : float
+       Semi-major axis of the orbit in units of host star radii.
+    noise : str or None
+       Noise to be included in simulation. Current options are 'obs' for 
+       injection into pre-existing light curve or None for a simulated light
+       curve without noise. Gaussian noise is expected in the future.
+    inlc : None or int
+       TIC ID of light curve for simulations to be injected into. Can be set to
+       None for a light curve to be randomly chosen from a pre-selected list in
+       transit_tools/files/lc_list.csv if noise='obs'.
+    t0 : float or None
+       Mid-transit time of the first transit. If None, t0 will be randomly 
+       generated to be somewhere within 1 period of the start of the 
+       observation. Must be in the same units as period.
+    sectors : str or array
+       Sectors to be considered for retrieving light curves specified by inlc.
+       If 'all', all available light curves for selected inlc will be 
+       retrieved, otherwise only those contained in the user-provided array will
+       be retrieved.
+    kwargs
+       Additional arguments to be passed to transit_tools.batman_transit.
     """
     tic = None
     
@@ -76,16 +103,13 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
     elif noise == None:
         inlc = batman_transit(period=period, rp=rp, a=a, **kwargs)
 
-    #inlc.known_pls = inlc.params
     inlc.known_pls = {'orbital_period' : inlc.params.per, 't0' : inlc.params.t0,
                       'rprs' : inlc.params.rp, 'a' : inlc.params.a,
                       'inc' : inlc.params.inc, 'ecc' : inlc.params.ecc,
                       'w' : inlc.params.w, 'u' : inlc.params.u,
                       'limb_dark' : inlc.params.limb_dark}
-    #add sim params to dict and add as attr to lc
         
     return inlc
-        #return clean BATMAN light curve w/o noise
         
 def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
                    w=90., limb_dark='quadratic', cadence=0.01, length=None,
