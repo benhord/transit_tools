@@ -10,7 +10,7 @@ from .fetch_lc import gather_lc
 #   type, pl/star params, etc.)
 #   inject noise here
 def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
-               **kwargs):
+               cadence='2min', **kwargs):
     """
     Function to retrive a full simulated BATMAN light curve complete with 
     injected noise.
@@ -49,6 +49,11 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
        If 'all', all available light curves for selected inlc will be 
        retrieved, otherwise only those contained in the user-provided array will
        be retrieved.
+    cadence : str
+       Cadence of TESS light curve to retrieve. Options are '2min', 'ffi_ml', or
+       'eleanor'. This method is passed to transit_tools.fetch_lc.gather_lc and
+       follows those hierarchy rules if a light curve at the given cadence
+       cannot be found.
     kwargs
        Additional arguments to be passed to transit_tools.batman_transit.
     """
@@ -71,7 +76,8 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
     if isinstance(inlc, int):
         #inject into chosen TIC ID using gather_lc
         tic = inlc
-        inlc, sectors = gather_lc(inlc, sectors=sectors, return_sectors=True)
+        inlc, sectors = gather_lc(inlc, sectors=sectors, return_sectors=True,
+                                  method=cadence)
         
     if inlc is not None:
         #inject into chosen lc
