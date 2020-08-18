@@ -56,11 +56,12 @@ class lightcurve(LightCurve):
 
         elif isinstance(obj, int):
             try:
-                self.name = tic_to_name(obj)
                 self.tic = int(obj)
+                self.name = tic_to_name(obj)
             except:
                 print('For some reason, the name provided was not found on ' +
                       'the MAST. Proceeding with just the TIC.')
+                self.name='Null'
         
         @property
         def sector(self):
