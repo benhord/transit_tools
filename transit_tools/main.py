@@ -108,12 +108,14 @@ class lightcurve(LightCurve):
 
         if self.method == 'batman' or self.method == 'BATMAN' or self.method == 'Batman':
             self.id = 'batman'
-            self.tic = None
             self.name = self.id
             self.star_params_tls = default_star_params
             
             lc = full_batlc(**kwargs)
             self.lc = lc
+            self.tic = lc.tic
+            self.known_pls = lc.known_pls
+            self.sector = lc.sectors
             
             self.time = lc.time
             self.flux = lc.flux
@@ -205,7 +207,8 @@ class lightcurve(LightCurve):
             self.flux_err = self.raw_lc.flux_err
 
             delattr(self, 'raw_lc')
-            delattr(self, 'mask_arr')
+            if hasattr(self, 'mask_arr'):
+                delattr(self, 'mask_arr')
 
     def mask(self, **kwargs):
         """

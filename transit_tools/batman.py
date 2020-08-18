@@ -25,6 +25,8 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
     Parameters
     ----------
     """
+    tic = None
+    
     if not inlc and noise == 'obs':
         #randomly choose lc to inject into from preselected list
         path = Path(__file__).parent / "./files/lc_list.csv"
@@ -64,10 +66,14 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
         flux = flux + model.flux - 1
 
         inlc = LightCurve(time, flux, flux_err=flux_err)
+
+        inlc.sectors = sectors
+        inlc.tic = tic
         
     elif noise == None:
         inlc = batman_transit(period=period, rp=rp, a=a, **kwargs)
 
+    inlc.known_pls = inlc.params
     #add sim params to dict and add as attr to lc
         
     return inlc
