@@ -63,17 +63,25 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
         model = batman_transit(period=period, rp=rp, a=a, t0=t0, time=time,
                                **kwargs)
 
+        params = model.params
+        
         flux = flux + model.flux - 1
 
         inlc = LightCurve(time, flux, flux_err=flux_err)
 
         inlc.sectors = sectors
+        inlc.params = params
         inlc.tic = tic
         
     elif noise == None:
         inlc = batman_transit(period=period, rp=rp, a=a, **kwargs)
 
-    inlc.known_pls = inlc.params
+    #inlc.known_pls = inlc.params
+    inlc.known_pls = {'orbital_period' : inlc.params.per, 't0' : inlc.params.t0,
+                      'rprs' : inlc.params.rp, 'a' : inlc.params.a,
+                      'inc' : inlc.params.inc, 'ecc' : inlc.params.ecc,
+                      'w' : inlc.params.w, 'u' : inlc.params.u,
+                      'limb_dark' : inlc.params.limb_dark}
     #add sim params to dict and add as attr to lc
         
     return inlc
