@@ -108,7 +108,9 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
         
     elif noise == None:
         inlc = batman_transit(period=period, rp=rp, a=a, **kwargs)
-
+        inlc.tic = None
+        inlc.sectors = None
+        
     inlc.known_pls = {'orbital_period' : inlc.params.per, 't0' : inlc.params.t0,
                       'rprs' : inlc.params.rp, 'a' : inlc.params.a,
                       'inc' : inlc.params.inc, 'ecc' : inlc.params.ecc,
