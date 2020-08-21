@@ -371,6 +371,10 @@ class lightcurve(LightCurve):
             for i in results:
                 tls_vetsheet(self, results=i, **kwargs)
 
+    #Method to highlight where transits would be expected on current display
+    #   axis based on known_pls. Different colors for different planets. Option
+    #   to output expected transit times (into new attribute?) for each.
+
     #def save_fullplots(self): #flag to both display and save
         #output vetting sheet
         #vet = tls_vetsheet()
