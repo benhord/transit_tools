@@ -419,7 +419,6 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
             flux = data[i].psf_flux
 
         if qual_flag:
-            print('here')
             time = time[q]
             flux = flux[q]
             
