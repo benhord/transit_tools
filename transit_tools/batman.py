@@ -121,7 +121,7 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
         
 def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
                    w=90., limb_dark='quadratic', cadence=0.01, length=None,
-                   time=None):
+                   time=None, **kwargs):
     """
     Function to generate a simulated 'LightCurve' object using the BATMAN
     package developed by Laura Kreidberg. Please see BATMAN documentation for a
@@ -129,6 +129,8 @@ def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
 
     !!Fix length argument. Make it remove parts of light curve from boths sides
       of transit!!
+    !!Integrate supersample_factor and exp_time arguments better since they're
+      likely going to be common for TESS. Maybe automatically do it for user!!
 
     Parameters
     ----------
@@ -159,6 +161,10 @@ def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
        orbital period in length centered on the first transit.
     time : array
        Array of time points during which the light curve will be simulated.
+    kwargs
+       Additional arguments to be passed to batman.TransitModel. For TESS
+       light curves, it is recommended to specify the supersample_factor and
+       exp_time arguments for best results.
 
     Returns
     -------
@@ -190,7 +196,7 @@ def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
     else:
         t = time
         
-    m = batman.TransitModel(params, t)
+    m = batman.TransitModel(params, t, **kwargs)
     flux = m.light_curve(params)
 
     lc = LightCurve(t, flux, flux_err=None)
