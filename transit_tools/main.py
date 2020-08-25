@@ -262,7 +262,7 @@ class lightcurve(LightCurve):
            for Box Least Squares.
         """
         self.routine = routine
-        self.sde = sde
+        self.sde_thresh = sde
 
         if not hasattr(self, 'raw_lc'):
             self.raw_lc = LightCurve(self.time, self.flux,
