@@ -5,6 +5,10 @@ from urllib import request
 import astropy.coordinates as coord
 import astropy.units as u
 import operator
+import sys
+import http.client as httplib
+from urllib.parse import quote as urlencode
+import json
 
 #function to import catalog info for source
    #stellar information
@@ -217,6 +221,10 @@ def known_pls(name=None, ra=None, dec=None, verbose=False):
         for i in range(pls):
             pl = (str(sorted(cat, key=operator.itemgetter('MAIN_ID'))[i+1]
                       ['MAIN_ID'].decode('utf-8')))
+
+            #MAST resolver here
+
+            
             urlname = (pl[:-1] + "%20" + pl[-1])
             urlname = ' '.join(urlname.split()).replace(' ', '%20')
             
@@ -489,3 +497,66 @@ def fold(time, flux, period, flux_err=None, midpoint=None):
         return folded_time, folded_flux
     else:
         return folded_time, folded_flux, folded_flux_err
+
+def mastQuery(request):
+    """
+    Function to make queries to the MAST easier. Helper function. See MAST site
+    for more details.
+
+    Parameters
+    ----------
+    request : dict
+       Dictionary of parameters that constitute the query to the MAST.
+
+    Returns
+    -------
+    head : str
+       String containing header information.
+    content : str
+       String containing desired information.
+    """
+    server='mast.stsci.edu'
+
+    version = ".".join(map(str, sys.version_info[:3]))
+
+    headers = {"Content-type": "application/x-www-form-urlencoded",
+               "Accept": "text/plain", "User-agent":"python-requests/"+version}
+
+    requestString = json.dumps(request)
+    requestString = urlencode(requestString)
+
+    conn = httplib.HTTPSConnection(server)
+
+    conn.request("POST", "/api/v0/invoke", "request="+requestString, headers)
+
+    resp = conn.getresponse()
+    head = resp.getheaders()
+    content = resp.read().decode('utf-8')
+
+    conn.close()
+
+    return head, content
+
+def canonical_name(name):
+    """
+    Function to obtain the canonical name of an object from the MAST.
+    
+    Parameters
+    ----------
+    name : str
+       Name of object to be queried for canonical name.
+    
+    Results
+    -------
+    canonical_name : str
+       Canonical name of the object according to the MAST.
+    """
+    request = {'service' : 'Mast.Name.Lookup', 'params' :
+               {'input' : str(name), 'format' : 'json'},}
+
+    headers, outString = mastQuery(request)
+
+    outData = json.loads(outString)
+
+    #return outData['resolvedCoordinate'][0]['canonicalName']
+    return outData
