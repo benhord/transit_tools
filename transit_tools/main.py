@@ -243,7 +243,7 @@ class lightcurve(LightCurve):
     ###Method to run BLS
        ###combine with TLS into single search function
     def signal_search(self, routine='tls', plot_live=False, max_runs=5, sde=7.0,
-                      **kwargs):
+                      exact=True, **kwargs):
         """
         Method to search the light curve for periodic signals using a variety of
         search algorithms, including Transit Least Squares and Box Least Squares
@@ -253,6 +253,7 @@ class lightcurve(LightCurve):
         signal until known signal is found. Quit after X trials!!
         !!Update incomplete docustring!!
         !!If periods too close, increase del_dur and run again!!
+        !!Allow to run set number of iterations. Just set sde to 0?!!
         
         Parameters
         ----------
@@ -260,6 +261,15 @@ class lightcurve(LightCurve):
            The desired routine to be used for finding periodic signals in the
            light curve. Options are 'tls' for Transit Least Squares and 'bls'
            for Box Least Squares.
+        plot_live : bool
+        max_runs : int
+           The maximum number of runs allowed 
+        sde : float
+           The threshold for the Source Detection Efficiency to be used to 
+           determine whether a signal is significant or not.
+        exact : bool
+           Flag to indicate that the exact number of iterations specified in 
+           max_runs will be performed.
         """
         self.routine = routine
         self.sde_thresh = sde
