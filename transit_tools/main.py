@@ -461,11 +461,19 @@ class lightcurve(LightCurve):
         
         for i in range(len(self.results)):
             if  ['tls', 'TLS'].count(self.routine):
+
+                
+
+
+
+
                 
                 print('Signal ' + str(i+1))
                 
                 search_summary(self.results[i], routine='tls')
 
+                print('Disposition: ' + str(disp))
+                
             if ['bls', 'BLS'].count(self.routine):
                 search_summary(self.results[i], routine='bls')
 
