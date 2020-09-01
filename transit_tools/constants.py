@@ -17,8 +17,11 @@ Rearth_m = 6371008        #1 Earth radius
 # Various radii in solar radii
 Rjup_sol = 0.102763       #1 Jupiter radius
 
-# Varius radii in Jupiter radii
+# Various radii in Jupiter radii
 Rearth_jup = 0.0892147    #1 Earth radius
+
+# Various radii in Earth radii
+Rsolar_ear = 109.076      #1 solar radius
 
 # Default stellar params for TLS fitting
 default_star_params = {'rstar' : 1.0, 'rlow' : 0.67, 'rhigh' : 2.5,
