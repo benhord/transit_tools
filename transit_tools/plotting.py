@@ -9,7 +9,7 @@ import transit_tools.constants as c
 ##function to save all diagnostic plots as combined png
 
 ##function to generate vetting sheet
-def tls_vetsheet(lc, results=0, show=True, save=False, savename=None):
+def tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
     """
     Function to plot a vetting sheet after running the 
     transit_tools.signal_search function. Output is formatted to fit onto a
@@ -198,8 +198,8 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename=None):
     if show:
         plt.show()
 
-    if show == 'both':
-        return plots
+    if save:
+        plt.savefig(filename)
     
 
 ##search-specific plots

@@ -350,7 +350,7 @@ class lightcurve(LightCurve):
        ##Individual method to save all diagnostic plots and other methods to
        #   view each individually.
 
-    def vetsheet(self, pls='all', **kwargs):
+    def vetsheet(self, pls='all', save=False, **kwargs):
         """
         Function to plot the vetting sheet for a given set of signal_search
         results.
@@ -376,11 +376,24 @@ class lightcurve(LightCurve):
             results = [pls]
 
         if pls == -1:
-            tls_vetsheet(self, results=-1, **kwargs)
+            tls_vetsheet(self, results=-1, save=save, **kwargs)
         else:
             for i in results:
-                tls_vetsheet(self, results=i, **kwargs)
+                tls_vetsheet(self, results=i, save=save, **kwargs)
+                #add argument to combine pngs if necessary
+                #if save:
+                    #combine pngs
 
+    #def saveplot(self):
+    #    """
+    #    Function to save the vet sheet and other diagnostic plots.
+
+    #    Parameters
+    #    ----------
+    #    filename : str
+    #       Filename to save 
+    #    """
+                
     #Method to highlight where transits would be expected on current display
     #   axis based on known_pls. Different colors for different planets. Option
     #   to output expected transit times (into new attribute?) for each.
@@ -472,7 +485,7 @@ class lightcurve(LightCurve):
                 
                 search_summary(self.results[i], routine='tls')
 
-                print('Disposition: ' + str(disp))
+                #print('Disposition: ' + str(disp))
                 
             if ['bls', 'BLS'].count(self.routine):
                 search_summary(self.results[i], routine='bls')

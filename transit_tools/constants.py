@@ -23,6 +23,9 @@ Rearth_jup = 0.0892147    #1 Earth radius
 # Various radii in Earth radii
 Rsolar_ear = 109.076      #1 solar radius
 
+# Various radii in Astronomical Units
+Rsolar_au = 0.00465047    #1 solar radius
+
 # Default stellar params for TLS fitting
 default_star_params = {'rstar' : 1.0, 'rlow' : 0.67, 'rhigh' : 2.5,
                        'mstar' : 1.0, 'mlow' : 0.9, 'mhigh' : 1.0,
