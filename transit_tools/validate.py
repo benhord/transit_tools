@@ -1,15 +1,82 @@
+import numpy as np
 import lightkurve as lk
 
 import triceratops.triceratops as tr
+from transit_tools.utils import tessobs_info
 
 # display starfield and star table
 #    once tpf/aperture downloaded, save as obj in main so
 #       that it doesn't have to be reloaded each time
+def get_starfield(tic, sectors=None, aperture=None, cadence='2min',
+                  depth=None, target_out=False, show_plots=True):
+    """
+    Function to fetch and display the stars around a TESS target.
+
+    !!Finish docstrings!!
+    !!Allow for option to save plots and tables!!
+    !!Allow for other cadences!!
+
+    Parameters
+    ----------
+    tic : int
+       TIC ID for the desired target source.
+    sectors : array or list or None
+       TESS sectors in which the target was observed. If None, all
+       valid observed sectors will be collected and used.
+    aperture : numpy array or None
+       Array of aperture arrays with pixel coordinates of the form
+       [col, row] for each pixel included in the aperture for each
+       TESS sector. If None, the apertures will attempt to be 
+    """
+    if sectors is None:
+        sectors = tessobs_info(tic=tic)['sector']
+    
+    target = tr.target(ID=tic, sectors=sectors)
+    
+    if aperture is None and cadence == '2min':
+        aperture = []
+        
+        for i in range(len(sectors)):
+            res = lk.search_targetpixelfile(('TIC' + str(tic)),
+                                            mission='TESS',
+                                            sector=int(sectors[i]))
+            tpf = res.download(quality_bitmask='default')
+            mask = []
+            
+            for j in range(len(tpf.pipeline_mask)):
+                for k in range(len(tpf.pipeline_mask[0])):
+                    if tpf.pipeline_mask[j][k]:
+                        mask.append(
+                            [(tpf.column + k), (tpf.row + j)]
+                        )
+
+            mask = np.array(mask)
+            aperture.append(mask)
+
+        aperture = np.array(aperture)
+
+    if show_plots and aperture is not None and len(aperture) != 0:
+        for i in range(len(sectors)):
+            target.plot_field(sector=sectors[i],
+                              ap_pixels=aperture[i])
+    elif show_plots and (aperture is None or len(aperture) == 0):
+        for i in range(len(sectors)):
+            target.plot_field(sector=sectors[i])
+
+    if depth is not None and aperture is not None and len(aperture) != 0:
+        target.calc_depths(tdepth=depth, all_ap_pixels=aperture)
+
+    print(target.stars)
+    
+    if target_out:
+        return target
 
 # calcfpp_tr
 #    save as obj bc later func will multi this? (no multi
 #       func, maybe save)
-def calcfpp_tr(lc=None, *args, period=None, t0=None, depth=None, sectors=None, binsize=1, folded=True, target_in=None, target_out=False):
+def calcfpp_tr(lc=None, *args, period=None, t0=None, depth=None,
+               sectors=None, binsize=1, folded=True, target_in=None,
+               target_out=False):
     """
     Function to calculate the FPP for a signal using TRICERATOPS.
 
@@ -67,7 +134,7 @@ def calcfpp_tr(lc=None, *args, period=None, t0=None, depth=None, sectors=None, b
 
         
 
-    if not folded:
+    #if not folded:
         #fold
 
 
@@ -77,3 +144,8 @@ def calcfpp_tr(lc=None, *args, period=None, t0=None, depth=None, sectors=None, b
 # display table, plots for outcome
 
 # full run (no, save for main, also somewhat included in above func)
+
+# function to convert various aperture types (e.g. eleanor) to a
+#    valid TRICERATOPS format
+
+# all VESPA commands (LOTS of work/thinking needed for this)

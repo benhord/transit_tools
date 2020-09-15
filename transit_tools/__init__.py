@@ -10,3 +10,4 @@ from .constants import *
 from .plotting import *
 from .lcprocess import *
 from .batman import *
+from .validate import *
