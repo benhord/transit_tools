@@ -2,7 +2,7 @@ import numpy as np
 import lightkurve as lk
 
 import triceratops.triceratops as tr
-from transit_tools.utils import tessobs_info
+from transit_tools.utils import tessobs_info, rms
 
 # display starfield and star table
 #    once tpf/aperture downloaded, save as obj in main so
@@ -75,8 +75,8 @@ def get_starfield(tic, sectors=None, aperture=None, cadence='2min',
 #    save as obj bc later func will multi this? (no multi
 #       func, maybe save)
 def calcfpp_tr(lc=None, *args, period=None, t0=None, depth=None,
-               sectors=None, binsize=1, folded=True, target_in=None,
-               target_out=False):
+               tic=None, binsize=1, folded=False, target_in=None,
+               target_out=False, show_plots=True, **kwargs):
     """
     Function to calculate the FPP for a signal using TRICERATOPS.
 
@@ -84,6 +84,7 @@ def calcfpp_tr(lc=None, *args, period=None, t0=None, depth=None,
     !!Add bin_num to specify number of bins across LC instead of 
       points per bin!!
     !!Remove NaNs!!
+    !!Add options to show/save plots and tables!!
 
     Parameters
     ----------
@@ -123,6 +124,17 @@ def calcfpp_tr(lc=None, *args, period=None, t0=None, depth=None,
        Optional output containing the target object used in the 
        TRICERATOPS run in this function.
     """
+    if target_in is None and tic is None:
+        raise ValueError('Please provide either a target object ' +
+                         'or the TIC ID')
+
+    if not folded and t0 is None:
+        raise ValueError('t0 must be specified for unfolded light'
+                         + ' curves')
+
+    if not period:
+        raise ValueError('Period must be specified')
+    
     if lc is None:
         if len(args) == 1:
             raise ValueError('Please specify both time and flux')
@@ -131,15 +143,41 @@ def calcfpp_tr(lc=None, *args, period=None, t0=None, depth=None,
             flux = args[1]
             if len(args) == 3:
                 flux_err = flux_err
+            else:
+                flux_err = np.ones(len(time)) * rms(flux)
 
+        lc = lk.TessLightCurve(time, flux, flux_err=flux_err)
+
+    if not hasattr(lc, 'flux_err'):
+        lc.flux_err = np.ones(len(lc.time)) * rms(lc.flux)
+
+    if not folded:
+        lc = lc.fold(period, t0=t0)
+
+    if binsize > 1:
+        lc = lc.bin(binsize)
+
+    sigma = np.mean(lc.flux_err)
         
+    if target_in is None:
+        target = get_starfield(tic=tic, depth=depth,
+                               target_out=True, **kwargs)
 
-    #if not folded:
-        #fold
+    #add try statement here to catch errors w/ binsize
+    target.calc_probs(time=lc.time, flux_0=lc.flux, sigma_0=sigma,
+                      P_orb=period)
 
-
-
-
+    print('Finished FPP calculation')
+    print("FPP =", np.round(target.FPP, 4))
+    print("NFPP =", np.round(target.NFPP, 4))
+    
+    #show plots (argument?)
+    if show_plots:
+        print(target.probs)
+        target.plot_fits(time=lc.time, flux=lc.flux, sigma_0=sigma)
+    
+    if target_out:
+        return target
     
 # display table, plots for outcome
 
