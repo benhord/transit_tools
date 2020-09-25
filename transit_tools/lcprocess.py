@@ -74,11 +74,11 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
                 mask = np.ones(len(lc.time), dtype=bool)
                 start = (lc.time[0] + (1 - ((lc.time[0] - t0) / period % 1)) *
                          period)
-                for i in np.arange(o, len(lc.time) // period):
+                for i in np.arange(t0, len(lc.time) // period):
                     mask[(lc.time < (start + i * period + duration)) &
                          (lc.time > (start + i * period - duration))] = 0
 
-                full_mask = [any(tup) for tup in zip(full_mask, mask)]
+                full_mask = np.array([all(tup) for tup in zip(full_mask, mask)])
                 
         lc, trend = lc.flatten(window_length=flatten_length, return_trend=True,
                                mask=full_mask, **kwargs)
