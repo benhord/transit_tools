@@ -56,11 +56,11 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
         lc = lc.remove_outliers(sigma=remove_outliers)
         
     if flatten_length:
-        full_mask = np.zeros(len(lc.time), dtype=bool)
         
         #if len(lc.known_pls) > 0 and isinstance(lc.known_pls[0], dict):
         if lc.known_pls is not None and isinstance(lc.known_pls[0], dict):
             #mask based off of known planets when flattening
+            full_mask = np.zeros(len(lc.time), dtype=bool)
             
             for i in range(len(lc.known_pls)):
                 period = lc.known_pls[i]['orbital_period']
@@ -79,6 +79,9 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
                          (lc.time > (start + i * period - duration))] = 0
 
                 full_mask = np.array([any(tup) for tup in zip(full_mask, mask)])
+
+        else:
+            full_mask = np.ones(len(lc.time), dtype=bool)
                 
         lc, trend = lc.flatten(window_length=flatten_length, return_trend=True,
                                mask=~full_mask, **kwargs)
