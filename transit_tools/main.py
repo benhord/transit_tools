@@ -252,7 +252,8 @@ class lightcurve(LightCurve):
         !!Update to allow for search of known planets first and rejection of 
         signal until known signal is found. Quit after X trials!!
         !!Update incomplete docustring!!
-        !!If periods too close, increase del_dur and run again!!
+        !!If periods too close, increase del_dur and run again or just raise
+          warning and run again without logging a significant detection!!
         !!Allow to run set number of iterations. Just set sde to 0?!!
         !!Add option to optimize between searches to use exoplanet to subtract
           out transit model!!
