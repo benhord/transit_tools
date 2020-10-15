@@ -160,6 +160,8 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
     ax.set_xlim(0.475, 0.525)
     ax.set_xlabel('Phase')
     ax.set_ylabel('Relative Flux')
+    ax.set_xticks([0.48, 0.49, 0.50, 0.51, 0.52])
+    ax.set_xticklabels(['0.46', '0.48', '0.50', '0.52', '0.54'])
     ax.legend(loc=2, fontsize='x-small')
     
     #plot summary text
