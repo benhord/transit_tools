@@ -96,7 +96,10 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
         time = lc.time
         flux = lc.flux
         try:
-            dy = lc.flux_err
+            if lc.flux_err is None:
+                print('No flux errors provided')
+            else:
+                dy = lc.flux_err
         except:
             print('No flux errors provided')
 
@@ -104,7 +107,10 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
         time = args[0]
         flux = args[1]
         if len(args) == 3:
-            dy = args[2]
+            if args[2] is not None:
+                dy = args[2]
+            else:
+                print('No flux_errors provided')
         else:
             print('No flux errors provided')
             
@@ -164,9 +170,10 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
                                      del_dur * results.duration, results.T0)
         time2 = time[~intransit]
         flux2 = flux[~intransit]
-        time2, flux2 = tls.cleaned_array(time2, flux2)
+        dy2 = dy[~intransit]
+        time2, flux2, dy2 = tls.cleaned_array(time2, flux2, dy2)
 
-        lc_clean = LightCurve(time=time2, flux=flux2, flux_err=dy[~intransit])
+        lc_clean = LightCurve(time=time2, flux=flux2, flux_err=dy2)
 
     if clean_lc and not starparams_out:
         return results, lc_clean
