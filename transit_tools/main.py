@@ -387,7 +387,7 @@ class lightcurve(LightCurve):
                 #if save:
                     #combine pngs
 
-    #def saveplot(self):
+    #def saveplot(self, filename='summary.png'):
     #    """
     #    Function to save the vet sheet and other diagnostic plots.
 
@@ -396,7 +396,8 @@ class lightcurve(LightCurve):
     #    filename : str
     #       Filename to save 
     #    """
-                
+    #    plt.savefig(filename)
+        
     #Method to highlight where transits would be expected on current display
     #   axis based on known_pls. Different colors for different planets. Option
     #   to output expected transit times (into new attribute?) for each.
