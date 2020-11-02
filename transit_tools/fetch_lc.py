@@ -103,7 +103,7 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
     elif not return_method and not return_sectors:
         return lc
             
-def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
+def get_2minlc(tic, sectors='all', thresh=None, out_sec=False, pdc_flag=True):
     """
     Function to retrieve 2 minute cadence TESS lightcurve for a given TIC ID 
     and given sectors. Returns a combined lightcurve in the form of a
@@ -131,6 +131,8 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
        downloaded are included as an output. If True, command will provide two
        outputs, the light curve object and a numpy array of sectors, in that 
        order.
+    pdc_flag : boolean
+       Flag determining whether 2 minute light curves are PDC or SAP.
 
     Returns
     -------
@@ -191,12 +193,20 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False):
                   id[12:16] + "/" + str(obsTable['dataURL'][i])[18:])
 
         if i == 0:
-            lc = (TessLightCurveFile(lc_loc).PDCSAP_FLUX.normalize().
-                  remove_nans())
+            if pdc_flag:
+                lc = (TessLightCurveFile(lc_loc).PDCSAP_FLUX.normalize().
+                      remove_nans())
+            elif not pdc_flag:
+                lc = (TessLightCurveFile(lc_loc).SAP_FLUX.normalize().
+                      remove_nans())
             
         else:
-            lc_new = (TessLightCurveFile(lc_loc).PDCSAP_FLUX.normalize().
-                      remove_nans())
+            if pdc_flag:
+                lc_new = (TessLightCurveFile(lc_loc).PDCSAP_FLUX.normalize().
+                          remove_nans())
+            elif not pdc_flag:
+                lc_new = (TessLightCurveFile(lc_loc).SAP_FLUX.normalize().
+                          remove_nans())
             lc = lc.append(lc_new)
 
     if out_sec:
