@@ -201,7 +201,7 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
         plt.show()
 
     if save:
-        plt.savefig(filename)
+        plt.savefig(savename)
     
 
 ##search-specific plots
