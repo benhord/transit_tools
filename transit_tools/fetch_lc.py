@@ -12,7 +12,7 @@ from .utils import rms, tessobs_info, coord_to_tic
 # lightkurve object (could be gathered by helper function later)
 
 def gather_lc(tic, method='2min', sectors='all', return_method=False,
-              return_sectors=False, **kwargs):
+              return_sectors=False, obsinfo=None, **kwargs):
     """
     Function to gather the light curve of a given TIC using the specified 
     method. Currently, 2 minute SPOC pipeline light curves, machine learning FFI
@@ -20,6 +20,7 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
 
     !!Add ability to support common names as inputs in absence of TIC!!
     !!Add ability for sector cuts in FFI light curves!!
+    !!Add obsinfo keyword to pass obsinfo if it exists!!
 
     Parameters
     ----------
@@ -42,6 +43,10 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
        A flag to indicate the sectors that the light curve was recovered from.
        An additional output will be expected. Currently in progress for most
        methods.
+    obsinfo : dict
+       A dictionary of observational information that can be passed to make some 
+       processes run faster if inlc is specified. Assumes output format of
+       transit_tools.tessobs_info command.
     **kwargs
        Additional arguments to be passed to the selected method fetching 
        function.
@@ -58,7 +63,14 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
     """
     if sectors == None: sectors = 'all'
 
-    secs = sectors
+    if obsinfo is None:
+        obsinfo = tessobs_info(tic=tic)
+
+    if sectors != 'all':
+        secs = list(set(obsinfo['sector']) & set(sectors))
+        #secs = sectors #check which sectors it's actually observed in
+    else:
+        secs = obsinfo['sector']
     
     if method == '2min':
         try:
