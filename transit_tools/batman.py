@@ -23,6 +23,7 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
     !!Pass which TIC ID was used!!
     !!Allow for generation of gaussian noise!!
     !!Allow custom lc for inlc!!
+    !!Raise error for noise='obs' and inlc=None!!
 
     Parameters
     ----------
