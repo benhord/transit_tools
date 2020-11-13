@@ -58,6 +58,7 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
     if flatten_length:
         
         #if len(lc.known_pls) > 0 and isinstance(lc.known_pls[0], dict):
+        #print(lc.known_pls)
         if lc.known_pls is not None and isinstance(lc.known_pls[0], dict):
             #mask based off of known planets when flattening
             full_mask = np.zeros(len(lc.time), dtype=bool)

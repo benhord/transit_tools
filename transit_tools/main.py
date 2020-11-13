@@ -112,10 +112,16 @@ class lightcurve(LightCurve):
             self.name = self.id
             self.star_params_tls = default_star_params
             
-            lc = full_batlc(**kwargs)
+            lc = full_batlc(sectors=self.sector, **kwargs)
             self.lc = lc
             self.tic = lc.tic
-            self.known_pls = lc.known_pls
+            if lc.tic is not None:
+                self.known_pls = known_pls('TIC ' + str(self.tic))
+                self.known_pls.append(lc.known_pls)
+                #allow for sim params to be passed in same form as real
+            else: #add step in case inlc is not None but known_pls=None
+                print('inlc not known')
+                self.known_pls = [lc.known_pls]
             self.sector = lc.sectors
             
             self.time = lc.time

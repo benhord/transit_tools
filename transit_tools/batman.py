@@ -112,11 +112,13 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
         inlc.tic = None
         inlc.sectors = None
         
-    inlc.known_pls = {'orbital_period' : inlc.params.per, 't0' : inlc.params.t0,
+    inlc.known_pls = {'orbital_period' : inlc.params.per,
+                      't0' : inlc.params.t0,
                       'rprs' : inlc.params.rp, 'a' : inlc.params.a,
                       'inc' : inlc.params.inc, 'ecc' : inlc.params.ecc,
                       'w' : inlc.params.w, 'u' : inlc.params.u,
-                      'limb_dark' : inlc.params.limb_dark}
+                      'limb_dark' : inlc.params.limb_dark,
+                      'canonical_name' : 'batman'}
         
     return inlc
         
