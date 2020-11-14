@@ -2,7 +2,7 @@ import numpy as np
 
 #global light curve processing function
 def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
-               remove_nans=True, mask_noise=False, **kwargs):
+               remove_nans=True, mask_noise=False, mask_plinds=None, **kwargs):
     """
     Function to process a light curve and return it after processing. The order
     in which processing occurs is removing NaNs, removing noise based on sector,
@@ -34,6 +34,10 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
        Flag to determine whether parts of the light curve will be removed 
        based on how noisy those parts of each sector are on average and 
        depending on the type of light curve.
+    mask_plinds : list or array
+       Series of indices in known_pls property of the light curve that will be
+       masked out before flattening. If None, all planets in known_pls will be
+       masked out before flattening.
     kwargs
        Additional arguments to be passed to the 'flatten' method of the 
        LightCurve object.
@@ -60,12 +64,14 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
     if flatten_length:
         
         #if len(lc.known_pls) > 0 and isinstance(lc.known_pls[0], dict):
-        #print(lc.known_pls)
         if lc.known_pls is not None and isinstance(lc.known_pls[0], dict):
             #mask based off of known planets when flattening
             full_mask = np.zeros(len(lc.time), dtype=bool)
+
+            if mask_plinds is None:
+                mask_plinds = np.arange(0, len(lc.known_pls), 1)
             
-            for i in range(len(lc.known_pls)):
+            for i in mask_plinds:
                 period = lc.known_pls[i]['pl_orbper'].value
                 try:
                     t0 = lc.known_pls[i]['t0']# - 56999.5 #BTJD

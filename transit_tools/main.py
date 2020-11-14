@@ -116,7 +116,8 @@ class lightcurve(LightCurve):
             self.lc = lc
             self.tic = lc.tic
             if lc.tic is not None:
-                self.known_pls = known_pls(name='TIC ' + str(self.tic))
+                cat = catalog_info(tic=lc.tic)
+                self.known_pls = known_pls(ra=cat['ra'], dec=cat['dec'])
                 self.known_pls.append(lc.known_pls)
                 #allow for sim params to be passed in same form as real
             else: #add step in case inlc is not None but known_pls=None
