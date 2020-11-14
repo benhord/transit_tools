@@ -12,6 +12,8 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
     information on the capabilities of these functions.
 
     !!Update so processing occurs in order of keywords listed!!
+    !!Update to let user specify which planets from lc.known_pls will be 
+         included in mask for flattening (maybe by passing arr of indices?)!!
 
     Parameters
     ----------
@@ -64,13 +66,13 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
             full_mask = np.zeros(len(lc.time), dtype=bool)
             
             for i in range(len(lc.known_pls)):
-                period = lc.known_pls[i]['orbital_period']
+                period = lc.known_pls[i]['pl_orbper'].value
                 try:
-                    t0 = lc.known_pls[i]['transit_time'] - 56999.5 #BTJD
-                    duration = lc.known_pls[i]['transit_duration']
+                    t0 = lc.known_pls[i]['t0']# - 56999.5 #BTJD
+                    duration = lc.known_pls[i]['pl_trandur'].value
                 except:
                     print('Known planet %s not masked during flattening' %
-                          lc.known_pls[i]['canonical_name'])
+                          lc.known_pls[i]['pl_name'])
                     
                 mask = np.ones(len(lc.time), dtype=bool)
                 start = (lc.time[0] + (1 - ((lc.time[0] - t0) / period % 1)) *

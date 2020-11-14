@@ -116,7 +116,7 @@ class lightcurve(LightCurve):
             self.lc = lc
             self.tic = lc.tic
             if lc.tic is not None:
-                self.known_pls = known_pls('TIC ' + str(self.tic))
+                self.known_pls = known_pls(name='TIC ' + str(self.tic))
                 self.known_pls.append(lc.known_pls)
                 #allow for sim params to be passed in same form as real
             else: #add step in case inlc is not None but known_pls=None
@@ -154,7 +154,10 @@ class lightcurve(LightCurve):
 
         if find_knownpls and self.method != 'custom' and self.method !='batman':
             try:
-                self.known_pls = known_pls(self.name)
+                if self.name != 'Null':
+                    self.known_pls = known_pls(name=self.name)
+                else:
+                    self.known_pls = known_pls(name=('TIC ' + str(self.tic)))
             except:
                 self.known_pls = None
             

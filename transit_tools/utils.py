@@ -9,6 +9,8 @@ import sys
 import http.client as httplib
 from urllib.parse import quote as urlencode
 import json
+from astroquery.nasa_exoplanet_archive import NasaExoplanetArchive as nea
+from astropy.time import Time
 
 #function to import catalog info for source
    #stellar information
@@ -165,14 +167,14 @@ def coord_to_tic(ra, dec):
     
     return tic
 
-def known_pls(name=None, ra=None, dec=None, verbose=False):
+def known_pls(name=None, ra=None, dec=None, radius=5.0, table='exoplanets',
+              verbose=False):
     """
     A function to gather information on any known planets in a given system. 
-    Queries Simbad for objects and queries the Gaia catalog if RA/Dec are not
-    provided.
+    Queries the NASA Exoplanet Archive for objects and their known parameters.
 
-    !!Possible to streamline by removing Simbad query and just trying until an
-      exception occurs?!!
+    !!Reduce number of columns queried with each iteration for shorter runtime!!
+    !!Allow to search for planets that are not confirmed on the archive!!
 
     Parameters
     ----------
@@ -181,119 +183,109 @@ def known_pls(name=None, ra=None, dec=None, verbose=False):
     ra : float
        RA in decimal degrees. Optional if name is provided. If provided, Dec is
        also required.
-    Dec : float
+    dec : float
        Dec in decimal degrees. Optional if name is provided. If provided, RA is
        also required.
+    radius : float
+       Radius in arcseconds around which the provided RA and Dec will be searched
+       for planets.
+    table : str
+       Specifies the table to search for planet parameters. See documentation on
+       the Exoplanet Archive website for a full list of possible tables and their
+       contents. Default is the 'exoplanets' table, which is the default for the
+       Exoplanet Archive.
     verbose : bool
        Flag to determine whether some of the parameters of the known planets in
        the system are printed.
 
     Returns
     -------
-    pl_info : list of dicts
+    info : list of dicts
        List containing a dictionary of all known planet parameters for each 
        planet in the queried system.
     """
-    if not name and not ra and not dec:
+    if not name and (not ra or not dec):
         raise ValueError('Either name or both RA & Dec must be provided')
 
-    if not ra and not dec:
-        results = Catalogs.query_object(str(name), radius=0.02, catalog="Gaia")
-        ra = results[0]['ra']
-        dec = results[0]['dec']
+    if name is not None:
+        results = nea.query_object(str(name), table=table, select='*')
 
-    cat = Simbad.query_region(coord.SkyCoord(ra, dec, unit=(u.deg, u.deg)),
-                              radius='0d0m5s')
+    elif ra is not None and dec is not None:
+        results = nea.query_region(
+            coordinates=coord.SkyCoord(ra * u.deg, dec * u.deg),
+            radius = radius * u.arcsec,
+            table=table,
+            select='*'
+            )
     
-    pls = len(cat) - 1
+    pls = len(results)
     if verbose:
         print(str(pls) + ' known planets found in system')
         print('Gathering info for each planet...')
-
-    pl_info = []
         
     if pls > 0:
-        alphastr = 'bcdefghijklmnopqrstuvwxyz'
-        null = None
-        true = True
-        false = False
+        names = results.colnames
+        info = [dict(zip(names, row)) for row in results]
 
         for i in range(pls):
-            pl = (str(sorted(cat, key=operator.itemgetter('MAIN_ID'))[i+1]
-                      ['MAIN_ID'].decode('utf-8')))
-
-            #MAST resolver here
-
-            
-            urlname = (pl[:-1] + "%20" + pl[-1])
-            urlname = ' '.join(urlname.split()).replace(' ', '%20')
-            
-            link = ("https://exo.mast.stsci.edu/api/v0.1/exoplanets/" +
-                    urlname + "/properties")
-            info = request.urlopen(link).read().decode('utf-8')
-            info = eval(info)
-            
+            info[i]['t0'] = (Time(val=info[i]['pl_tranmid'].value,
+                                  format='jd').to_value(format='mjd') - 56999.5)
+        
+        query_fault = False
+    else:
+        query_fault = True
+                
+    if verbose and not query_fault:
+        for i in range(pls):
             try:
-                pl_info.append(info[0])
-                query_fault = False
-            except:
-                try:
-                    urlname = (' '.join(name.split()).replace(' ', '%20') +
-                               '%20' + alphastr[i])
-                    link = ("https://exo.mast.stsci.edu/api/v0.1/exoplanets/" +
-                            urlname + "/properties")
-                    info = request.urlopen(link).read().decode('utf-8')
-                    info = eval(info)
-
-                    pl_info.append(info[0])
-                    query_fault=False
-                except:
-                    query_fault = True
-                    if i == 0:
-                        pl_info.append(str(pl))
-                
-        if verbose and not query_fault:
-            pl = pl_info
-            for n in range(pls):
-                print(pl[n]['canonical_name'])
-                print('Period = %.5f +/- %.5f %s' %
-                      (pl[n]['orbital_period'],
-                       pl[n]['orbital_period_upper'],
-                       pl[n]['orbital_period_unit']))
-                if pl[n]['transit_time']:
-                    print('t0 = %.5f +2457000 BTJD +/- %.5f' %
-                          (pl[n]['transit_time']-56999.5,
-                           pl[n]['transit_time_upper']))
-                else:
-                    print('t0 = None')
-                print('Duration = %.5f +/- %.5f %s' %
-                      (float(pl[n]['transit_duration'] or 0),
-                       float(pl[n]['transit_duration_upper'] or 0),
-                       str(pl[n]['transit_duration_unit'] or 'None')))
-                print('Transit depth = %.5f +/- %.5f' %
-                      (float(pl[n]['transit_depth'] or 0),
-                       float(pl[n]['transit_depth_upper'] or 0)))
-                print('Orbital distance = %.5f +/- %.5f %s' %
-                      (float(pl[n]['orbital_distance'] or 0),
-                       float(pl[n]['orbital_distance_upper'] or 0),
-                       str(pl[n]['orbital_distance_unit'] or 'None')))
-                print('Rp/Rs = %.5f +/- %.5f' %
-                      (float(pl[n]['Rp/Rs'] or 0),
-                       float(pl[n]['Rp/Rs_upper'] or 0)))
-                print('Radius = %.5f +/- %.5f %s' %
-                      (float(pl[n]['Rp'] or 0), float(pl[n]['Rp_upper'] or 0),
-                       str(pl[n]['Rp_unit'] or 'None')))
-                print('Mass = %.5f +/- %.5f %s' %
-                      (float(pl[n]['Mp'] or 0), float(pl[n]['Mp_upper'] or 0),
-                       str(pl[n]['Mp_unit'] or 'None')))
-                print('Disposition: %s' % pl[n]['disposition'])
+                pl = info[i]
+                print(pl['pl_name'])
+                print('Period = %.5f +%.5f %.5f %s' %
+                      (pl['pl_orbper'].value,
+                       pl['pl_orbpererr1'].value,
+                       pl['pl_orbpererr2'].value,
+                       pl['pl_orbper'].unit))
+                print('t0 = %.5f +2457000 BTJD +%.5f %.5f' %
+                      (pl['t0'],
+                       pl['pl_tranmiderr1'].value,
+                       pl['pl_tranmiderr2'].value))
+                print('Duration = %.5f +%.5f %.5f %s' %
+                      (pl['pl_trandur'].value,
+                       pl['pl_trandurerr1'].value,
+                       pl['pl_trandurerr2'].value,
+                       pl['pl_trandur'].unit))
+                print('Transit depth = %.5f +%.5f -%.5f' %
+                      (pl['pl_trandep'].value,
+                       pl['pl_trandeperr1'].value,
+                       pl['pl_trandeperr2'].value))
+                print('a/Rs = %.5f +%.5f %.5f' %
+                      (pl['pl_ratdor'],
+                       pl['pl_ratdorerr1'],
+                       pl['pl_ratdorerr2']))
+                print('Rp/Rs = %.5f +%.5f %.5f' %
+                      (pl['pl_ratror'],
+                       pl['pl_ratrorerr1'],
+                       pl['pl_ratrorerr2']))
+                print('Radius = %.5f +%.5f %.5f %s' %
+                      (pl['pl_radj'].value,
+                       pl['pl_radjerr1'].value,
+                       pl['pl_radjerr2'].value,
+                       pl['pl_radj'].unit))
+                print('Mass = %.5f +%.5f %.5f %s' %
+                      (pl['pl_bmassj'].value,
+                       pl['pl_bmassjerr1'].value,
+                       pl['pl_bmassjerr2'].value,
+                       pl['pl_bmassj'].unit))
                 print('')
+            except:
+                continue
 
-        elif verbose and query_fault:
-            print('Known planet found but parameters were not found in MAST' +
-                  'for some reason.')
+    elif verbose and query_fault:
+        print('Known planet found but parameters were not found in Exoplanet ' +
+              'Archive for some reason.')
+        info = None
                 
-    return pl_info
+    return info
 
 #function to update stellar params of lightcurve object (do automatically?,
 #   keyword to update in the fetch command?)

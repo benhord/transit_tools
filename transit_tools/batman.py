@@ -118,7 +118,7 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
                       'inc' : inlc.params.inc, 'ecc' : inlc.params.ecc,
                       'w' : inlc.params.w, 'u' : inlc.params.u,
                       'limb_dark' : inlc.params.limb_dark,
-                      'canonical_name' : 'batman'}
+                      'pl_name' : 'batman'}
         
     return inlc
         
