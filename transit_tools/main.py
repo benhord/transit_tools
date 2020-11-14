@@ -25,7 +25,7 @@ class lightcurve(LightCurve):
     """
     
     def __init__(self, lc=None, *args, obj=None, method="2min", sector=None,
-                 mission='TESS', find_knownpls=True, **kwargs):
+                 mission='TESS', find_knownpls=True, values='all', **kwargs):
         #Have 2min, ffi_ml (which points to Brian's lcs), and eleanor.
         #This assumes you're looking for TESS lcs, can be generalized later.
         #Defaults to looking for 2min lc using get_2minlc script from
@@ -117,7 +117,7 @@ class lightcurve(LightCurve):
             self.tic = lc.tic
             if lc.tic is not None:
                 cat = catalog_info(tic=lc.tic)
-                self.known_pls = known_pls(ra=cat['ra'], dec=cat['dec'])
+                self.known_pls = known_pls(ra=cat['ra'], dec=cat['dec'], values=values)
                 self.known_pls.append(lc.known_pls)
                 #allow for sim params to be passed in same form as real
             else: #add step in case inlc is not None but known_pls=None
@@ -156,9 +156,10 @@ class lightcurve(LightCurve):
         if find_knownpls and self.method != 'custom' and self.method !='batman':
             try:
                 if self.name != 'Null':
-                    self.known_pls = known_pls(name=self.name)
+                    self.known_pls = known_pls(name=self.name, values=values)
                 else:
-                    self.known_pls = known_pls(name=('TIC ' + str(self.tic)))
+                    self.known_pls = known_pls(name=('TIC ' + str(self.tic)),
+                                               values=values)
             except:
                 self.known_pls = None
             

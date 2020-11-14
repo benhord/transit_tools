@@ -168,13 +168,15 @@ def coord_to_tic(ra, dec):
     return tic
 
 def known_pls(name=None, ra=None, dec=None, radius=5.0, table='exoplanets',
-              verbose=False):
+              values='all', verbose=False):
     """
     A function to gather information on any known planets in a given system. 
     Queries the NASA Exoplanet Archive for objects and their known parameters.
 
     !!Reduce number of columns queried with each iteration for shorter runtime!!
     !!Allow to search for planets that are not confirmed on the archive!!
+    !!Allow user to pass values through as list to be queried for more specific
+         query values!!
 
     Parameters
     ----------
@@ -194,6 +196,9 @@ def known_pls(name=None, ra=None, dec=None, radius=5.0, table='exoplanets',
        the Exoplanet Archive website for a full list of possible tables and their
        contents. Default is the 'exoplanets' table, which is the default for the
        Exoplanet Archive.
+    values : str
+       Specifies how many values are collected. Current supported options are
+       'minimum' and 'all'.
     verbose : bool
        Flag to determine whether some of the parameters of the known planets in
        the system are printed.
@@ -207,15 +212,27 @@ def known_pls(name=None, ra=None, dec=None, radius=5.0, table='exoplanets',
     if not name and (not ra or not dec):
         raise ValueError('Either name or both RA & Dec must be provided')
 
+    if values == 'minimum':
+        select = ('pl_name, pl_orbper, pl_orbpererr1, pl_orbpererr2, ' +
+                  'pl_tranmid, pl_tranmiderr1, pl_tranmiderr2, pl_trandur, ' +
+                  'pl_trandurerr1, pl_trandurerr2, pl_trandep, pl_trandeperr1,' +
+                  ' pl_trandeperr2, pl_ratdor, pl_ratdorerr1, pl_ratdorerr2, ' +
+                  'pl_ratror, pl_ratrorerr1, pl_ratrorerr2, pl_radj, ' +
+                  'pl_radjerr1, pl_radjerr2, pl_bmassj, pl_bmassjerr1, ' +
+                  'pl_bmassjerr2, pl_hostname')
+    else:
+        select = '*'
+        
+    
     if name is not None:
-        results = nea.query_object(str(name), table=table, select='*')
+        results = nea.query_object(str(name), table=table, select=select)
 
     elif ra is not None and dec is not None:
         results = nea.query_region(
             coordinates=coord.SkyCoord(ra * u.deg, dec * u.deg),
             radius = radius * u.arcsec,
             table=table,
-            select='*'
+            select=select
             )
     
     pls = len(results)
