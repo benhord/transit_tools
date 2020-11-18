@@ -20,6 +20,8 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
     Squares (TLS) algorithm developed by Hippke & Heller 2018. While slower than
     Box Least Squares, the transit shape used in the search is more realistic.
 
+    !!Change if flux_err is all nans to replace it with rms flux_err!!
+
     Parameters
     ----------
     *args : 'LightCurve' object or multiple numpy array arguments
