@@ -315,7 +315,7 @@ class lightcurve(LightCurve):
             if self.routine == 'tls' or self.routine == 'TLS':
                 if not hasattr(self, 'star_params_tls'):
                     self.star_params_tls = None
-
+                    
                 #change so tic or star params don't have to be passed for sims
                     
                 if len(self.cleanlc) == 0:
