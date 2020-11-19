@@ -108,7 +108,7 @@ def full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all',
         inlc.tic = tic
         
     elif noise == None:
-        inlc = batman_transit(period=period, rp=rp, a=a, **kwargs)
+        inlc = batman_transit(period=period, rp=rp, a=a, t0=t0, **kwargs)
         inlc.tic = None
         inlc.sectors = None
         
@@ -178,6 +178,9 @@ def batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0., inc=90., ecc=0.,
     """
     if length is not None and time is not None:
         raise ValueError('Please only specify either length or time')
+
+    if t0 is None:
+        t0 = 0.
     
     params = batman.TransitParams()
     params.t0 = t0
