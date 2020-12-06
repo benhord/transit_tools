@@ -121,7 +121,7 @@ class lightcurve(LightCurve):
                 self.known_pls.append(lc.known_pls)
                 #allow for sim params to be passed in same form as real
             else: #add step in case inlc is not None but known_pls=None
-                print('inlc not known')
+                #print('inlc not known')
                 self.known_pls = [lc.known_pls]
             self.sector = lc.sectors
             
