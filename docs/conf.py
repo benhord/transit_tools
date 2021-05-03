@@ -22,6 +22,9 @@ import sphinx_rtd_theme
 project = 'Transit Tools'
 copyright = '2021, Ben Hord'
 author = 'Ben Hord'
+version = ''
+release = ''
+master_doc = 'index'
 
 
 # -- General configuration ---------------------------------------------------
