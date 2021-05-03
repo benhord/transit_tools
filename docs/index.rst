@@ -8,8 +8,13 @@ Welcome to transit_tools's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
+   Installation
+   Functionality
+   FAQ
+   Submit an Issue <https://github.com/benhord/transit_tools/issues>
+   Source at Github <https://github.com/benhord/transit_tools>
+   
 
 
 Indices and tables
