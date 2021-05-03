@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'transit_tools'
-copyright = '2021, benhord'
-author = 'benhord'
+project = 'Transit Tools'
+copyright = '2021, Ben Hord'
+author = 'Ben Hord'
 
 
 # -- General configuration ---------------------------------------------------
@@ -28,6 +28,7 @@ author = 'benhord'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx-rtd-theme"
 ]
 
 # Add any paths that contain templates here, relative to this directory.

@@ -1,4 +1,4 @@
-transit_tools documentation
+Transit Tools documentation
 =========================================
 
 .. toctree::
