@@ -6,15 +6,13 @@ from lightkurve import LightCurve
 
 from .utils import rms
 
-#tls_default #do these really need to be broken up? no, combine
+#def bls_search():
 
-#tls_graze
-
-#tls_box
 #def tls_search(lc, time=None, flux=None, dy=None, shape='default'):
 def tls_search(*args, tic=None, shape='default', star_params=None,
-               rms_calc=True, norm_val=1., clean_lc=False, starparams_out=False,
-               del_dur=1., verbose=False, nthreads=6, **kwargs):
+               rms_calc=True, norm_val=1., clean_lc=False,
+               starparams_out=False,  del_dur=1., verbose=False, nthreads=6,
+               **kwargs):
     """
     Function to perform a search for periodic signals using the Transit Least 
     Squares (TLS) algorithm developed by Hippke & Heller 2018. While slower than
