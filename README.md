@@ -1,5 +1,7 @@
 # transit_tools
 
+[![Documentation Status](https://readthedocs.org/projects/transit-tools/badge/?version=latest)](https://transit-tools.readthedocs.io/en/latest/?badge=latest)
+
 A set of Python tools to aid the analysis of exoplanet transits in photometric data. This package is functional but still heavily under construction and is being modified to make it more flexible for a number of exoplanet transit applications. Please contact Ben Hord at benhord@astro.umd.edu about this repo.
 
 Current supported functionality (non-exhaustive):
