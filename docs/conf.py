@@ -15,9 +15,8 @@ import sphinx_rtd_theme
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
-#on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-import transit_tools
 
 # -- Project information -----------------------------------------------------
 
@@ -41,12 +40,11 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.mathjax',
     'sphinx.ext.autosectionlabel',
-    'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
     #'numpydoc'
 ]
 
-autosummary_generate = True
+#autosummary_generate = True
 
 #numpydoc_show_class_members = False
 
