@@ -85,6 +85,8 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Quickstart.html">Quickstart Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools/issues">Submit an Issue</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools">Source at Github</a></li>
@@ -157,7 +159,46 @@
             
   <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<p>How to use</p>
+<p>How to use Transit Tools</p>
+<div class="section" id="define-light-curve-data">
+<h2>Define Light Curve Data<a class="headerlink" href="#define-light-curve-data" title="Permalink to this headline">¶</a></h2>
+<p>Initialization function for all of transit_tools that defines the light curve to be used. This class wraps <code class="docutils literal notranslate"><span class="pre">lightkurve.LightCurve</span></code> and as such retains all functionality of that class with some additions. The light curve can either be user-defined with a <code class="docutils literal notranslate"><span class="pre">lightkurve.LightCurve</span></code> object or arrays of time, flux, and flux error or can be generated via a target name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">lc</dt>
+<dd class="field-odd"><p><em>(object, default None)</em> <code class="docutils literal notranslate"><span class="pre">lightkurve.LightCurve</span></code> object. Mutually exclusive with <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">obj</span></code> inputs.</p>
+</dd>
+<dt class="field-even">args</dt>
+<dd class="field-even"><p>Up to three arguments specifying the time, flux, and flux error of the light curve. Mutually exclusive with <code class="docutils literal notranslate"><span class="pre">lc</span></code> and <code class="docutils literal notranslate"><span class="pre">obj</span></code> inputs.</p>
+</dd>
+<dt class="field-odd">obj</dt>
+<dd class="field-odd"><p><em>(string, default None)</em> Name of target to search MAST for a light curve. Mutuall exclusive with <code class="docutils literal notranslate"><span class="pre">lc</span></code> and <code class="docutils literal notranslate"><span class="pre">*args</span></code> inputs.</p>
+</dd>
+<dt class="field-even">method</dt>
+<dd class="field-even"><p><em>(string, default “2min”)</em> Method for acquiring a specified light curve through a search of MAST. Options are currently <code class="docutils literal notranslate"><span class="pre">2min</span></code> and <code class="docutils literal notranslate"><span class="pre">eleanor</span></code></p>
+</dd>
+<dt class="field-odd">sector</dt>
+<dd class="field-odd"><p><em>(list, default=None)</em> List of sectors to include in final assembled light curve. If <code class="docutils literal notranslate"><span class="pre">None</span></code> is specified, all possible sectors will be included.</p>
+</dd>
+<dt class="field-even">mission</dt>
+<dd class="field-even"><p><em>(string, default=’TESS’)</em> Current placeholder. Will eventually allow user to specify mission from which light curve will be assembled. At this point, only TESS is supported.</p>
+</dd>
+<dt class="field-odd">find_knownpls</dt>
+<dd class="field-odd"><p><em>(bool, default=True)</em> Flag to control whether a query to the NASA Exoplanet Archive is searched for any known planets in the target system.</p>
+</dd>
+<dt class="field-even">values</dt>
+<dd class="field-even"><p><em>(list, default=’all’)</em> Quantities to retrieve from the NASA Exoplanet Archive if <code class="docutils literal notranslate"><span class="pre">find_knownpls</span></code> is True. If set to <code class="docutils literal notranslate"><span class="pre">all</span></code>, all available quantities will be retrieved.</p>
+</dd>
+<dt class="field-odd">kwargs</dt>
+<dd class="field-odd"><p>Additional arguments to pass to <code class="docutils literal notranslate"><span class="pre">lighturve.LightCurve</span></code> initializer.</p>
+</dd>
+</dl>
+<div class="section" id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="utility-functions">
+<h2>Utility Functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h2>
+</div>
 </div>
 
 

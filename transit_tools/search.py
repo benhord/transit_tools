@@ -13,74 +13,77 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
                rms_calc=True, norm_val=1., clean_lc=False,
                starparams_out=False,  del_dur=1., verbose=False, nthreads=6,
                **kwargs):
+    #!!Change if flux_err is all nans to replace it with rms flux_err!!
     """
     Function to perform a search for periodic signals using the Transit Least 
-    Squares (TLS) algorithm developed by Hippke & Heller 2018. While slower than
-    Box Least Squares, the transit shape used in the search is more realistic.
-
-    !!Change if flux_err is all nans to replace it with rms flux_err!!
+    Squares (TLS) algorithm developed by Hippke & Heller 2018. While slower 
+    than Box Least Squares, the transit shape used in the search is more 
+    realistic.
 
     Parameters
     ----------
-    *args : 'LightCurve' object or multiple numpy array arguments
-       If the len of *args = 1, then the argument is assumed to be a lightkurve
-       'LightCurve' object with at least two columns, labeled 'time' and 'flux',
-       respectively, with an optional 'flux_err' column as the third column. If 
-       the len of *args > 1, then it is assumed the user is passing time, flux, 
-       and flux_err (optional), respectively. These columns or arguments should 
-       be arrays of equal length.
+    *args : `lightkurve.LightCurve` object or multiple numpy array arguments
+        If the len = 1, then the argument is assumed to be a 
+        `lightkurve.LightCurve` object with at least two columns, labeled 
+        ``'time'`` and ``'flux'``, respectively, with an optional 
+        ``'flux_err'`` column as the third column. If the len of > 1, then it 
+        is assumed the user is passing ``time``, ``flux``, and ``flux_err`` 
+        (optional), respectively. These columns or arguments should be arrays 
+        of equal length.
     tic : int or None
-       TIC ID of the source that the light curve comes from. This will be used 
-       to query the TIC for the stellar parameters of the system. May be set to
-       None if a full dictionary of stellar params are provided to the 
-       star_params keyword.
+        TIC ID of the source that the light curve comes from. This will be 
+        used to query the TIC for the stellar parameters of the system. May 
+        be set to ``None`` if a full dictionary of stellar params are provided
+        to the ``star_params`` keyword.
     shape : str
-       The shape used by TLS to search for periodic signals. The user may 
-       specify 'default', 'grazing', or 'box'. See Hippke & Heller 2018 for an
-       in-depth description of these shapes.
+        The shape used by TLS to search for periodic signals. The user may 
+        specify ``'default'``, ``'grazing'``, or ``'box'``. See Hippke & 
+        Heller 2018 for an in-depth description of these shapes.
     star_params : dict or None
-       A dictionary containing stellar parameters to be used in the TLS search.
-       The dictionary can contain an array of limb-darkening 
-       parameters, stellar radius, lower radius error, upper radius error, 
-       stellar mass, lower mass error, and upper mass error labeled 'ab', 
-       'rstar', 'rlow', 'rhigh', 'mstar', 'mlow', and 'mhigh', respectively. The
-       error values are the errors themselves and not the upper and lower values
-       for each of the parameters. A partial list may be included, but in this
-       case, the TIC must also be given.
+        A dictionary containing stellar parameters to be used in the TLS 
+        search. The dictionary can contain an array of limb-darkening 
+        parameters, stellar radius, lower radius error, upper radius error, 
+        stellar mass, lower mass error, and upper mass error labeled ``'ab'``,
+        ``'rstar'``, ``'rlow'``, ``'rhigh'``, ``'mstar'``, ``'mlow'``, and 
+        ``'mhigh'``, respectively. The error values are the errors themselves 
+        and not the upper and lower values for each of the parameters. A 
+        partial list may be included, but in this case, the TIC must also be 
+        given.
     rms_calc : bool
-       A flag to denote whether the root mean square error will be applied in 
-       the case that error values are not provided.
+        A flag to denote whether the root mean square error will be applied 
+        in the case that error values are not provided.
     norm_val : float
-       Value that the light curve is normalized to. Default is 1. Only 1 or 0 
-       are valid normalizations for TLS.
+        Value that the light curve is normalized to. Default is 1. Only 1 or 
+        0 are valid normalizations for TLS.
     clean_lc : bool
-       Flag to indicate whether or not to output a cleaned lightcurve with the
-       recovered periodic signal masked out. Results in an additional expected
-       output.
+        Flag to indicate whether or not to output a cleaned lightcurve with 
+        the recovered periodic signal masked out. Results in an additional 
+        expected output.
     starparams_out : bool
-       Flag to indicate whether or not to output the dictionary of stellar
-       parameters used in the TLS search. Results in an additional expected
-       output.
+        Flag to indicate whether or not to output the dictionary of stellar
+        parameters used in the TLS search. Results in an additional expected
+        output.
     del_dur : float
-       How many durations worth of data points should be excluded from cleaned
-       light curve centered on the transit center. Default is 1. Values < 1 will
-       result in some in-transit points remaining whild values > 1 will remove
-       some points outside the transit.
+        How many durations worth of data points should be excluded from 
+        cleaned light curve centered on the transit center. Default is 1. 
+        Values < 1 will result in some in-transit points remaining while 
+        values > 1 will remove some points outside the transit.
     verbose : bool
-       Flag to have function print more while it runs.
+        Flag to have function print more while it runs.
     nthreads : int
-       Number of threads to be used for running the signal search. Many times,
-       cores have the capability to run multiple threads, so be sure to check
-       your machine to optimize this parameter.
-    kwargs
-       Optional arguments passed to the transitleastsquares.power function.
+        Number of threads to be used for running the signal search. Many 
+        times, cores have the capability to run multiple threads, so be sure 
+        to check your machine to optimize this parameter.
+    **kwargs : dict
+        Optional arguments passed to the ``transitleastsquares.power`` 
+        function.
 
     Returns
     -------
     results : dict
        Results of the TLS fit. See TLS documentation for the contents of this
        dictionary and descriptions of each element.
-    cleaned_lc : 'LightCurve' object, optional
+    cleaned_lc : ``lightkurve.LightCurve`` object, optional
        A light curve with the transits masked out based on the results of the 
        TLS search.
     """

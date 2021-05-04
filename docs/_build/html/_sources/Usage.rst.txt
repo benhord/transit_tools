@@ -1,4 +1,31 @@
 Usage
-=========================================
+=====
 
-How to use
+How to use Transit Tools
+
+Define Light Curve Data
+-----------------------
+
+.. class: lightcurve(lc=None, *args, obj=None, method="2min", sector=None, mission='TESS', find_knownpls=True, values='all', **kwargs)
+
+Initialization function for all of transit_tools that defines the light curve to be used. This class wraps ``lightkurve.LightCurve`` and as such retains all functionality of that class with some additions. The light curve can either be user-defined with a ``lightkurve.LightCurve`` object or arrays of time, flux, and flux error or can be generated via a target name.
+
+:lc: *(object, default None)* ``lightkurve.LightCurve`` object. Mutually exclusive with ``*args`` and ``obj`` inputs.
+:args: Up to three arguments specifying the time, flux, and flux error of the light curve. Mutually exclusive with ``lc`` and ``obj`` inputs.
+:obj: *(string, default None)* Name of target to search MAST for a light curve. Mutuall exclusive with ``lc`` and ``*args`` inputs.
+:method: *(string, default "2min")* Method for acquiring a specified light curve through a search of MAST. Options are currently ``2min`` and ``eleanor``
+:sector: *(list, default=None)* List of sectors to include in final assembled light curve. If ``None`` is specified, all possible sectors will be included.
+:mission: *(string, default='TESS')* Current placeholder. Will eventually allow user to specify mission from which light curve will be assembled. At this point, only TESS is supported.
+:find_knownpls: *(bool, default=True)* Flag to control whether a query to the NASA Exoplanet Archive is searched for any known planets in the target system.
+:values: *(list, default='all')* Quantities to retrieve from the NASA Exoplanet Archive if ``find_knownpls`` is True. If set to ``all``, all available quantities will be retrieved.
+:kwargs: Additional arguments to pass to ``lighturve.LightCurve`` initializer.
+
+Attributes
+~~~~~~~~~~
+
+
+
+
+
+Utility Functions
+-----------------

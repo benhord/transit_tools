@@ -12,16 +12,98 @@ from .batman import *
 from .constants import *
 
 class lightcurve(LightCurve):
-    """Description
-    of
-    class
-
     #pass mission-specific classes to preserve some speciality?
+    
+    """
+    Initialization function for all of transit_tools that defines the light 
+    curve to be used. This class wraps `lightkurve.LightCurve` and as such 
+    retains all functionality of that class with some additions. The light 
+    curve can either be user-defined with a `lightkurve.LightCurve` object 
+    or arrays of time, flux, and flux error or can be generated via a target 
+    name.
 
     Parameters
     ----------
-    param : type
-       description
+    lc : `lightkurve.LightCurve` or None
+        `lightkurve.LightCurve` object. Mutually exclusive with ``*args`` 
+        and ``obj`` inputs. Default ``None``.
+    *args : 
+        Up to three arguments specifying the time, flux, and flux error of the 
+        light curve. Mutually exclusive with ``lc`` and ``obj`` inputs.
+    obj : str or None
+        Name of target to search MAST for a light curve. Mutually exclusive 
+        with ``lc`` and ``*args`` inputs. Default ``None``.
+    method : str
+        Method for acquiring a specified light curve through a search of MAST. 
+        Options are currently ``'2min'``, ``'eleanor'``, and ``'batman'``. If 
+        ``'batman'`` is provided, user will also need to pass ``**kwargs`` to 
+        the ``transit_tools.batman`` function. Default is ``'2min'``.
+    sector : list or None
+        List of sectors to include in final assembled light curve. If ``None`` 
+        is specified, all possible sectors will be included. Default ``None``.
+    mission : str
+        Current placeholder. Will eventually allow user to specify mission from 
+        which light curve will be assembled. At this point, only TESS is 
+        supported.
+    find_knownpls : bool
+        Flag to control whether a query to the NASA Exoplanet Archive is 
+        searched for any known planets in the target system. Default ``True``.
+    values : list or str
+        Quantities to retrieve from the NASA Exoplanet Archive if 
+        ``find_knownpls`` is True. If set to ``'all'``, all available 
+        quantities will be retrieved. Default ``'all'``.
+    **kwargs : dict
+        Additional arguments to pass to `lighturve.LightCurve` initializer.
+    
+    Attributes
+    ----------
+    time : `np.array`
+        The timestamps of the light curve.
+    flux : `np.array`
+        The flux at each timestamp in the light curve.
+    flux_err : `np.array`
+        The flux error for each flux in the light curve.
+    method : str or None
+        The method used to generate the light curve.
+    sector : list
+        The list of sectors the generated light curve represents.
+    name : str or None
+        The name of the target from the light curve query.
+    tic : int
+        TIC ID of target, if it has one.
+    known_pls : `np.array` of dicts or None
+        The known planets in the system, if any.
+    star_params : dict
+        A dictionary containing known star params if a query for such has been
+        performed.
+    star_params_tls : dict
+        The star params used for Transit Least Squares searches, if such a 
+        search has been run.
+    raw_lc : object
+        Nested `lightcurve` object with `time`, `flux`, and `flux_err` 
+        attributes of the original input lightcurve prior to processing or 
+        masking.
+    trend : `np.array`
+        Trend of light curve based on the `process` method, if detrending was
+        performed.
+    mask_arr : `np.array`
+        Boolean array of equal length to the light curve mapping the masked data
+        points.
+    routine : str
+        The shape used by the most recent Transit Least Squares search on the
+        light curve.
+    sde_thresh : float
+        The Signal Detection Efficiency threshold for a significant detection
+        specified in the most recent Transit Least Squares search.
+    results : `np.array` of dicts
+        Output results of each iteration of transit searches from the most 
+        recent call of the `signal_search` method.
+    cleanlc : list of objects
+        Light curves with significant periodic signals from the most recent call
+        of the `signal_search` method subtracted.
+    bad_search : dict
+        Results from the most recent call of `signal_search` that did not meet
+        the specified `sde_thresh` value.
     """
     
     def __init__(self, lc=None, *args, obj=None, method="2min", sector=None,
@@ -38,6 +120,9 @@ class lightcurve(LightCurve):
         #  the correct ID for the requested mission!!
         #!!Enable passing custom light curves as separate method option!!
         #!!**kwargs to pass to gather_lc command!!
+        #!!Enable RA/Dec search for light curves!!
+        #!!If lc is not none or args are given, allow for obj to still search
+        #  for known_pls and stellar info!!
 
         self.sector = sector
         self.method = method
@@ -168,27 +253,28 @@ class lightcurve(LightCurve):
     def process(self, **kwargs):
         """
         Method to process light curve for further analysis. Must be performed on
-        a LightCurve object.
+        a `lightkurve.LightCurve` object.
 
         Parameters
         ----------
-        kwargs
-           Arguments to be passed to the process_lc.
+        **kwargs : dict
+            Arguments to be passed to the ``process_lc``.
         """
         lc = process_lc(self, **kwargs)
 
-        self.updatelc(lc)
+        self._updatelc(lc)
 
     #method to update lc
-    def updatelc(self, lc):
+    def _updatelc(self, lc):
         """
-        Function to update the light curve that will be used if manual
+        Method to update the light curve that will be used if manual
         alteration is performed that the user wishes to save without completely 
         overriding the original light curve.
 
         Parameters
         ----------
-        lc : 'LightCurve' object
+        lc : `lightkurve.LightCurve` or `transit_tools.lightcurve`
+            The light curve that will become the main, updated light curve.
         """
         #check for self.flux_err attribute
         if not hasattr(self, 'raw_lc'):
@@ -205,7 +291,7 @@ class lightcurve(LightCurve):
 
     def reset(self):
         """
-        Function to bring the raw, original light curve back as the main, 
+        Method to bring the raw, original light curve back as the main, 
         working light curve. Useful if the user is testing different processing
         methods and does not wish to reload a 'lightcurve' instance after each
         one.
@@ -224,15 +310,15 @@ class lightcurve(LightCurve):
 
     def mask(self, **kwargs):
         """
-        Function to mask out parts of the light curve. Wraps the lcprocess.mask
+        Method to mask out parts of the light curve. Wraps the lcprocess.mask
         function. Can be performed iteratively to mask out multiple areas or
         ranges of times in the light curve.
 
         Parameters
         ----------
-        kwargs
-           Arguments to be passed to lcprocess.mask, with the exception of the
-           out_mask argument.
+        **kwargs : dict
+            Arguments to be passed to `transit_tools.lcprocess.mask`, with the 
+            exception of the out_mask argument.
         """
         if not hasattr(self, 'raw_lc'):
             raw_lc = LightCurve(self.time, self.flux, self.flux_err)
@@ -240,7 +326,7 @@ class lightcurve(LightCurve):
 
         lc, mask_arr = mask(lc=self, out_mask=True, **kwargs)
 
-        self.updatelc(lc)
+        self._updatelc(lc)
 
         if hasattr(self, 'mask_arr'):
             self.mask_arr = [all(tup) for tup in zip(self.mask_arr, mask_arr)]
@@ -255,35 +341,36 @@ class lightcurve(LightCurve):
        ###combine with TLS into single search function
     def signal_search(self, routine='tls', plot_live=False, max_runs=5, sde=7.0,
                       exact=True, **kwargs):
+        #!!Update to allow for search of known planets first and rejection of 
+        #  signal until known signal is found. Quit after X trials!!
+        #!!Update incomplete docustring!!
+        #!!If periods too close, increase del_dur and run again or just raise
+        #  warning and run again without logging a significant detection!!
+        #!!Allow to run set number of iterations. Just set sde to 0?!!
+        #!!Add option to optimize between searches to use exoplanet to subtract
+        #  out transit model!!
         """
         Method to search the light curve for periodic signals using a variety of
         search algorithms, including Transit Least Squares and Box Least Squares
         from a number of packages. 
-
-        !!Update to allow for search of known planets first and rejection of 
-        signal until known signal is found. Quit after X trials!!
-        !!Update incomplete docustring!!
-        !!If periods too close, increase del_dur and run again or just raise
-          warning and run again without logging a significant detection!!
-        !!Allow to run set number of iterations. Just set sde to 0?!!
-        !!Add option to optimize between searches to use exoplanet to subtract
-          out transit model!!
         
         Parameters
         ----------
         routine : str
-           The desired routine to be used for finding periodic signals in the
-           light curve. Options are 'tls' for Transit Least Squares and 'bls'
-           for Box Least Squares.
+            The desired routine to be used for finding periodic signals in the
+            light curve. Options are 'tls' for Transit Least Squares and 'bls'
+            for Box Least Squares.
         plot_live : bool
+            Placeholder argument for the option to view vetting plots as runs 
+            are finished for a more interactive transit search.
         max_runs : int
-           The maximum number of runs allowed 
+            The maximum number of runs allowed 
         sde : float
-           The threshold for the Source Detection Efficiency to be used to 
-           determine whether a signal is significant or not.
+            The threshold for the Source Detection Efficiency to be used to 
+            determine whether a signal is significant or not.
         exact : bool
-           Flag to indicate that the exact number of iterations specified in 
-           max_runs will be performed.
+            Flag to indicate that the exact number of iterations specified in 
+            max_runs will be performed.
         """
         self.routine = routine
         self.sde_thresh = sde
@@ -365,21 +452,25 @@ class lightcurve(LightCurve):
        #   view each individually.
 
     def vetsheet(self, pls='all', save=False, **kwargs):
-        """
-        Function to plot the vetting sheet for a given set of signal_search
-        results.
+        #!!Maybe plot failed run if no significant signals are found?!!
 
-        !!Maybe plot failed run if no significant signals are found?!!
+        """
+        Method to plot the vetting sheet for a given set of signal_search
+        results.
 
         Parameters
         ----------
         pls : int or str
-           signal_search iteration to display results for. If set to 'all', all
-           significant results will be displayed in separate windows. If set to
-           -1, the most recent set of results that did not meet the significance
-           threshold will be displayed.
-        kwargs
-           Additional arguments to be passed to the tls_vetsheet command.
+            signal_search iteration to display results for. If set to `'all'`, 
+            all significant results will be displayed in separate windows. If 
+            set to -1, the most recent set of results that did not meet the 
+            significance threshold will be displayed.
+        save : bool
+            Flag to determine whether the plot is saved or not. Save filename 
+            is specified and passed as a part of `**kwargs**`.
+        **kwargs : dict
+           Additional arguments to be passed to the 
+           `transit_tools.plotting.tls_vetsheet` command.
         """
         if not hasattr(self, 'routine'):
             raise ValueError('Please run signal_search first')
@@ -438,19 +529,23 @@ class lightcurve(LightCurve):
 
     #gather stellar catalog info
     def get_starparams(self, cat='all'):
+        #!!Check if star_params have already been collected or not!!
+        #!!Add full docstrings!!
+        #!!Add verbose option to call other function to print nicely!!
+        
         """
-        Function to gather stellar parameters and save them as the star_params
+        Method to gather stellar parameters and save them as the star_params
         and stellar_params_tls attributes.
-
-        !!Check if star_params have already been collected or not!!
-        !!Add full docstrings!!
-        !!Add verbose option to call other function to print nicely!!
 
         Parameters
         ----------
-        kwargs
-           Additional arguments to be passed to the 'utils.catalog_info' 
-           command.
+        cat : str
+            Specify which calatog to retrieve stellar parameters from. If 
+            ``'all'`` is entered, values will be gathered from the Gaia DR2 and 
+            TESS Input Catalog, with the Gaia DR2 taking precedence
+        **kwargs : dict
+            Additional arguments to be passed to the ``'utils.catalog_info'`` 
+            command.
         """
         #check to see if star_params already exist and if so, just skip to
         #   printing or something
@@ -472,11 +567,10 @@ class lightcurve(LightCurve):
 
     #print formatted search summary
     def searchsum(self):
+        #!!Include indication if any result matches up with known planet!!
         """
-        Function to display periodic signal search results in a user-friendly
+        Method to display periodic signal search results in a user-friendly
         format. Wraps search_summary from utils.py.
-
-        !!Include indication if any result matches up with known planet!!
         """
         if not hasattr(self, 'results'):
             raise ValueError('Please run a signal search first.')
@@ -508,30 +602,30 @@ class lightcurve(LightCurve):
     ##Method to update known_pls attribute with user-provided values
     def update_pls(self, name=None, per=None, t0=None, dur=None, params=None,
                    append=False):
+        #!!Not finished. Revisit. Appending might not be working!!
         """
-        Function to update the 'known_pls' attribute with user-defined values or
-        a provided dictionary.
-
-        !!Not finished. Revisit. Appending might not be working!!
+        Method to update the `lightcurve.known_pls` attribute with user-defined 
+        values or a provided dictionary.
 
         Parameters
         ----------
         name : str or list or None
-           Name(s) of the planets.
-        per : float or array or None
-           Period of the planet(s). Will expect a period in days.
-        t0 : float or array or None
-           Mid-transit time(s) of the first transit(s). Will expect a value in 
-           MJD.
-        dur : float or array or None
-           Duration of transit(s). Will expect a value in days.
-        params : dict or list or None
-           Dictionary of additional parameters or all orbital parameters. Will
-           expect keys similar to those output by tt.utils.known_pls.
+            Name(s) of the planets.
+        per : float,` np.array` or None
+            Period of the planet(s). Will expect a period in days.
+        t0 : float, `np.array` or None
+            Mid-transit time(s) of the first transit(s). Will expect a value in 
+            MJD.
+        dur : float, `np.array` or None
+            Duration of transit(s). Will expect a value in days.
+        params : dict, list or None
+            Dictionary of additional parameters or all orbital parameters. Will
+            expect keys similar to those output by 
+            `transit_tools.utils.known_pls`.
         append : bool
-           Flag whether or not to append provided planet parameters as a new 
-           entry in self.known_pls or to overwrite the current entry with the
-           user-provided values.
+            Flag whether or not to append provided planet parameters as a new 
+            entry in the `lightcurve.known_pls` attribute or to overwrite the 
+            current entry with the user-provided values.
         """
         if name is None and per is None and t0 is None and dur is None and params is not None:
             if not append:
