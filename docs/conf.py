@@ -19,6 +19,8 @@ import sys
 sys.path.append(os.path.abspath('..'))
 sys.path.append(os.path.abspath('../..'))
 
+import numpy
+
 #on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 
