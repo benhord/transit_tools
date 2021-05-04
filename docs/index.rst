@@ -6,6 +6,7 @@ Transit Tools documentation
 
    Installation
    Usage
+   Quickstart
    FAQ
    Submit an Issue <https://github.com/benhord/transit_tools/issues>
    Source at Github <https://github.com/benhord/transit_tools>
