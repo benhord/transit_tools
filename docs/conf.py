@@ -17,6 +17,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../'))
 #on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
+import transit_tools
 
 # -- Project information -----------------------------------------------------
 
