@@ -19,8 +19,6 @@ import sys
 sys.path.append(os.path.abspath('..'))
 sys.path.append(os.path.abspath('../..'))
 
-import numpy
-
 #on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 
@@ -49,6 +47,8 @@ extensions = [
     'sphinx.ext.intersphinx',
     #'numpydoc'
 ]
+
+autodoc_mock_imports = ['transit_tools']
 
 #autosummary_generate = True
 
