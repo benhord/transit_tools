@@ -14,8 +14,11 @@ import sphinx_rtd_theme
 #
 import os
 import sys
-sys.path.insert(os.path.abspath('..'))
-sys.path.insert(os.path.abspath('../..'))
+#sys.path.insert(0, os.path.abspath('..'))
+#sys.path.insert(0, os.path.abspath('../..'))
+sys.path.append(os.path.abspath('..'))
+sys.path.append(os.path.abspath('../..'))
+
 #on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 
