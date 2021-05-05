@@ -1,7 +1,7 @@
 import setuptools
 
 with open("README.md", "r") as fh:
-    long_desccription = fh.read()
+    long_description = fh.read()
 
 setuptools.setup(
     name="transit_tools_benhord",
