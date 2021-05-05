@@ -14,10 +14,10 @@ import sphinx_rtd_theme
 #
 import os
 import sys
-#sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../'))
 #sys.path.insert(0, os.path.abspath('../..'))
-sys.path.append(os.path.abspath('../..'))
-sys.path.append(os.path.abspath('..'))
+#sys.path.append(os.path.abspath('../..'))
+#sys.path.append(os.path.abspath('..'))
 
 #on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
@@ -46,9 +46,13 @@ extensions = [
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.intersphinx',
     #'numpydoc'
+    'autoapi.extension'
 ]
 
-autodoc_mock_imports = ['transit_tools']
+autoapi_type = 'python'
+autoapi_dirs = ['../', '../transit_tools']
+
+#autodoc_mock_imports = ['transit_tools']
 
 #autosummary_generate = True
 

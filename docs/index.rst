@@ -1,6 +1,4 @@
 .. title:: Transit Tools Docs
-
-.. rst-class:: frontpage
 	       
 *************
 Transit Tools

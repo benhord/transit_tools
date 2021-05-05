@@ -1,0 +1,49 @@
+:mod:`transit_tools.constants`
+==============================
+
+.. py:module:: transit_tools.constants
+
+
+Module Contents
+---------------
+
+.. data:: Rsolar_m
+   :annotation: = 696342000
+
+   
+
+.. data:: Rjup_m
+   :annotation: = 71492000
+
+   
+
+.. data:: Rearth_m
+   :annotation: = 6371008
+
+   
+
+.. data:: Rjup_sol
+   :annotation: = 0.102763
+
+   
+
+.. data:: Rearth_jup
+   :annotation: = 0.0892147
+
+   
+
+.. data:: Rsolar_ear
+   :annotation: = 109.076
+
+   
+
+.. data:: Rsolar_au
+   :annotation: = 0.00465047
+
+   
+
+.. data:: default_star_params
+   
+
+   
+

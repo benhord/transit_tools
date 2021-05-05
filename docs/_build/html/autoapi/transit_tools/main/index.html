@@ -1,0 +1,617 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>transit_tools.main &mdash; Transit Tools  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Transit Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Quickstart.html">Quickstart Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools/issues">Submit an Issue</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools">Source at Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Transit Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">transit_tools.main</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/autoapi/transit_tools/main/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-transit_tools.main">
+<span id="transit-tools-main"></span><h1><a class="reference internal" href="#module-transit_tools.main" title="transit_tools.main"><code class="xref py py-mod docutils literal notranslate"><span class="pre">transit_tools.main</span></code></a><a class="headerlink" href="#module-transit_tools.main" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transit_tools.main.lightcurve" title="transit_tools.main.lightcurve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lightcurve</span></code></a></p></td>
+<td><p>Initialization function for all of transit_tools that defines the light</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="transit_tools.main.lightcurve">
+<em class="property">class </em><code class="sig-prename descclassname">transit_tools.main.</code><code class="sig-name descname">lightcurve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lc</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">obj</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'2min'</span></em>, <em class="sig-param"><span class="n">sector</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mission</span><span class="o">=</span><span class="default_value">'TESS'</span></em>, <em class="sig-param"><span class="n">find_knownpls</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">values</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.main.lightcurve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">transit_tools.batman.LightCurve</span></code></p>
+<p>Initialization function for all of transit_tools that defines the light
+curve to be used. This class wraps <cite>lightkurve.LightCurve</cite> and as such
+retains all functionality of that class with some additions. The light
+curve can either be user-defined with a <cite>lightkurve.LightCurve</cite> object
+or arrays of time, flux, and flux error or can be generated via a target
+name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lc</strong> (<cite>lightkurve.LightCurve</cite> or None) – <cite>lightkurve.LightCurve</cite> object. Mutually exclusive with <code class="docutils literal notranslate"><span class="pre">*args</span></code>
+and <code class="docutils literal notranslate"><span class="pre">obj</span></code> inputs. Default <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>*args</strong> – Up to three arguments specifying the time, flux, and flux error of the
+light curve. Mutually exclusive with <code class="docutils literal notranslate"><span class="pre">lc</span></code> and <code class="docutils literal notranslate"><span class="pre">obj</span></code> inputs.</p></li>
+<li><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Name of target to search MAST for a light curve. Mutually exclusive
+with <code class="docutils literal notranslate"><span class="pre">lc</span></code> and <code class="docutils literal notranslate"><span class="pre">*args</span></code> inputs. Default <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Method for acquiring a specified light curve through a search of MAST.
+Options are currently <code class="docutils literal notranslate"><span class="pre">'2min'</span></code>, <code class="docutils literal notranslate"><span class="pre">'eleanor'</span></code>, and <code class="docutils literal notranslate"><span class="pre">'batman'</span></code>. If
+<code class="docutils literal notranslate"><span class="pre">'batman'</span></code> is provided, user will also need to pass <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> to
+the <code class="docutils literal notranslate"><span class="pre">transit_tools.batman</span></code> function. Default is <code class="docutils literal notranslate"><span class="pre">'2min'</span></code>.</p></li>
+<li><p><strong>sector</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – List of sectors to include in final assembled light curve. If <code class="docutils literal notranslate"><span class="pre">None</span></code>
+is specified, all possible sectors will be included. Default <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>mission</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Current placeholder. Will eventually allow user to specify mission from
+which light curve will be assembled. At this point, only TESS is
+supported.</p></li>
+<li><p><strong>find_knownpls</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag to control whether a query to the NASA Exoplanet Archive is
+searched for any known planets in the target system. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Quantities to retrieve from the NASA Exoplanet Archive if
+<code class="docutils literal notranslate"><span class="pre">find_knownpls</span></code> is True. If set to <code class="docutils literal notranslate"><span class="pre">'all'</span></code>, all available
+quantities will be retrieved. Default <code class="docutils literal notranslate"><span class="pre">'all'</span></code>.</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – Additional arguments to pass to <cite>lighturve.LightCurve</cite> initializer.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.time">
+<code class="sig-name descname">time</code><a class="headerlink" href="#transit_tools.main.lightcurve.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>The timestamps of the light curve.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><cite>np.array</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.flux">
+<code class="sig-name descname">flux</code><a class="headerlink" href="#transit_tools.main.lightcurve.flux" title="Permalink to this definition">¶</a></dt>
+<dd><p>The flux at each timestamp in the light curve.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><cite>np.array</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.flux_err">
+<code class="sig-name descname">flux_err</code><a class="headerlink" href="#transit_tools.main.lightcurve.flux_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>The flux error for each flux in the light curve.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><cite>np.array</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.method">
+<code class="sig-name descname">method</code><a class="headerlink" href="#transit_tools.main.lightcurve.method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The method used to generate the light curve.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.sector">
+<code class="sig-name descname">sector</code><a class="headerlink" href="#transit_tools.main.lightcurve.sector" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of sectors the generated light curve represents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#transit_tools.main.lightcurve.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the target from the light curve query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.tic">
+<code class="sig-name descname">tic</code><a class="headerlink" href="#transit_tools.main.lightcurve.tic" title="Permalink to this definition">¶</a></dt>
+<dd><p>TIC ID of target, if it has one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.known_pls">
+<code class="sig-name descname">known_pls</code><a class="headerlink" href="#transit_tools.main.lightcurve.known_pls" title="Permalink to this definition">¶</a></dt>
+<dd><p>The known planets in the system, if any.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><cite>np.array</cite> of dicts or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.star_params">
+<code class="sig-name descname">star_params</code><a class="headerlink" href="#transit_tools.main.lightcurve.star_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary containing known star params if a query for such has been
+performed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.star_params_tls">
+<code class="sig-name descname">star_params_tls</code><a class="headerlink" href="#transit_tools.main.lightcurve.star_params_tls" title="Permalink to this definition">¶</a></dt>
+<dd><p>The star params used for Transit Least Squares searches, if such a
+search has been run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.raw_lc">
+<code class="sig-name descname">raw_lc</code><a class="headerlink" href="#transit_tools.main.lightcurve.raw_lc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nested <cite>lightcurve</cite> object with <cite>time</cite>, <cite>flux</cite>, and <cite>flux_err</cite>
+attributes of the original input lightcurve prior to processing or
+masking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)">object</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.trend">
+<code class="sig-name descname">trend</code><a class="headerlink" href="#transit_tools.main.lightcurve.trend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trend of light curve based on the <cite>process</cite> method, if detrending was
+performed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><cite>np.array</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.mask_arr">
+<code class="sig-name descname">mask_arr</code><a class="headerlink" href="#transit_tools.main.lightcurve.mask_arr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean array of equal length to the light curve mapping the masked data
+points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><cite>np.array</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.routine">
+<code class="sig-name descname">routine</code><a class="headerlink" href="#transit_tools.main.lightcurve.routine" title="Permalink to this definition">¶</a></dt>
+<dd><p>The shape used by the most recent Transit Least Squares search on the
+light curve.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.sde_thresh">
+<code class="sig-name descname">sde_thresh</code><a class="headerlink" href="#transit_tools.main.lightcurve.sde_thresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Signal Detection Efficiency threshold for a significant detection
+specified in the most recent Transit Least Squares search.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.results">
+<code class="sig-name descname">results</code><a class="headerlink" href="#transit_tools.main.lightcurve.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output results of each iteration of transit searches from the most
+recent call of the <cite>signal_search</cite> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><cite>np.array</cite> of dicts</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.cleanlc">
+<code class="sig-name descname">cleanlc</code><a class="headerlink" href="#transit_tools.main.lightcurve.cleanlc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Light curves with significant periodic signals from the most recent call
+of the <cite>signal_search</cite> method subtracted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list of objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="transit_tools.main.lightcurve.bad_search">
+<code class="sig-name descname">bad_search</code><a class="headerlink" href="#transit_tools.main.lightcurve.bad_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Results from the most recent call of <cite>signal_search</cite> that did not meet
+the specified <cite>sde_thresh</cite> value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transit_tools.main.lightcurve.process">
+<code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.main.lightcurve.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to process light curve for further analysis. Must be performed on
+a <cite>lightkurve.LightCurve</cite> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – Arguments to be passed to the <code class="docutils literal notranslate"><span class="pre">process_lc</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transit_tools.main.lightcurve._updatelc">
+<code class="sig-name descname">_updatelc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">lc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.main.lightcurve._updatelc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to update the light curve that will be used if manual
+alteration is performed that the user wishes to save without completely
+overriding the original light curve.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lc</strong> (<cite>lightkurve.LightCurve</cite> or <cite>transit_tools.lightcurve</cite>) – The light curve that will become the main, updated light curve.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transit_tools.main.lightcurve.reset">
+<code class="sig-name descname">reset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.main.lightcurve.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to bring the raw, original light curve back as the main,
+working light curve. Useful if the user is testing different processing
+methods and does not wish to reload a ‘lightcurve’ instance after each
+one.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transit_tools.main.lightcurve.mask">
+<code class="sig-name descname">mask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.main.lightcurve.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to mask out parts of the light curve. Wraps the lcprocess.mask
+function. Can be performed iteratively to mask out multiple areas or
+ranges of times in the light curve.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – Arguments to be passed to <cite>transit_tools.lcprocess.mask</cite>, with the
+exception of the out_mask argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transit_tools.main.lightcurve.signal_search">
+<code class="sig-name descname">signal_search</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">routine</span><span class="o">=</span><span class="default_value">'tls'</span></em>, <em class="sig-param"><span class="n">plot_live</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">max_runs</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">sde</span><span class="o">=</span><span class="default_value">7.0</span></em>, <em class="sig-param"><span class="n">exact</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.main.lightcurve.signal_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to search the light curve for periodic signals using a variety of
+search algorithms, including Transit Least Squares and Box Least Squares
+from a number of packages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>routine</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The desired routine to be used for finding periodic signals in the
+light curve. Options are ‘tls’ for Transit Least Squares and ‘bls’
+for Box Least Squares.</p></li>
+<li><p><strong>plot_live</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Placeholder argument for the option to view vetting plots as runs
+are finished for a more interactive transit search.</p></li>
+<li><p><strong>max_runs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The maximum number of runs allowed</p></li>
+<li><p><strong>sde</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – The threshold for the Source Detection Efficiency to be used to
+determine whether a signal is significant or not.</p></li>
+<li><p><strong>exact</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag to indicate that the exact number of iterations specified in
+max_runs will be performed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transit_tools.main.lightcurve.vetsheet">
+<code class="sig-name descname">vetsheet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">pls</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.main.lightcurve.vetsheet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to plot the vetting sheet for a given set of signal_search
+results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pls</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – signal_search iteration to display results for. If set to <cite>‘all’</cite>,
+all significant results will be displayed in separate windows. If
+set to -1, the most recent set of results that did not meet the
+significance threshold will be displayed.</p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag to determine whether the plot is saved or not. Save filename
+is specified and passed as a part of <cite>**kwargs**</cite>.</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – Additional arguments to be passed to the
+<cite>transit_tools.plotting.tls_vetsheet</cite> command.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transit_tools.main.lightcurve.get_starparams">
+<code class="sig-name descname">get_starparams</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">cat</span><span class="o">=</span><span class="default_value">'all'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.main.lightcurve.get_starparams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to gather stellar parameters and save them as the star_params
+and stellar_params_tls attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cat</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Specify which calatog to retrieve stellar parameters from. If
+<code class="docutils literal notranslate"><span class="pre">'all'</span></code> is entered, values will be gathered from the Gaia DR2 and
+TESS Input Catalog, with the Gaia DR2 taking precedence</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – Additional arguments to be passed to the <code class="docutils literal notranslate"><span class="pre">'utils.catalog_info'</span></code>
+command.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transit_tools.main.lightcurve.searchsum">
+<code class="sig-name descname">searchsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.main.lightcurve.searchsum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to display periodic signal search results in a user-friendly
+format. Wraps search_summary from utils.py.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="transit_tools.main.lightcurve.update_pls">
+<code class="sig-name descname">update_pls</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">per</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">t0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dur</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">params</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">append</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.main.lightcurve.update_pls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to update the <cite>lightcurve.known_pls</cite> attribute with user-defined
+values or a provided dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Name(s) of the planets.</p></li>
+<li><p><strong>per</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>,</em><em>` np.array`</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Period of the planet(s). Will expect a period in days.</p></li>
+<li><p><strong>t0</strong> (float, <cite>np.array</cite> or None) – Mid-transit time(s) of the first transit(s). Will expect a value in
+MJD.</p></li>
+<li><p><strong>dur</strong> (float, <cite>np.array</cite> or None) – Duration of transit(s). Will expect a value in days.</p></li>
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Dictionary of additional parameters or all orbital parameters. Will
+expect keys similar to those output by
+<cite>transit_tools.utils.known_pls</cite>.</p></li>
+<li><p><strong>append</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag whether or not to append provided planet parameters as a new
+entry in the <cite>lightcurve.known_pls</cite> attribute or to overwrite the
+current entry with the user-provided values.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Ben Hord.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+:mod:`conf`
+===========
+
+.. py:module:: conf
+
+
+Module Contents
+---------------
+
+.. data:: project
+   :annotation: = Transit Tools
+
+   
+
+.. data:: copyright
+   :annotation: = 2021, Ben Hord
+
+   
+
+.. data:: author
+   :annotation: = Ben Hord
+
+   
+
+.. data:: version
+   :annotation: = 
+
+   
+
+.. data:: release
+   :annotation: = 
+
+   
+
+.. data:: master_doc
+   :annotation: = index
+
+   
+
+.. data:: extensions
+   :annotation: = ['sphinx_rtd_theme', 'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.todo',...
+
+   
+
+.. data:: autoapi_type
+   :annotation: = python
+
+   
+
+.. data:: autoapi_dirs
+   :annotation: = ['../', '../transit_tools']
+
+   
+
+.. data:: templates_path
+   :annotation: = ['_templates']
+
+   
+
+.. data:: exclude_patterns
+   :annotation: = ['_build', 'Thumbs.db', '.DS_Store']
+
+   
+
+.. data:: pygments_style
+   :annotation: = sphinx
+
+   
+
+.. data:: html_theme
+   :annotation: = sphinx_rtd_theme
+
+   
+
+.. data:: html_static_path
+   :annotation: = ['_static']
+
+   
+
+.. data:: intersphinx_mapping
+   
+
+   
+

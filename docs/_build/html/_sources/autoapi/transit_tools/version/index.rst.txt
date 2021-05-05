@@ -1,0 +1,14 @@
+:mod:`transit_tools.version`
+============================
+
+.. py:module:: transit_tools.version
+
+
+Module Contents
+---------------
+
+.. data:: __version__
+   :annotation: = 0.1
+
+   
+

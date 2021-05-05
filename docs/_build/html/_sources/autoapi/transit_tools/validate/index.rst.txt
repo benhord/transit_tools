@@ -1,0 +1,73 @@
+:mod:`transit_tools.validate`
+=============================
+
+.. py:module:: transit_tools.validate
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   transit_tools.validate.get_starfield
+   transit_tools.validate.calcfpp_tr
+
+
+
+.. function:: get_starfield(tic, sectors=None, aperture=None, cadence='2min', depth=None, target_out=False, show_plots=True)
+
+   Function to fetch and display the stars around a TESS target.
+
+   :param tic: TIC ID for the desired target source.
+   :type tic: int
+   :param sectors: TESS sectors in which the target was observed. If ``None``, all
+                   valid observed sectors will be collected and used.
+   :type sectors: array or list or None
+   :param aperture: Array of aperture arrays with pixel coordinates of the form
+                    ``[col, row]`` for each pixel included in the aperture for each
+                    TESS sector. If None, the apertures will attempt to be
+   :type aperture: numpy array or None
+
+
+.. function:: calcfpp_tr(lc=None, *args, period=None, t0=None, depth=None, tic=None, binsize=1, folded=False, target_in=None, target_out=False, show_plots=True, **kwargs)
+
+   Function to calculate the FPP for a signal using TRICERATOPS.
+
+   :param lc: Object that contains a folded light curve with time in units
+              of days from midtransit and flux normalized to 1. At
+              minimum, this must contain time and flux attributes, but may
+              contain ``flux_err`` as well.
+   :type lc: object
+   :param \*args: ``Time``, ``flux``, and optional ``flux_err`` arguments. Arguments
+                  passed must be arrays containing ``time`` from midtransit in days,
+                  ``flux`` normalized to 1, and optionally ``flux_err`` for each data
+                  point. lc must be ``None`` for args to be specified.
+   :param period: Orbital period of the signal in days. Not required if input
+                  light curve is already folded.
+   :type period: float
+   :param depth: Depth of midtransit. Not required if target_in is not ``None``.
+   :type depth: float
+   :param sectors: Array or list of sectors in which this signal was observed. Not
+                   required if target_in is not ``None``.
+   :type sectors: array or list
+   :param binsize: Number of points per bin for binning the folded light curve.
+   :type binsize: int
+   :param folded: Flag indicating if the light curve input is folded or not.
+   :type folded: bool
+   :param target_in: Input target object if `TRICERATOPS` has been run previously or
+                     the get_starfield plot has been run. Default is ``None``.
+   :type target_in: object
+   :param target_out: Flag to indicate whether the target object used in this
+                      function should be returned. If ``True``, an additional output
+                      will be expected.
+   :type target_out: bool
+
+   :returns: **target** -- Optional output containing the target object used in the
+             `TRICERATOPS` run in this function.
+   :rtype: object
+
+

@@ -1,0 +1,304 @@
+:mod:`transit_tools.main`
+=========================
+
+.. py:module:: transit_tools.main
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   transit_tools.main.lightcurve
+
+
+
+
+.. class:: lightcurve(lc=None, *args, obj=None, method='2min', sector=None, mission='TESS', find_knownpls=True, values='all', **kwargs)
+
+
+   Bases: :py:obj:`transit_tools.batman.LightCurve`
+
+   Initialization function for all of transit_tools that defines the light
+   curve to be used. This class wraps `lightkurve.LightCurve` and as such
+   retains all functionality of that class with some additions. The light
+   curve can either be user-defined with a `lightkurve.LightCurve` object
+   or arrays of time, flux, and flux error or can be generated via a target
+   name.
+
+   :param lc: `lightkurve.LightCurve` object. Mutually exclusive with ``*args``
+              and ``obj`` inputs. Default ``None``.
+   :type lc: `lightkurve.LightCurve` or None
+   :param \*args: Up to three arguments specifying the time, flux, and flux error of the
+                  light curve. Mutually exclusive with ``lc`` and ``obj`` inputs.
+   :param obj: Name of target to search MAST for a light curve. Mutually exclusive
+               with ``lc`` and ``*args`` inputs. Default ``None``.
+   :type obj: str or None
+   :param method: Method for acquiring a specified light curve through a search of MAST.
+                  Options are currently ``'2min'``, ``'eleanor'``, and ``'batman'``. If
+                  ``'batman'`` is provided, user will also need to pass ``**kwargs`` to
+                  the ``transit_tools.batman`` function. Default is ``'2min'``.
+   :type method: str
+   :param sector: List of sectors to include in final assembled light curve. If ``None``
+                  is specified, all possible sectors will be included. Default ``None``.
+   :type sector: list or None
+   :param mission: Current placeholder. Will eventually allow user to specify mission from
+                   which light curve will be assembled. At this point, only TESS is
+                   supported.
+   :type mission: str
+   :param find_knownpls: Flag to control whether a query to the NASA Exoplanet Archive is
+                         searched for any known planets in the target system. Default ``True``.
+   :type find_knownpls: bool
+   :param values: Quantities to retrieve from the NASA Exoplanet Archive if
+                  ``find_knownpls`` is True. If set to ``'all'``, all available
+                  quantities will be retrieved. Default ``'all'``.
+   :type values: list or str
+   :param \*\*kwargs: Additional arguments to pass to `lighturve.LightCurve` initializer.
+   :type \*\*kwargs: dict
+
+   .. attribute:: time
+
+      The timestamps of the light curve.
+
+      :type: `np.array`
+
+   .. attribute:: flux
+
+      The flux at each timestamp in the light curve.
+
+      :type: `np.array`
+
+   .. attribute:: flux_err
+
+      The flux error for each flux in the light curve.
+
+      :type: `np.array`
+
+   .. attribute:: method
+
+      The method used to generate the light curve.
+
+      :type: str or None
+
+   .. attribute:: sector
+
+      The list of sectors the generated light curve represents.
+
+      :type: list
+
+   .. attribute:: name
+
+      The name of the target from the light curve query.
+
+      :type: str or None
+
+   .. attribute:: tic
+
+      TIC ID of target, if it has one.
+
+      :type: int
+
+   .. attribute:: known_pls
+
+      The known planets in the system, if any.
+
+      :type: `np.array` of dicts or None
+
+   .. attribute:: star_params
+
+      A dictionary containing known star params if a query for such has been
+      performed.
+
+      :type: dict
+
+   .. attribute:: star_params_tls
+
+      The star params used for Transit Least Squares searches, if such a
+      search has been run.
+
+      :type: dict
+
+   .. attribute:: raw_lc
+
+      Nested `lightcurve` object with `time`, `flux`, and `flux_err`
+      attributes of the original input lightcurve prior to processing or
+      masking.
+
+      :type: object
+
+   .. attribute:: trend
+
+      Trend of light curve based on the `process` method, if detrending was
+      performed.
+
+      :type: `np.array`
+
+   .. attribute:: mask_arr
+
+      Boolean array of equal length to the light curve mapping the masked data
+      points.
+
+      :type: `np.array`
+
+   .. attribute:: routine
+
+      The shape used by the most recent Transit Least Squares search on the
+      light curve.
+
+      :type: str
+
+   .. attribute:: sde_thresh
+
+      The Signal Detection Efficiency threshold for a significant detection
+      specified in the most recent Transit Least Squares search.
+
+      :type: float
+
+   .. attribute:: results
+
+      Output results of each iteration of transit searches from the most
+      recent call of the `signal_search` method.
+
+      :type: `np.array` of dicts
+
+   .. attribute:: cleanlc
+
+      Light curves with significant periodic signals from the most recent call
+      of the `signal_search` method subtracted.
+
+      :type: list of objects
+
+   .. attribute:: bad_search
+
+      Results from the most recent call of `signal_search` that did not meet
+      the specified `sde_thresh` value.
+
+      :type: dict
+
+   .. method:: process(self, **kwargs)
+
+      Method to process light curve for further analysis. Must be performed on
+      a `lightkurve.LightCurve` object.
+
+      :param \*\*kwargs: Arguments to be passed to the ``process_lc``.
+      :type \*\*kwargs: dict
+
+
+   .. method:: _updatelc(self, lc)
+
+      Method to update the light curve that will be used if manual
+      alteration is performed that the user wishes to save without completely
+      overriding the original light curve.
+
+      :param lc: The light curve that will become the main, updated light curve.
+      :type lc: `lightkurve.LightCurve` or `transit_tools.lightcurve`
+
+
+   .. method:: reset(self)
+
+      Method to bring the raw, original light curve back as the main,
+      working light curve. Useful if the user is testing different processing
+      methods and does not wish to reload a 'lightcurve' instance after each
+      one.
+
+
+   .. method:: mask(self, **kwargs)
+
+      Method to mask out parts of the light curve. Wraps the lcprocess.mask
+      function. Can be performed iteratively to mask out multiple areas or
+      ranges of times in the light curve.
+
+      :param \*\*kwargs: Arguments to be passed to `transit_tools.lcprocess.mask`, with the
+                         exception of the out_mask argument.
+      :type \*\*kwargs: dict
+
+
+   .. method:: signal_search(self, routine='tls', plot_live=False, max_runs=5, sde=7.0, exact=True, **kwargs)
+
+      Method to search the light curve for periodic signals using a variety of
+      search algorithms, including Transit Least Squares and Box Least Squares
+      from a number of packages.
+
+      :param routine: The desired routine to be used for finding periodic signals in the
+                      light curve. Options are 'tls' for Transit Least Squares and 'bls'
+                      for Box Least Squares.
+      :type routine: str
+      :param plot_live: Placeholder argument for the option to view vetting plots as runs
+                        are finished for a more interactive transit search.
+      :type plot_live: bool
+      :param max_runs: The maximum number of runs allowed
+      :type max_runs: int
+      :param sde: The threshold for the Source Detection Efficiency to be used to
+                  determine whether a signal is significant or not.
+      :type sde: float
+      :param exact: Flag to indicate that the exact number of iterations specified in
+                    max_runs will be performed.
+      :type exact: bool
+
+
+   .. method:: vetsheet(self, pls='all', save=False, **kwargs)
+
+      Method to plot the vetting sheet for a given set of signal_search
+      results.
+
+      :param pls: signal_search iteration to display results for. If set to `'all'`,
+                  all significant results will be displayed in separate windows. If
+                  set to -1, the most recent set of results that did not meet the
+                  significance threshold will be displayed.
+      :type pls: int or str
+      :param save: Flag to determine whether the plot is saved or not. Save filename
+                   is specified and passed as a part of `**kwargs**`.
+      :type save: bool
+      :param \*\*kwargs: Additional arguments to be passed to the
+                         `transit_tools.plotting.tls_vetsheet` command.
+      :type \*\*kwargs: dict
+
+
+   .. method:: get_starparams(self, cat='all')
+
+      Method to gather stellar parameters and save them as the star_params
+      and stellar_params_tls attributes.
+
+      :param cat: Specify which calatog to retrieve stellar parameters from. If
+                  ``'all'`` is entered, values will be gathered from the Gaia DR2 and
+                  TESS Input Catalog, with the Gaia DR2 taking precedence
+      :type cat: str
+      :param \*\*kwargs: Additional arguments to be passed to the ``'utils.catalog_info'``
+                         command.
+      :type \*\*kwargs: dict
+
+
+   .. method:: searchsum(self)
+
+      Method to display periodic signal search results in a user-friendly
+      format. Wraps search_summary from utils.py.
+
+
+   .. method:: update_pls(self, name=None, per=None, t0=None, dur=None, params=None, append=False)
+
+      Method to update the `lightcurve.known_pls` attribute with user-defined
+      values or a provided dictionary.
+
+      :param name: Name(s) of the planets.
+      :type name: str or list or None
+      :param per: Period of the planet(s). Will expect a period in days.
+      :type per: float,` np.array` or None
+      :param t0: Mid-transit time(s) of the first transit(s). Will expect a value in
+                 MJD.
+      :type t0: float, `np.array` or None
+      :param dur: Duration of transit(s). Will expect a value in days.
+      :type dur: float, `np.array` or None
+      :param params: Dictionary of additional parameters or all orbital parameters. Will
+                     expect keys similar to those output by
+                     `transit_tools.utils.known_pls`.
+      :type params: dict, list or None
+      :param append: Flag whether or not to append provided planet parameters as a new
+                     entry in the `lightcurve.known_pls` attribute or to overwrite the
+                     current entry with the user-provided values.
+      :type append: bool
+
+
+

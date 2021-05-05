@@ -1,0 +1,1861 @@
+:mod:`transit_tools`
+====================
+
+.. py:module:: transit_tools
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   batman/index.rst
+   constants/index.rst
+   fetch_lc/index.rst
+   lcprocess/index.rst
+   main/index.rst
+   plotting/index.rst
+   search/index.rst
+   utils/index.rst
+   validate/index.rst
+   version/index.rst
+
+
+Package Contents
+----------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   transit_tools.lightcurve
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   transit_tools.rms
+   transit_tools.tessobs_info
+   transit_tools.coord_to_tic
+   transit_tools.gather_lc
+   transit_tools.get_2minlc
+   transit_tools.get_mlffi
+   transit_tools.get_eleanor
+   transit_tools.gather_lc
+   transit_tools.rms
+   transit_tools.tls_search
+   transit_tools.catalog_info
+   transit_tools.tessobs_info
+   transit_tools.coord_to_tic
+   transit_tools.known_pls
+   transit_tools.name_to_tic
+   transit_tools.tic_to_name
+   transit_tools.search_summary
+   transit_tools.fold
+   transit_tools.mastQuery
+   transit_tools.canonical_name
+   transit_tools.tls_vetsheet
+   transit_tools.process_lc
+   transit_tools.mask
+   transit_tools.full_batlc
+   transit_tools.batman_transit
+   transit_tools.rms
+   transit_tools.tls_search
+   transit_tools.catalog_info
+   transit_tools.tessobs_info
+   transit_tools.coord_to_tic
+   transit_tools.known_pls
+   transit_tools.name_to_tic
+   transit_tools.tic_to_name
+   transit_tools.rms
+   transit_tools.search_summary
+   transit_tools.fold
+   transit_tools.mastQuery
+   transit_tools.canonical_name
+   transit_tools.tls_vetsheet
+   transit_tools.process_lc
+   transit_tools.mask
+   transit_tools.name_to_tic
+   transit_tools.gather_lc
+   transit_tools.full_batlc
+   transit_tools.batman_transit
+   transit_tools.tessobs_info
+   transit_tools.rms
+   transit_tools.get_starfield
+   transit_tools.calcfpp_tr
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   transit_tools.PACKAGEDIR
+   transit_tools.__version__
+   transit_tools.Rsolar_m
+   transit_tools.Rjup_m
+   transit_tools.Rearth_m
+   transit_tools.Rjup_sol
+   transit_tools.Rearth_jup
+   transit_tools.Rsolar_ear
+   transit_tools.Rsolar_au
+   transit_tools.default_star_params
+   transit_tools.Rsolar_m
+   transit_tools.Rjup_m
+   transit_tools.Rearth_m
+   transit_tools.Rjup_sol
+   transit_tools.Rearth_jup
+   transit_tools.Rsolar_ear
+   transit_tools.Rsolar_au
+   transit_tools.default_star_params
+
+
+.. data:: PACKAGEDIR
+   
+
+   
+
+.. data:: __version__
+   :annotation: = 0.1
+
+   
+
+.. function:: rms(data, norm_val=1.0)
+
+   Calculates the Root Mean Square of the provided data.
+
+   :param data: Data for which the root mean square will be calculated
+   :type data: numpy array
+   :param norm_val: The value(s) that the data array is normalized to or the value of the
+                    model that the data values are being compared against if RMS is non-
+                    uniform.
+   :type norm_val: float or numpy array
+
+   :returns: **rms** -- The calculated root mean square of the data.
+   :rtype: float
+
+
+.. function:: tessobs_info(tic=None, ra=None, dec=None)
+
+   Function to retrieve observation information for objects observed by TESS.
+
+   !!Update to include exp time, pixel location, other observation-specific
+     quantities!!
+
+   :param tic: TIC ID of target to be queried. Must not be None if ra and dec are None.
+   :type tic: int or None
+   :param ra: RA of target to be queried. Must not be None if tic is None.
+   :type ra: float or None
+   :param dec: Dec of target to be queried. Must not be None if tic is None.
+   :type dec: float or None
+
+   :returns: **info** -- Dictionary continaing TESS observation info.
+   :rtype: dict
+
+
+.. function:: coord_to_tic(ra, dec)
+
+   Function to convert input RA and Dec coordinates to the nearest TIC ID from
+   the TESS Input Catalog (TIC).
+
+   :param ra: The RA of the target source.
+   :type ra: float
+   :param dec: The Dec of the target source.
+   :type dec: float
+
+   :returns: **tic** -- TIC ID of the source nearest to the input RA and Dec from the TIC.
+   :rtype: int
+
+
+.. function:: gather_lc(tic, method='2min', sectors='all', return_method=False, return_sectors=False, obsinfo=None, **kwargs)
+
+   Function to gather the light curve of a given TIC using the specified
+   method. Currently, 2 minute SPOC pipeline light curves, machine learning FFI
+   light curves, and eleanor light curves are supported.
+
+   !!Add ability to support common names as inputs in absence of TIC!!
+   !!Add ability for sector cuts in FFI light curves!!
+   !!Add obsinfo keyword to pass obsinfo if it exists!!
+
+   :param tic: TESS Input Catalog ID for desired target. At this time, common names are
+               not accepted input, only TIC IDs.
+   :type tic: int
+   :param method: The method with which the light curve will be acquired. Options are
+                  '2min', 'ffi_ml', and 'eleanor'.
+   :type method: str
+   :param sectors: List of sectors to be included in the fetching of the light curve. If
+                   'all' or None is passed, all available light curves will be fetched.
+                   Thresholds can be passed according to the valid syntax of the method
+                   specified.
+   :type sectors: str or list or numpy array
+   :param return_method: A flag to indicate whether the method used to gather the light curve
+                         will be returned. Useful if the chosen method is not known or expected to
+                         return a valid light curve. An additional output will be expected.
+   :type return_method: bool
+   :param return_sectors: A flag to indicate the sectors that the light curve was recovered from.
+                          An additional output will be expected. Currently in progress for most
+                          methods.
+   :type return_sectors: bool
+   :param obsinfo: A dictionary of observational information that can be passed to make some
+                   processes run faster if inlc is specified. Assumes output format of
+                   transit_tools.tessobs_info command.
+   :type obsinfo: dict
+   :param \*\*kwargs: Additional arguments to be passed to the selected method fetching
+                      function.
+
+   :returns: * **lc** (*'LightCurve'*) -- Light curve containing light curves from all sectors contained within the
+               query of sectors.
+             * **method** (*str, optional*) -- The method with which the output light curve was gathered.
+             * **sectors** (*numpy array, optional*) -- The sectors that the light curve was gathered from.
+
+
+.. function:: get_2minlc(tic, sectors='all', thresh=None, out_sec=False, pdc_flag=True)
+
+   Function to retrieve 2 minute cadence TESS lightcurve for a given TIC ID
+   and given sectors. Returns a combined lightcurve in the form of a
+   lightkurve object. If light curves from multiple sectors are combined, each
+   light curve is individually normalized prior to combining.
+
+   :param tic: TESS Input Catalog ID for desired target. At this time, common names are
+               not accepted input, only TIC IDs.
+   :type tic: integer
+   :param sectors: List of desired sectors to include when fetching the SPOC-processed light
+                   curve. If 'all' is specified, all available 2 minute PDCSAP light curves
+                   will be downloaded.
+   :type sectors: list, numpy array or 'all'
+   :param thresh: Threshold to specify a range of sectors without knowing the specific
+                  sectors that contain the target. 'AA' should be either 'gt' or 'lt' for
+                  'greater than' and 'less than', respectively. ## is the threshold sector.
+                  The sector number specified in the threshold will not be included in the
+                  sector query. EX: 'lt13' will return all 2 minute light curves of the
+                  target from sectors prior to, but not including, sector 13.
+   :type thresh: string of form AA##
+   :param out_sec: A flag to determine whether the sectors from which light curves were
+                   downloaded are included as an output. If True, command will provide two
+                   outputs, the light curve object and a numpy array of sectors, in that
+                   order.
+   :type out_sec: boolean
+   :param pdc_flag: Flag determining whether 2 minute light curves are PDC or SAP.
+   :type pdc_flag: boolean
+
+   :returns: * **lc** (*'LightCurve'*) -- Combined light curve of all available light curves at TESS 2 minute
+               cadence for specified TIC ID.
+             * **secs** (*numpy array, optional*) -- List of sectors from which light curve was gathered.
+
+
+.. function:: get_mlffi(tic=None, ra=None, dec=None, sectors='all', flux_type='corr', out_sec=False)
+
+   For use on tesseract only. Fetches FFI light curves made by Brian Powell.
+
+   :param tic: TIC ID of target. If None, both ra and dec must not be None.
+   :type tic: int or None
+   :param ra: RA of target. If None, tic must not be None. If not None, dec must also
+              not be None.
+   :type ra: float or None
+   :param dec: Dec of target. If None, tic must not be None. If not None, ra must also
+               not be None.
+   :type dec: float or None
+   :param sectors: The desired sectors to make the light curve from. May be set to 'all' to
+                   use all available light curves.
+   :type sectors: str or list or array
+   :param flux_type: The type of correction applied to the light curve. Options are 'raw',
+                     'corr', and 'pca'.
+   :type flux_type: str
+   :param out_sec: Flag determining whether or not the sectors that the light curve was
+                   generated from are output. If True, an additional output will be
+                   expected.
+   :type out_sec: bool
+
+   :returns: * **lc** (*'LightCurve' object*) -- The combined light curve.
+             * **sectors** (*array*) -- The sectors from which the output light curve was generated.
+
+
+.. function:: get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15, width=15, bkg_size=31, do_psf=False, do_pca=False, out_flux='corr_flux', norm=True, errorcalc=True, qual_flag=True)
+
+   Function to get a light curve from the TESS full frame images (FFIs) using
+   the Python package eleanor.
+
+   !!Add more docustrings for all keywords!!
+   !!Add common name processing instead of just tic!!
+
+   :param sectors: The sectors that eleanor will use to produce the light curve. If set to
+                   'all', then all available sectors will be used in the light curve
+                   production.
+   :type sectors: str or array or list
+   :param tic: TIC ID for the object that a light curve is desired for. If set to None,
+               coords must have a valid input.
+   :type tic: int or None
+   :param coords: The RA and Dec of the object that a light curve is desired for. Must be
+                  of the form (RA, Dec) in decimal degrees. If set to None, the tic
+                  argument cannot be None.
+   :type coords: tuple of floats
+   :param out_sec: Flag controlling whether an array containing the sectors used to extract
+                   the light curve will be output. If True, an additional output will be
+                   expected.
+   :type out_sec: bool
+   :param height: Height in pixels of the postage stamp with which to extract the light
+                  curve.
+   :type height: int
+   :param width: Height in pixels of the postage stamp with which to extract the light
+                 curve.
+   :type width: int
+   :param bkg_size: Background size to be considered for the background subtraction from the
+                    light curve.
+   :type bkg_size: int
+   :param do_psf: Flag to determine whether a PSF-corrected light curve will be generated
+                  as an additional option to the corrected light curve.
+   :type do_psf: bool
+   :param do_pca: Flag to deteremine whether a PCA-corrected light curve will be generated
+                  as an additional option to the corrected light curve.
+   :type do_pca: bool
+   :param out_flux: Which of the light curves to output. Options are 'corr_flux', 'psf_flux',
+                    and 'pca_flux'. Only one may be selected. If either 'psf_flux' or
+                    'pca_flux' are selected, the do_psf and do_pca flags must be set to True,
+                    respectively.
+   :type out_flux: str
+   :param norm: Flag determining whether the light curve will be normalized prior to
+                output.
+   :type norm: bool
+   :param errorcalc: Flag determining whether the RMS errors will be calculated for the light
+                     curve.
+   :type errorcalc: bool
+   :param qual_flag: Flag determining whether the timestamps with bad quality flags will be
+                     excluded automatically.
+   :type qual_flag: bool
+
+   :returns: * **lc** (*'LightCurve' object*) -- The combined light curve from each sector for the coordinates or TIC ID
+               requested.
+             * **sectors** (*array*) -- Optional output array containing the sectors that the combined light
+               curve was extracted from.
+
+
+.. function:: gather_lc(tic, method='2min', sectors='all', return_method=False, return_sectors=False, obsinfo=None, **kwargs)
+
+   Function to gather the light curve of a given TIC using the specified
+   method. Currently, 2 minute SPOC pipeline light curves, machine learning FFI
+   light curves, and eleanor light curves are supported.
+
+   !!Add ability to support common names as inputs in absence of TIC!!
+   !!Add ability for sector cuts in FFI light curves!!
+   !!Add obsinfo keyword to pass obsinfo if it exists!!
+
+   :param tic: TESS Input Catalog ID for desired target. At this time, common names are
+               not accepted input, only TIC IDs.
+   :type tic: int
+   :param method: The method with which the light curve will be acquired. Options are
+                  '2min', 'ffi_ml', and 'eleanor'.
+   :type method: str
+   :param sectors: List of sectors to be included in the fetching of the light curve. If
+                   'all' or None is passed, all available light curves will be fetched.
+                   Thresholds can be passed according to the valid syntax of the method
+                   specified.
+   :type sectors: str or list or numpy array
+   :param return_method: A flag to indicate whether the method used to gather the light curve
+                         will be returned. Useful if the chosen method is not known or expected to
+                         return a valid light curve. An additional output will be expected.
+   :type return_method: bool
+   :param return_sectors: A flag to indicate the sectors that the light curve was recovered from.
+                          An additional output will be expected. Currently in progress for most
+                          methods.
+   :type return_sectors: bool
+   :param obsinfo: A dictionary of observational information that can be passed to make some
+                   processes run faster if inlc is specified. Assumes output format of
+                   transit_tools.tessobs_info command.
+   :type obsinfo: dict
+   :param \*\*kwargs: Additional arguments to be passed to the selected method fetching
+                      function.
+
+   :returns: * **lc** (*'LightCurve'*) -- Light curve containing light curves from all sectors contained within the
+               query of sectors.
+             * **method** (*str, optional*) -- The method with which the output light curve was gathered.
+             * **sectors** (*numpy array, optional*) -- The sectors that the light curve was gathered from.
+
+
+.. class:: lightcurve(lc=None, *args, obj=None, method='2min', sector=None, mission='TESS', find_knownpls=True, values='all', **kwargs)
+
+
+   Bases: :py:obj:`transit_tools.batman.LightCurve`
+
+   Initialization function for all of transit_tools that defines the light
+   curve to be used. This class wraps `lightkurve.LightCurve` and as such
+   retains all functionality of that class with some additions. The light
+   curve can either be user-defined with a `lightkurve.LightCurve` object
+   or arrays of time, flux, and flux error or can be generated via a target
+   name.
+
+   :param lc: `lightkurve.LightCurve` object. Mutually exclusive with ``*args``
+              and ``obj`` inputs. Default ``None``.
+   :type lc: `lightkurve.LightCurve` or None
+   :param \*args: Up to three arguments specifying the time, flux, and flux error of the
+                  light curve. Mutually exclusive with ``lc`` and ``obj`` inputs.
+   :param obj: Name of target to search MAST for a light curve. Mutually exclusive
+               with ``lc`` and ``*args`` inputs. Default ``None``.
+   :type obj: str or None
+   :param method: Method for acquiring a specified light curve through a search of MAST.
+                  Options are currently ``'2min'``, ``'eleanor'``, and ``'batman'``. If
+                  ``'batman'`` is provided, user will also need to pass ``**kwargs`` to
+                  the ``transit_tools.batman`` function. Default is ``'2min'``.
+   :type method: str
+   :param sector: List of sectors to include in final assembled light curve. If ``None``
+                  is specified, all possible sectors will be included. Default ``None``.
+   :type sector: list or None
+   :param mission: Current placeholder. Will eventually allow user to specify mission from
+                   which light curve will be assembled. At this point, only TESS is
+                   supported.
+   :type mission: str
+   :param find_knownpls: Flag to control whether a query to the NASA Exoplanet Archive is
+                         searched for any known planets in the target system. Default ``True``.
+   :type find_knownpls: bool
+   :param values: Quantities to retrieve from the NASA Exoplanet Archive if
+                  ``find_knownpls`` is True. If set to ``'all'``, all available
+                  quantities will be retrieved. Default ``'all'``.
+   :type values: list or str
+   :param \*\*kwargs: Additional arguments to pass to `lighturve.LightCurve` initializer.
+   :type \*\*kwargs: dict
+
+   .. attribute:: time
+
+      The timestamps of the light curve.
+
+      :type: `np.array`
+
+   .. attribute:: flux
+
+      The flux at each timestamp in the light curve.
+
+      :type: `np.array`
+
+   .. attribute:: flux_err
+
+      The flux error for each flux in the light curve.
+
+      :type: `np.array`
+
+   .. attribute:: method
+
+      The method used to generate the light curve.
+
+      :type: str or None
+
+   .. attribute:: sector
+
+      The list of sectors the generated light curve represents.
+
+      :type: list
+
+   .. attribute:: name
+
+      The name of the target from the light curve query.
+
+      :type: str or None
+
+   .. attribute:: tic
+
+      TIC ID of target, if it has one.
+
+      :type: int
+
+   .. attribute:: known_pls
+
+      The known planets in the system, if any.
+
+      :type: `np.array` of dicts or None
+
+   .. attribute:: star_params
+
+      A dictionary containing known star params if a query for such has been
+      performed.
+
+      :type: dict
+
+   .. attribute:: star_params_tls
+
+      The star params used for Transit Least Squares searches, if such a
+      search has been run.
+
+      :type: dict
+
+   .. attribute:: raw_lc
+
+      Nested `lightcurve` object with `time`, `flux`, and `flux_err`
+      attributes of the original input lightcurve prior to processing or
+      masking.
+
+      :type: object
+
+   .. attribute:: trend
+
+      Trend of light curve based on the `process` method, if detrending was
+      performed.
+
+      :type: `np.array`
+
+   .. attribute:: mask_arr
+
+      Boolean array of equal length to the light curve mapping the masked data
+      points.
+
+      :type: `np.array`
+
+   .. attribute:: routine
+
+      The shape used by the most recent Transit Least Squares search on the
+      light curve.
+
+      :type: str
+
+   .. attribute:: sde_thresh
+
+      The Signal Detection Efficiency threshold for a significant detection
+      specified in the most recent Transit Least Squares search.
+
+      :type: float
+
+   .. attribute:: results
+
+      Output results of each iteration of transit searches from the most
+      recent call of the `signal_search` method.
+
+      :type: `np.array` of dicts
+
+   .. attribute:: cleanlc
+
+      Light curves with significant periodic signals from the most recent call
+      of the `signal_search` method subtracted.
+
+      :type: list of objects
+
+   .. attribute:: bad_search
+
+      Results from the most recent call of `signal_search` that did not meet
+      the specified `sde_thresh` value.
+
+      :type: dict
+
+   .. method:: process(self, **kwargs)
+
+      Method to process light curve for further analysis. Must be performed on
+      a `lightkurve.LightCurve` object.
+
+      :param \*\*kwargs: Arguments to be passed to the ``process_lc``.
+      :type \*\*kwargs: dict
+
+
+   .. method:: _updatelc(self, lc)
+
+      Method to update the light curve that will be used if manual
+      alteration is performed that the user wishes to save without completely
+      overriding the original light curve.
+
+      :param lc: The light curve that will become the main, updated light curve.
+      :type lc: `lightkurve.LightCurve` or `transit_tools.lightcurve`
+
+
+   .. method:: reset(self)
+
+      Method to bring the raw, original light curve back as the main,
+      working light curve. Useful if the user is testing different processing
+      methods and does not wish to reload a 'lightcurve' instance after each
+      one.
+
+
+   .. method:: mask(self, **kwargs)
+
+      Method to mask out parts of the light curve. Wraps the lcprocess.mask
+      function. Can be performed iteratively to mask out multiple areas or
+      ranges of times in the light curve.
+
+      :param \*\*kwargs: Arguments to be passed to `transit_tools.lcprocess.mask`, with the
+                         exception of the out_mask argument.
+      :type \*\*kwargs: dict
+
+
+   .. method:: signal_search(self, routine='tls', plot_live=False, max_runs=5, sde=7.0, exact=True, **kwargs)
+
+      Method to search the light curve for periodic signals using a variety of
+      search algorithms, including Transit Least Squares and Box Least Squares
+      from a number of packages.
+
+      :param routine: The desired routine to be used for finding periodic signals in the
+                      light curve. Options are 'tls' for Transit Least Squares and 'bls'
+                      for Box Least Squares.
+      :type routine: str
+      :param plot_live: Placeholder argument for the option to view vetting plots as runs
+                        are finished for a more interactive transit search.
+      :type plot_live: bool
+      :param max_runs: The maximum number of runs allowed
+      :type max_runs: int
+      :param sde: The threshold for the Source Detection Efficiency to be used to
+                  determine whether a signal is significant or not.
+      :type sde: float
+      :param exact: Flag to indicate that the exact number of iterations specified in
+                    max_runs will be performed.
+      :type exact: bool
+
+
+   .. method:: vetsheet(self, pls='all', save=False, **kwargs)
+
+      Method to plot the vetting sheet for a given set of signal_search
+      results.
+
+      :param pls: signal_search iteration to display results for. If set to `'all'`,
+                  all significant results will be displayed in separate windows. If
+                  set to -1, the most recent set of results that did not meet the
+                  significance threshold will be displayed.
+      :type pls: int or str
+      :param save: Flag to determine whether the plot is saved or not. Save filename
+                   is specified and passed as a part of `**kwargs**`.
+      :type save: bool
+      :param \*\*kwargs: Additional arguments to be passed to the
+                         `transit_tools.plotting.tls_vetsheet` command.
+      :type \*\*kwargs: dict
+
+
+   .. method:: get_starparams(self, cat='all')
+
+      Method to gather stellar parameters and save them as the star_params
+      and stellar_params_tls attributes.
+
+      :param cat: Specify which calatog to retrieve stellar parameters from. If
+                  ``'all'`` is entered, values will be gathered from the Gaia DR2 and
+                  TESS Input Catalog, with the Gaia DR2 taking precedence
+      :type cat: str
+      :param \*\*kwargs: Additional arguments to be passed to the ``'utils.catalog_info'``
+                         command.
+      :type \*\*kwargs: dict
+
+
+   .. method:: searchsum(self)
+
+      Method to display periodic signal search results in a user-friendly
+      format. Wraps search_summary from utils.py.
+
+
+   .. method:: update_pls(self, name=None, per=None, t0=None, dur=None, params=None, append=False)
+
+      Method to update the `lightcurve.known_pls` attribute with user-defined
+      values or a provided dictionary.
+
+      :param name: Name(s) of the planets.
+      :type name: str or list or None
+      :param per: Period of the planet(s). Will expect a period in days.
+      :type per: float,` np.array` or None
+      :param t0: Mid-transit time(s) of the first transit(s). Will expect a value in
+                 MJD.
+      :type t0: float, `np.array` or None
+      :param dur: Duration of transit(s). Will expect a value in days.
+      :type dur: float, `np.array` or None
+      :param params: Dictionary of additional parameters or all orbital parameters. Will
+                     expect keys similar to those output by
+                     `transit_tools.utils.known_pls`.
+      :type params: dict, list or None
+      :param append: Flag whether or not to append provided planet parameters as a new
+                     entry in the `lightcurve.known_pls` attribute or to overwrite the
+                     current entry with the user-provided values.
+      :type append: bool
+
+
+
+.. function:: rms(data, norm_val=1.0)
+
+   Calculates the Root Mean Square of the provided data.
+
+   :param data: Data for which the root mean square will be calculated
+   :type data: numpy array
+   :param norm_val: The value(s) that the data array is normalized to or the value of the
+                    model that the data values are being compared against if RMS is non-
+                    uniform.
+   :type norm_val: float or numpy array
+
+   :returns: **rms** -- The calculated root mean square of the data.
+   :rtype: float
+
+
+.. function:: tls_search(*args, tic=None, shape='default', star_params=None, rms_calc=True, norm_val=1.0, clean_lc=False, starparams_out=False, del_dur=1.0, verbose=False, nthreads=6, **kwargs)
+
+   Function to perform a search for periodic signals using the Transit Least
+   Squares (TLS) algorithm developed by Hippke & Heller 2018. While slower
+   than Box Least Squares, the transit shape used in the search is more
+   realistic.
+
+   :param \*args: If the len = 1, then the argument is assumed to be a
+                  `lightkurve.LightCurve` object with at least two columns, labeled
+                  ``'time'`` and ``'flux'``, respectively, with an optional
+                  ``'flux_err'`` column as the third column. If the len of > 1, then it
+                  is assumed the user is passing ``time``, ``flux``, and ``flux_err``
+                  (optional), respectively. These columns or arguments should be arrays
+                  of equal length.
+   :type \*args: `lightkurve.LightCurve` object or multiple numpy array arguments
+   :param tic: TIC ID of the source that the light curve comes from. This will be
+               used to query the TIC for the stellar parameters of the system. May
+               be set to ``None`` if a full dictionary of stellar params are provided
+               to the ``star_params`` keyword.
+   :type tic: int or None
+   :param shape: The shape used by TLS to search for periodic signals. The user may
+                 specify ``'default'``, ``'grazing'``, or ``'box'``. See Hippke &
+                 Heller 2018 for an in-depth description of these shapes.
+   :type shape: str
+   :param star_params: A dictionary containing stellar parameters to be used in the TLS
+                       search. The dictionary can contain an array of limb-darkening
+                       parameters, stellar radius, lower radius error, upper radius error,
+                       stellar mass, lower mass error, and upper mass error labeled ``'ab'``,
+                       ``'rstar'``, ``'rlow'``, ``'rhigh'``, ``'mstar'``, ``'mlow'``, and
+                       ``'mhigh'``, respectively. The error values are the errors themselves
+                       and not the upper and lower values for each of the parameters. A
+                       partial list may be included, but in this case, the TIC must also be
+                       given.
+   :type star_params: dict or None
+   :param rms_calc: A flag to denote whether the root mean square error will be applied
+                    in the case that error values are not provided.
+   :type rms_calc: bool
+   :param norm_val: Value that the light curve is normalized to. Default is 1. Only 1 or
+                    0 are valid normalizations for TLS.
+   :type norm_val: float
+   :param clean_lc: Flag to indicate whether or not to output a cleaned lightcurve with
+                    the recovered periodic signal masked out. Results in an additional
+                    expected output.
+   :type clean_lc: bool
+   :param starparams_out: Flag to indicate whether or not to output the dictionary of stellar
+                          parameters used in the TLS search. Results in an additional expected
+                          output.
+   :type starparams_out: bool
+   :param del_dur: How many durations worth of data points should be excluded from
+                   cleaned light curve centered on the transit center. Default is 1.
+                   Values < 1 will result in some in-transit points remaining while
+                   values > 1 will remove some points outside the transit.
+   :type del_dur: float
+   :param verbose: Flag to have function print more while it runs.
+   :type verbose: bool
+   :param nthreads: Number of threads to be used for running the signal search. Many
+                    times, cores have the capability to run multiple threads, so be sure
+                    to check your machine to optimize this parameter.
+   :type nthreads: int
+   :param \*\*kwargs: Optional arguments passed to the ``transitleastsquares.power``
+                      function.
+   :type \*\*kwargs: dict
+
+   :returns: * **results** (*dict*) -- Results of the TLS fit. See TLS documentation for the contents of this
+               dictionary and descriptions of each element.
+             * **cleaned_lc** (``lightkurve.LightCurve`` object, optional) -- A light curve with the transits masked out based on the results of the
+               TLS search.
+
+
+.. function:: catalog_info(tic=None, ra=None, dec=None, cat='all', out_cat=False)
+
+   Function to fetch catalog info about the target system from various
+   catalogs. The GAIA catalog takes precedence over the TIC in the values
+   where they overlap, such as RA and Dec.
+
+   !!Change tic to full name processing!!
+   !!Change to iterable catalog queries based on user input!!
+   !!Allow for addition of new keywords rather than updating!!
+
+   :param tic: TIC ID of target object. If None, ra and dec must both not be None.
+   :type tic: int or None
+   :param ra: RA of target object. If None, tic must not be None.
+   :type ra: float or None
+   :param dec: Dec of target object. If None, tic must not be None.
+   :type dec: float or None
+   :param cat: Catalog(s) to be queried. Currently, only 'tic' and 'gaia' are supported.
+   :type cat: string
+   :param out_cat: Flag determining whether the catagories searched will be output as an
+                   array of strings. If True, an additional output will be expected.
+   :type out_cat: bool
+
+   :returns: * **info** (*dict*) -- Dictionary of stellar parameters for target object.
+             * **catalogs** (*array, optional*) -- Array containing strings denoting which catalogs were queried for stellar
+               parameters.
+
+
+.. function:: tessobs_info(tic=None, ra=None, dec=None)
+
+   Function to retrieve observation information for objects observed by TESS.
+
+   !!Update to include exp time, pixel location, other observation-specific
+     quantities!!
+
+   :param tic: TIC ID of target to be queried. Must not be None if ra and dec are None.
+   :type tic: int or None
+   :param ra: RA of target to be queried. Must not be None if tic is None.
+   :type ra: float or None
+   :param dec: Dec of target to be queried. Must not be None if tic is None.
+   :type dec: float or None
+
+   :returns: **info** -- Dictionary continaing TESS observation info.
+   :rtype: dict
+
+
+.. function:: coord_to_tic(ra, dec)
+
+   Function to convert input RA and Dec coordinates to the nearest TIC ID from
+   the TESS Input Catalog (TIC).
+
+   :param ra: The RA of the target source.
+   :type ra: float
+   :param dec: The Dec of the target source.
+   :type dec: float
+
+   :returns: **tic** -- TIC ID of the source nearest to the input RA and Dec from the TIC.
+   :rtype: int
+
+
+.. function:: known_pls(name=None, ra=None, dec=None, radius=5.0, table='exoplanets', values='all', verbose=False)
+
+   A function to gather information on any known planets in a given system.
+   Queries the NASA Exoplanet Archive for objects and their known parameters.
+
+   !!Reduce number of columns queried with each iteration for shorter runtime!!
+   !!Allow to search for planets that are not confirmed on the archive!!
+   !!Allow user to pass values through as list to be queried for more specific
+        query values!!
+
+   :param name: Common name of the system being checked. Optional if RA/Dec are provided.
+   :type name: str
+   :param ra: RA in decimal degrees. Optional if name is provided. If provided, Dec is
+              also required.
+   :type ra: float
+   :param dec: Dec in decimal degrees. Optional if name is provided. If provided, RA is
+               also required.
+   :type dec: float
+   :param radius: Radius in arcseconds around which the provided RA and Dec will be searched
+                  for planets.
+   :type radius: float
+   :param table: Specifies the table to search for planet parameters. See documentation on
+                 the Exoplanet Archive website for a full list of possible tables and their
+                 contents. Default is the 'exoplanets' table, which is the default for the
+                 Exoplanet Archive.
+   :type table: str
+   :param values: Specifies how many values are collected. Current supported options are
+                  'minimum' and 'all'.
+   :type values: str
+   :param verbose: Flag to determine whether some of the parameters of the known planets in
+                   the system are printed.
+   :type verbose: bool
+
+   :returns: **info** -- List containing a dictionary of all known planet parameters for each
+             planet in the queried system.
+   :rtype: list of dicts
+
+
+.. function:: name_to_tic(name)
+
+   Function to convert common name to TIC ID. Queries the MAST for TIC entry
+   nearest to known position for common name.
+
+   :param name: Common name to be converted to TIC.
+   :type name: str
+
+   :returns: **tic** -- TIC ID of closest match to input name's position from TIC on MAST.
+   :rtype: int
+
+
+.. function:: tic_to_name(tic, ra=None, dec=None)
+
+   Function to determine the common name of a TIC ID or given RA/Dec position,
+   if it has one. Queries the MAST and Simbad to gather this information.
+
+   !!Keysort so planet doesn't come first?!!
+
+   :param tic: The TIC ID of the object for which the common name is desired.
+   :type tic: int
+   :param ra: The RA in decimal degrees. Optional with Dec to circumvent querying MAST.
+   :type ra: float
+   :param dec: The Dec in decimal degrees. Optional with TA to circumvent querying MAST.
+   :type dec: float
+
+   :returns: **name** -- The common name of the input TIC ID.
+   :rtype: str
+
+
+.. function:: search_summary(results, routine='tls')
+
+   Function to display periodic signal search results in a user-friendly
+   format.
+
+   !!Update to print BLS parameters as well!!
+   !!Upgrade to generic print statements agnostic of routine. (Just search for
+   keywords and print whichever are available!!
+   !!Consider moving to search.py!!
+   !!Propogate uncertainties to derived quantities where TLS doesn't!!
+   !!Format sig figs better!!
+
+   :param results: Dictionary containing results from the signal search
+   :type results: dict
+   :param routine: String defining which search method was used. Important for formatting
+                   the outputs.
+   :type routine: str
+
+
+.. function:: fold(time, flux, period, flux_err=None, midpoint=None)
+
+   Folds a timeseries based on a given period with the option to provide a
+   midpoint around which to fold.
+
+   !!Doesn't work with current version. Needs update!!
+
+   :param time: The time of the timeseries that is to be folded. Must be identical in
+                length to the flux array.
+   :type time: array
+   :param flux: The flux of the timeseries that is to be folded. Must be identical in
+                length to the time array.
+   :type flux: array
+   :param period: The period with which the timeseries will be folded. Must be given in the
+                  same units as the time array.
+   :type period: float
+   :param flux_err: The corresponding error values for the timeseries. Must be identical in
+                    length to the time and flux arrays. If not None, an additional output
+                    will be expected.
+   :type flux_err: array or None
+   :param midpoint: The point around which the timeseries will be folded. If set to None, the
+                    first element in the time array will be used.
+   :type midpoint: float or None
+
+   :returns: * **folded_time** (*array*) -- Array with the folded time values.
+             * **folded_flux** (*array*) -- Array with the folded flux values.
+             * **folded_flux_err** (*array*) -- Array with the folded flux_err values.
+
+
+.. function:: mastQuery(request)
+
+   Function to make queries to the MAST easier. Helper function. See MAST site
+   for more details.
+
+   :param request: Dictionary of parameters that constitute the query to the MAST.
+   :type request: dict
+
+   :returns: * **head** (*str*) -- String containing header information.
+             * **content** (*str*) -- String containing desired information.
+
+
+.. function:: canonical_name(name)
+
+   Function to obtain the canonical name of an object from the MAST.
+
+   :param name: Name of object to be queried for canonical name.
+   :type name: str
+   :param Results:
+   :param -------:
+   :param canonical_name: Canonical name of the object according to the MAST.
+   :type canonical_name: str
+
+
+.. function:: tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png')
+
+   Function to plot a vetting sheet after running the
+   transit_tools.signal_search function. Output is formatted to fit onto a
+   standard 8"x11" sheet of paper.
+
+   !!Add functionality to plot without having to run search?!!
+   !!Add vertical lines for expected transit times on unprocessed LC!!
+   !!Change x-axis phase values for odd-even plot!!
+   !!Make processed and unprocessed x-axes line up, especially when LC is
+     masked. Maybe include grayed-out parts that were masked!!
+
+   :param lc: Input transit_tools 'lightcurve' object that has had a signal search
+              performed on it.
+   :type lc: 'lightcurve' object
+   :param results: Index of results attribute array of provided 'lightcurve' object.
+                   Indicates which set of results to plot if signal_search produced more
+                   than one set of output results. Can be set to -1 to display the most
+                   recent signal run that did not meet the significance threshold.
+   :type results: int
+   :param show: Flag to determine whether plots will be displayed or not. Must be set to
+                False or 'both' for output matplotlib object to be expected.
+   :type show: bool or str
+   :param save: Flag to determine whether the plots will be saved as a PNG.
+   :type save: bool
+   :param savename: File name for plots to be saved as if save is set to True.
+   :type savename: str or None
+
+   :returns: **plots** -- Output matplotlib plot object. Optional if show is set to False or
+             'both'.
+   :rtype: matplotlib object
+
+
+.. function:: process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None, remove_nans=True, mask_noise=False, mask_plinds=None, **kwargs)
+
+   Function to process a light curve and return it after processing. The order
+   in which processing occurs is removing NaNs, removing noise based on sector,
+   binning, removing outliers manually, and finally flattening, which includes
+   not only flattening using the scipy.signal.savgol_filter function, but also
+   iterative outlier clipping. See 'lightkurve' documentation for further
+   information on the capabilities of these functions.
+
+   !!Update so processing occurs in order of keywords listed!!
+   !!Update to let user specify which planets from lc.known_pls will be
+        included in mask for flattening (maybe by passing arr of indices?)!!
+
+   :param lc: The light curve to be processed.
+   :type lc: LightCurve object
+   :param flatten_length: The window length to be passed to scipy.signal.savgol_filter for the
+                          flattening. If None, no flattening will be performed.
+   :type flatten_length: odd int or None
+   :param binsize: The number of points per bin that will be combined.
+   :type binsize: int
+   :param remove_outliers: If set to a number, it represents the number of sigma above which to
+                           remove outliers from. If set to None, no outliers will be removed
+                           separately from those already removed by the flattening.
+   :type remove_outliers: int or float or None
+   :param remove_nans: Flag to determine if NaNs will be removed from the light curve.
+   :type remove_nans: bool
+   :param mask_noise: Flag to determine whether parts of the light curve will be removed
+                      based on how noisy those parts of each sector are on average and
+                      depending on the type of light curve.
+   :type mask_noise: bool
+   :param mask_plinds: Series of indices in known_pls property of the light curve that will be
+                       masked out before flattening. If None, all planets in known_pls will be
+                       masked out before flattening.
+   :type mask_plinds: list or array
+   :param kwargs: Additional arguments to be passed to the 'flatten' method of the
+                  LightCurve object.
+
+   :returns: **lc** -- Processed light curve. Also now has the attribute lc.trend if flattening
+             was performed. This attribute contains the trend of the light curve
+             prior to flattening.
+   :rtype: LightCurve object
+
+
+.. function:: mask(lc, upper=None, lower=None, out_mask=True)
+
+   Function to mask out sections of the user-provided light curve.
+
+   !!Add interpolation option to fill in gaps with noise!!
+   !!Add option to input a mask that can then be altered with further
+     removals from light curve!!
+
+   :param lc: The light curve to be masked.
+   :type lc: 'LightCurve' object
+   :param upper: Upper limit timestamp of the masked region. If lower is None, all
+                 timestamps before this value will be masked out. This value is not
+                 inclusive and will remain in the light curve.
+   :type upper: float
+   :param lower: Lower limit timestamp of the masked region. If upper is None, all
+                 timestamps after this value will be masked out. This value is not
+                 inclusive and will remain in the light curve.
+   :type lower: float
+   :param out_mask: Flag to determine whether the mask generated will be output. If True, an
+                    additional output will be expected.
+   :type out_mask: bool
+
+   :returns: * **masked_lc** (*'LightCurve' object*) -- The light curve with the specified portions masked out.
+             * **mask** (*array, optional*) -- A boolean array of identical length to the time array from the input
+               light curve with masked portions set to False and everything else set to
+               True.
+
+
+.. function:: full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all', cadence='2min', **kwargs)
+
+   Function to retrive a full simulated BATMAN light curve complete with
+   injected noise.
+
+   !!Allow custom noise model!!
+   !!Update name processing once name processing wrapper function written!!
+   !!Utilize actual stellar params somehow?!!
+   !!Search for known planets in the real system and pass those on as well!!
+   !!Write docstrings!!
+   !!Pass which TIC ID was used!!
+   !!Allow for generation of gaussian noise!!
+   !!Allow custom lc for inlc!!
+   !!Raise error for noise='obs' and inlc=None!!
+
+   :param period: Orbital period to be simulated. Should be in days.
+   :type period: float
+   :param rp: Radius of planet in units of host star radii. Essentially Rp/Rs.
+   :type rp: float
+   :param a: Semi-major axis of the orbit in units of host star radii.
+   :type a: float
+   :param noise: Noise to be included in simulation. Current options are 'obs' for
+                 injection into pre-existing light curve or None for a simulated light
+                 curve without noise. Gaussian noise is expected in the future.
+   :type noise: str or None
+   :param inlc: TIC ID of light curve for simulations to be injected into. Can be set to
+                None for a light curve to be randomly chosen from a pre-selected list in
+                transit_tools/files/lc_list.csv if noise='obs'.
+   :type inlc: None or int
+   :param t0: Mid-transit time of the first transit. If None, t0 will be randomly
+              generated to be somewhere within 1 period of the start of the
+              observation. Must be in the same units as period.
+   :type t0: float or None
+   :param sectors: Sectors to be considered for retrieving light curves specified by inlc.
+                   If 'all', all available light curves for selected inlc will be
+                   retrieved, otherwise only those contained in the user-provided array will
+                   be retrieved.
+   :type sectors: str or array
+   :param cadence: Cadence of TESS light curve to retrieve. Options are '2min', 'ffi_ml', or
+                   'eleanor'. This method is passed to transit_tools.fetch_lc.gather_lc and
+                   follows those hierarchy rules if a light curve at the given cadence
+                   cannot be found.
+   :type cadence: str
+   :param kwargs: Additional arguments to be passed to transit_tools.batman_transit.
+
+
+.. function:: batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0.0, inc=90.0, ecc=0.0, w=90.0, limb_dark='quadratic', cadence=0.01, length=None, time=None, **kwargs)
+
+   Function to generate a simulated 'LightCurve' object using the BATMAN
+   package developed by Laura Kreidberg. Please see BATMAN documentation for a
+   more in-depth description of each parameter.
+
+   !!Fix length argument. Make it remove parts of light curve from boths sides
+     of transit!!
+   !!Integrate supersample_factor and exp_time arguments better since they're
+     likely going to be common for TESS. Maybe automatically do it for user!!
+
+   :param period: Orbital period in days of the simulated planet.
+   :type period: float
+   :param rp: Radius of planet in units of stellar radii.
+   :type rp: float
+   :param a: Semi-major axis of planet orbit in units of stellar radii.
+   :type a: float
+   :param u: Limb darkening coefficients. Defaults to a G2V star in the Kepler
+             bandpass.
+   :type u: array
+   :param t0: Mid-transit time of the first transit.
+   :type t0: float
+   :param inc: Orbital inclination in degrees.
+   :type inc: float
+   :param ecc: Eccentricity of planet orbit. May cause simulation to run slowly if set
+               to a nonzero eccentricity and noise is added using a separate function.
+   :type ecc: float
+   :param w: Longitude of periastron in degrees.
+   :type w: float
+   :param limb_dark: Limb darkening model.
+   :type limb_dark: str
+   :param cadence: Cadence of data points in minutes.
+   :type cadence: float
+   :param length: Length of output light curve in days. If set to None, defaults to one
+                  orbital period in length centered on the first transit.
+   :type length: float or None
+   :param time: Array of time points during which the light curve will be simulated.
+   :type time: array
+   :param kwargs: Additional arguments to be passed to batman.TransitModel. For TESS
+                  light curves, it is recommended to specify the supersample_factor and
+                  exp_time arguments for best results.
+
+   :returns: **lc** -- The light curve of the simulated planet transit for one full orbital
+             period. Light curve will have attribute 'params' that is an object
+             containing all of the input simulated parameters.
+   :rtype: 'LightCurve' object
+
+
+.. data:: Rsolar_m
+   :annotation: = 696342000
+
+   
+
+.. data:: Rjup_m
+   :annotation: = 71492000
+
+   
+
+.. data:: Rearth_m
+   :annotation: = 6371008
+
+   
+
+.. data:: Rjup_sol
+   :annotation: = 0.102763
+
+   
+
+.. data:: Rearth_jup
+   :annotation: = 0.0892147
+
+   
+
+.. data:: Rsolar_ear
+   :annotation: = 109.076
+
+   
+
+.. data:: Rsolar_au
+   :annotation: = 0.00465047
+
+   
+
+.. data:: default_star_params
+   
+
+   
+
+.. function:: rms(data, norm_val=1.0)
+
+   Calculates the Root Mean Square of the provided data.
+
+   :param data: Data for which the root mean square will be calculated
+   :type data: numpy array
+   :param norm_val: The value(s) that the data array is normalized to or the value of the
+                    model that the data values are being compared against if RMS is non-
+                    uniform.
+   :type norm_val: float or numpy array
+
+   :returns: **rms** -- The calculated root mean square of the data.
+   :rtype: float
+
+
+.. function:: tls_search(*args, tic=None, shape='default', star_params=None, rms_calc=True, norm_val=1.0, clean_lc=False, starparams_out=False, del_dur=1.0, verbose=False, nthreads=6, **kwargs)
+
+   Function to perform a search for periodic signals using the Transit Least
+   Squares (TLS) algorithm developed by Hippke & Heller 2018. While slower
+   than Box Least Squares, the transit shape used in the search is more
+   realistic.
+
+   :param \*args: If the len = 1, then the argument is assumed to be a
+                  `lightkurve.LightCurve` object with at least two columns, labeled
+                  ``'time'`` and ``'flux'``, respectively, with an optional
+                  ``'flux_err'`` column as the third column. If the len of > 1, then it
+                  is assumed the user is passing ``time``, ``flux``, and ``flux_err``
+                  (optional), respectively. These columns or arguments should be arrays
+                  of equal length.
+   :type \*args: `lightkurve.LightCurve` object or multiple numpy array arguments
+   :param tic: TIC ID of the source that the light curve comes from. This will be
+               used to query the TIC for the stellar parameters of the system. May
+               be set to ``None`` if a full dictionary of stellar params are provided
+               to the ``star_params`` keyword.
+   :type tic: int or None
+   :param shape: The shape used by TLS to search for periodic signals. The user may
+                 specify ``'default'``, ``'grazing'``, or ``'box'``. See Hippke &
+                 Heller 2018 for an in-depth description of these shapes.
+   :type shape: str
+   :param star_params: A dictionary containing stellar parameters to be used in the TLS
+                       search. The dictionary can contain an array of limb-darkening
+                       parameters, stellar radius, lower radius error, upper radius error,
+                       stellar mass, lower mass error, and upper mass error labeled ``'ab'``,
+                       ``'rstar'``, ``'rlow'``, ``'rhigh'``, ``'mstar'``, ``'mlow'``, and
+                       ``'mhigh'``, respectively. The error values are the errors themselves
+                       and not the upper and lower values for each of the parameters. A
+                       partial list may be included, but in this case, the TIC must also be
+                       given.
+   :type star_params: dict or None
+   :param rms_calc: A flag to denote whether the root mean square error will be applied
+                    in the case that error values are not provided.
+   :type rms_calc: bool
+   :param norm_val: Value that the light curve is normalized to. Default is 1. Only 1 or
+                    0 are valid normalizations for TLS.
+   :type norm_val: float
+   :param clean_lc: Flag to indicate whether or not to output a cleaned lightcurve with
+                    the recovered periodic signal masked out. Results in an additional
+                    expected output.
+   :type clean_lc: bool
+   :param starparams_out: Flag to indicate whether or not to output the dictionary of stellar
+                          parameters used in the TLS search. Results in an additional expected
+                          output.
+   :type starparams_out: bool
+   :param del_dur: How many durations worth of data points should be excluded from
+                   cleaned light curve centered on the transit center. Default is 1.
+                   Values < 1 will result in some in-transit points remaining while
+                   values > 1 will remove some points outside the transit.
+   :type del_dur: float
+   :param verbose: Flag to have function print more while it runs.
+   :type verbose: bool
+   :param nthreads: Number of threads to be used for running the signal search. Many
+                    times, cores have the capability to run multiple threads, so be sure
+                    to check your machine to optimize this parameter.
+   :type nthreads: int
+   :param \*\*kwargs: Optional arguments passed to the ``transitleastsquares.power``
+                      function.
+   :type \*\*kwargs: dict
+
+   :returns: * **results** (*dict*) -- Results of the TLS fit. See TLS documentation for the contents of this
+               dictionary and descriptions of each element.
+             * **cleaned_lc** (``lightkurve.LightCurve`` object, optional) -- A light curve with the transits masked out based on the results of the
+               TLS search.
+
+
+.. function:: catalog_info(tic=None, ra=None, dec=None, cat='all', out_cat=False)
+
+   Function to fetch catalog info about the target system from various
+   catalogs. The GAIA catalog takes precedence over the TIC in the values
+   where they overlap, such as RA and Dec.
+
+   !!Change tic to full name processing!!
+   !!Change to iterable catalog queries based on user input!!
+   !!Allow for addition of new keywords rather than updating!!
+
+   :param tic: TIC ID of target object. If None, ra and dec must both not be None.
+   :type tic: int or None
+   :param ra: RA of target object. If None, tic must not be None.
+   :type ra: float or None
+   :param dec: Dec of target object. If None, tic must not be None.
+   :type dec: float or None
+   :param cat: Catalog(s) to be queried. Currently, only 'tic' and 'gaia' are supported.
+   :type cat: string
+   :param out_cat: Flag determining whether the catagories searched will be output as an
+                   array of strings. If True, an additional output will be expected.
+   :type out_cat: bool
+
+   :returns: * **info** (*dict*) -- Dictionary of stellar parameters for target object.
+             * **catalogs** (*array, optional*) -- Array containing strings denoting which catalogs were queried for stellar
+               parameters.
+
+
+.. function:: tessobs_info(tic=None, ra=None, dec=None)
+
+   Function to retrieve observation information for objects observed by TESS.
+
+   !!Update to include exp time, pixel location, other observation-specific
+     quantities!!
+
+   :param tic: TIC ID of target to be queried. Must not be None if ra and dec are None.
+   :type tic: int or None
+   :param ra: RA of target to be queried. Must not be None if tic is None.
+   :type ra: float or None
+   :param dec: Dec of target to be queried. Must not be None if tic is None.
+   :type dec: float or None
+
+   :returns: **info** -- Dictionary continaing TESS observation info.
+   :rtype: dict
+
+
+.. function:: coord_to_tic(ra, dec)
+
+   Function to convert input RA and Dec coordinates to the nearest TIC ID from
+   the TESS Input Catalog (TIC).
+
+   :param ra: The RA of the target source.
+   :type ra: float
+   :param dec: The Dec of the target source.
+   :type dec: float
+
+   :returns: **tic** -- TIC ID of the source nearest to the input RA and Dec from the TIC.
+   :rtype: int
+
+
+.. function:: known_pls(name=None, ra=None, dec=None, radius=5.0, table='exoplanets', values='all', verbose=False)
+
+   A function to gather information on any known planets in a given system.
+   Queries the NASA Exoplanet Archive for objects and their known parameters.
+
+   !!Reduce number of columns queried with each iteration for shorter runtime!!
+   !!Allow to search for planets that are not confirmed on the archive!!
+   !!Allow user to pass values through as list to be queried for more specific
+        query values!!
+
+   :param name: Common name of the system being checked. Optional if RA/Dec are provided.
+   :type name: str
+   :param ra: RA in decimal degrees. Optional if name is provided. If provided, Dec is
+              also required.
+   :type ra: float
+   :param dec: Dec in decimal degrees. Optional if name is provided. If provided, RA is
+               also required.
+   :type dec: float
+   :param radius: Radius in arcseconds around which the provided RA and Dec will be searched
+                  for planets.
+   :type radius: float
+   :param table: Specifies the table to search for planet parameters. See documentation on
+                 the Exoplanet Archive website for a full list of possible tables and their
+                 contents. Default is the 'exoplanets' table, which is the default for the
+                 Exoplanet Archive.
+   :type table: str
+   :param values: Specifies how many values are collected. Current supported options are
+                  'minimum' and 'all'.
+   :type values: str
+   :param verbose: Flag to determine whether some of the parameters of the known planets in
+                   the system are printed.
+   :type verbose: bool
+
+   :returns: **info** -- List containing a dictionary of all known planet parameters for each
+             planet in the queried system.
+   :rtype: list of dicts
+
+
+.. function:: name_to_tic(name)
+
+   Function to convert common name to TIC ID. Queries the MAST for TIC entry
+   nearest to known position for common name.
+
+   :param name: Common name to be converted to TIC.
+   :type name: str
+
+   :returns: **tic** -- TIC ID of closest match to input name's position from TIC on MAST.
+   :rtype: int
+
+
+.. function:: tic_to_name(tic, ra=None, dec=None)
+
+   Function to determine the common name of a TIC ID or given RA/Dec position,
+   if it has one. Queries the MAST and Simbad to gather this information.
+
+   !!Keysort so planet doesn't come first?!!
+
+   :param tic: The TIC ID of the object for which the common name is desired.
+   :type tic: int
+   :param ra: The RA in decimal degrees. Optional with Dec to circumvent querying MAST.
+   :type ra: float
+   :param dec: The Dec in decimal degrees. Optional with TA to circumvent querying MAST.
+   :type dec: float
+
+   :returns: **name** -- The common name of the input TIC ID.
+   :rtype: str
+
+
+.. function:: rms(data, norm_val=1.0)
+
+   Calculates the Root Mean Square of the provided data.
+
+   :param data: Data for which the root mean square will be calculated
+   :type data: numpy array
+   :param norm_val: The value(s) that the data array is normalized to or the value of the
+                    model that the data values are being compared against if RMS is non-
+                    uniform.
+   :type norm_val: float or numpy array
+
+   :returns: **rms** -- The calculated root mean square of the data.
+   :rtype: float
+
+
+.. function:: search_summary(results, routine='tls')
+
+   Function to display periodic signal search results in a user-friendly
+   format.
+
+   !!Update to print BLS parameters as well!!
+   !!Upgrade to generic print statements agnostic of routine. (Just search for
+   keywords and print whichever are available!!
+   !!Consider moving to search.py!!
+   !!Propogate uncertainties to derived quantities where TLS doesn't!!
+   !!Format sig figs better!!
+
+   :param results: Dictionary containing results from the signal search
+   :type results: dict
+   :param routine: String defining which search method was used. Important for formatting
+                   the outputs.
+   :type routine: str
+
+
+.. function:: fold(time, flux, period, flux_err=None, midpoint=None)
+
+   Folds a timeseries based on a given period with the option to provide a
+   midpoint around which to fold.
+
+   !!Doesn't work with current version. Needs update!!
+
+   :param time: The time of the timeseries that is to be folded. Must be identical in
+                length to the flux array.
+   :type time: array
+   :param flux: The flux of the timeseries that is to be folded. Must be identical in
+                length to the time array.
+   :type flux: array
+   :param period: The period with which the timeseries will be folded. Must be given in the
+                  same units as the time array.
+   :type period: float
+   :param flux_err: The corresponding error values for the timeseries. Must be identical in
+                    length to the time and flux arrays. If not None, an additional output
+                    will be expected.
+   :type flux_err: array or None
+   :param midpoint: The point around which the timeseries will be folded. If set to None, the
+                    first element in the time array will be used.
+   :type midpoint: float or None
+
+   :returns: * **folded_time** (*array*) -- Array with the folded time values.
+             * **folded_flux** (*array*) -- Array with the folded flux values.
+             * **folded_flux_err** (*array*) -- Array with the folded flux_err values.
+
+
+.. function:: mastQuery(request)
+
+   Function to make queries to the MAST easier. Helper function. See MAST site
+   for more details.
+
+   :param request: Dictionary of parameters that constitute the query to the MAST.
+   :type request: dict
+
+   :returns: * **head** (*str*) -- String containing header information.
+             * **content** (*str*) -- String containing desired information.
+
+
+.. function:: canonical_name(name)
+
+   Function to obtain the canonical name of an object from the MAST.
+
+   :param name: Name of object to be queried for canonical name.
+   :type name: str
+   :param Results:
+   :param -------:
+   :param canonical_name: Canonical name of the object according to the MAST.
+   :type canonical_name: str
+
+
+.. data:: Rsolar_m
+   :annotation: = 696342000
+
+   
+
+.. data:: Rjup_m
+   :annotation: = 71492000
+
+   
+
+.. data:: Rearth_m
+   :annotation: = 6371008
+
+   
+
+.. data:: Rjup_sol
+   :annotation: = 0.102763
+
+   
+
+.. data:: Rearth_jup
+   :annotation: = 0.0892147
+
+   
+
+.. data:: Rsolar_ear
+   :annotation: = 109.076
+
+   
+
+.. data:: Rsolar_au
+   :annotation: = 0.00465047
+
+   
+
+.. data:: default_star_params
+   
+
+   
+
+.. function:: tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png')
+
+   Function to plot a vetting sheet after running the
+   transit_tools.signal_search function. Output is formatted to fit onto a
+   standard 8"x11" sheet of paper.
+
+   !!Add functionality to plot without having to run search?!!
+   !!Add vertical lines for expected transit times on unprocessed LC!!
+   !!Change x-axis phase values for odd-even plot!!
+   !!Make processed and unprocessed x-axes line up, especially when LC is
+     masked. Maybe include grayed-out parts that were masked!!
+
+   :param lc: Input transit_tools 'lightcurve' object that has had a signal search
+              performed on it.
+   :type lc: 'lightcurve' object
+   :param results: Index of results attribute array of provided 'lightcurve' object.
+                   Indicates which set of results to plot if signal_search produced more
+                   than one set of output results. Can be set to -1 to display the most
+                   recent signal run that did not meet the significance threshold.
+   :type results: int
+   :param show: Flag to determine whether plots will be displayed or not. Must be set to
+                False or 'both' for output matplotlib object to be expected.
+   :type show: bool or str
+   :param save: Flag to determine whether the plots will be saved as a PNG.
+   :type save: bool
+   :param savename: File name for plots to be saved as if save is set to True.
+   :type savename: str or None
+
+   :returns: **plots** -- Output matplotlib plot object. Optional if show is set to False or
+             'both'.
+   :rtype: matplotlib object
+
+
+.. function:: process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None, remove_nans=True, mask_noise=False, mask_plinds=None, **kwargs)
+
+   Function to process a light curve and return it after processing. The order
+   in which processing occurs is removing NaNs, removing noise based on sector,
+   binning, removing outliers manually, and finally flattening, which includes
+   not only flattening using the scipy.signal.savgol_filter function, but also
+   iterative outlier clipping. See 'lightkurve' documentation for further
+   information on the capabilities of these functions.
+
+   !!Update so processing occurs in order of keywords listed!!
+   !!Update to let user specify which planets from lc.known_pls will be
+        included in mask for flattening (maybe by passing arr of indices?)!!
+
+   :param lc: The light curve to be processed.
+   :type lc: LightCurve object
+   :param flatten_length: The window length to be passed to scipy.signal.savgol_filter for the
+                          flattening. If None, no flattening will be performed.
+   :type flatten_length: odd int or None
+   :param binsize: The number of points per bin that will be combined.
+   :type binsize: int
+   :param remove_outliers: If set to a number, it represents the number of sigma above which to
+                           remove outliers from. If set to None, no outliers will be removed
+                           separately from those already removed by the flattening.
+   :type remove_outliers: int or float or None
+   :param remove_nans: Flag to determine if NaNs will be removed from the light curve.
+   :type remove_nans: bool
+   :param mask_noise: Flag to determine whether parts of the light curve will be removed
+                      based on how noisy those parts of each sector are on average and
+                      depending on the type of light curve.
+   :type mask_noise: bool
+   :param mask_plinds: Series of indices in known_pls property of the light curve that will be
+                       masked out before flattening. If None, all planets in known_pls will be
+                       masked out before flattening.
+   :type mask_plinds: list or array
+   :param kwargs: Additional arguments to be passed to the 'flatten' method of the
+                  LightCurve object.
+
+   :returns: **lc** -- Processed light curve. Also now has the attribute lc.trend if flattening
+             was performed. This attribute contains the trend of the light curve
+             prior to flattening.
+   :rtype: LightCurve object
+
+
+.. function:: mask(lc, upper=None, lower=None, out_mask=True)
+
+   Function to mask out sections of the user-provided light curve.
+
+   !!Add interpolation option to fill in gaps with noise!!
+   !!Add option to input a mask that can then be altered with further
+     removals from light curve!!
+
+   :param lc: The light curve to be masked.
+   :type lc: 'LightCurve' object
+   :param upper: Upper limit timestamp of the masked region. If lower is None, all
+                 timestamps before this value will be masked out. This value is not
+                 inclusive and will remain in the light curve.
+   :type upper: float
+   :param lower: Lower limit timestamp of the masked region. If upper is None, all
+                 timestamps after this value will be masked out. This value is not
+                 inclusive and will remain in the light curve.
+   :type lower: float
+   :param out_mask: Flag to determine whether the mask generated will be output. If True, an
+                    additional output will be expected.
+   :type out_mask: bool
+
+   :returns: * **masked_lc** (*'LightCurve' object*) -- The light curve with the specified portions masked out.
+             * **mask** (*array, optional*) -- A boolean array of identical length to the time array from the input
+               light curve with masked portions set to False and everything else set to
+               True.
+
+
+.. function:: name_to_tic(name)
+
+   Function to convert common name to TIC ID. Queries the MAST for TIC entry
+   nearest to known position for common name.
+
+   :param name: Common name to be converted to TIC.
+   :type name: str
+
+   :returns: **tic** -- TIC ID of closest match to input name's position from TIC on MAST.
+   :rtype: int
+
+
+.. function:: gather_lc(tic, method='2min', sectors='all', return_method=False, return_sectors=False, obsinfo=None, **kwargs)
+
+   Function to gather the light curve of a given TIC using the specified
+   method. Currently, 2 minute SPOC pipeline light curves, machine learning FFI
+   light curves, and eleanor light curves are supported.
+
+   !!Add ability to support common names as inputs in absence of TIC!!
+   !!Add ability for sector cuts in FFI light curves!!
+   !!Add obsinfo keyword to pass obsinfo if it exists!!
+
+   :param tic: TESS Input Catalog ID for desired target. At this time, common names are
+               not accepted input, only TIC IDs.
+   :type tic: int
+   :param method: The method with which the light curve will be acquired. Options are
+                  '2min', 'ffi_ml', and 'eleanor'.
+   :type method: str
+   :param sectors: List of sectors to be included in the fetching of the light curve. If
+                   'all' or None is passed, all available light curves will be fetched.
+                   Thresholds can be passed according to the valid syntax of the method
+                   specified.
+   :type sectors: str or list or numpy array
+   :param return_method: A flag to indicate whether the method used to gather the light curve
+                         will be returned. Useful if the chosen method is not known or expected to
+                         return a valid light curve. An additional output will be expected.
+   :type return_method: bool
+   :param return_sectors: A flag to indicate the sectors that the light curve was recovered from.
+                          An additional output will be expected. Currently in progress for most
+                          methods.
+   :type return_sectors: bool
+   :param obsinfo: A dictionary of observational information that can be passed to make some
+                   processes run faster if inlc is specified. Assumes output format of
+                   transit_tools.tessobs_info command.
+   :type obsinfo: dict
+   :param \*\*kwargs: Additional arguments to be passed to the selected method fetching
+                      function.
+
+   :returns: * **lc** (*'LightCurve'*) -- Light curve containing light curves from all sectors contained within the
+               query of sectors.
+             * **method** (*str, optional*) -- The method with which the output light curve was gathered.
+             * **sectors** (*numpy array, optional*) -- The sectors that the light curve was gathered from.
+
+
+.. function:: full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all', cadence='2min', **kwargs)
+
+   Function to retrive a full simulated BATMAN light curve complete with
+   injected noise.
+
+   !!Allow custom noise model!!
+   !!Update name processing once name processing wrapper function written!!
+   !!Utilize actual stellar params somehow?!!
+   !!Search for known planets in the real system and pass those on as well!!
+   !!Write docstrings!!
+   !!Pass which TIC ID was used!!
+   !!Allow for generation of gaussian noise!!
+   !!Allow custom lc for inlc!!
+   !!Raise error for noise='obs' and inlc=None!!
+
+   :param period: Orbital period to be simulated. Should be in days.
+   :type period: float
+   :param rp: Radius of planet in units of host star radii. Essentially Rp/Rs.
+   :type rp: float
+   :param a: Semi-major axis of the orbit in units of host star radii.
+   :type a: float
+   :param noise: Noise to be included in simulation. Current options are 'obs' for
+                 injection into pre-existing light curve or None for a simulated light
+                 curve without noise. Gaussian noise is expected in the future.
+   :type noise: str or None
+   :param inlc: TIC ID of light curve for simulations to be injected into. Can be set to
+                None for a light curve to be randomly chosen from a pre-selected list in
+                transit_tools/files/lc_list.csv if noise='obs'.
+   :type inlc: None or int
+   :param t0: Mid-transit time of the first transit. If None, t0 will be randomly
+              generated to be somewhere within 1 period of the start of the
+              observation. Must be in the same units as period.
+   :type t0: float or None
+   :param sectors: Sectors to be considered for retrieving light curves specified by inlc.
+                   If 'all', all available light curves for selected inlc will be
+                   retrieved, otherwise only those contained in the user-provided array will
+                   be retrieved.
+   :type sectors: str or array
+   :param cadence: Cadence of TESS light curve to retrieve. Options are '2min', 'ffi_ml', or
+                   'eleanor'. This method is passed to transit_tools.fetch_lc.gather_lc and
+                   follows those hierarchy rules if a light curve at the given cadence
+                   cannot be found.
+   :type cadence: str
+   :param kwargs: Additional arguments to be passed to transit_tools.batman_transit.
+
+
+.. function:: batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0.0, inc=90.0, ecc=0.0, w=90.0, limb_dark='quadratic', cadence=0.01, length=None, time=None, **kwargs)
+
+   Function to generate a simulated 'LightCurve' object using the BATMAN
+   package developed by Laura Kreidberg. Please see BATMAN documentation for a
+   more in-depth description of each parameter.
+
+   !!Fix length argument. Make it remove parts of light curve from boths sides
+     of transit!!
+   !!Integrate supersample_factor and exp_time arguments better since they're
+     likely going to be common for TESS. Maybe automatically do it for user!!
+
+   :param period: Orbital period in days of the simulated planet.
+   :type period: float
+   :param rp: Radius of planet in units of stellar radii.
+   :type rp: float
+   :param a: Semi-major axis of planet orbit in units of stellar radii.
+   :type a: float
+   :param u: Limb darkening coefficients. Defaults to a G2V star in the Kepler
+             bandpass.
+   :type u: array
+   :param t0: Mid-transit time of the first transit.
+   :type t0: float
+   :param inc: Orbital inclination in degrees.
+   :type inc: float
+   :param ecc: Eccentricity of planet orbit. May cause simulation to run slowly if set
+               to a nonzero eccentricity and noise is added using a separate function.
+   :type ecc: float
+   :param w: Longitude of periastron in degrees.
+   :type w: float
+   :param limb_dark: Limb darkening model.
+   :type limb_dark: str
+   :param cadence: Cadence of data points in minutes.
+   :type cadence: float
+   :param length: Length of output light curve in days. If set to None, defaults to one
+                  orbital period in length centered on the first transit.
+   :type length: float or None
+   :param time: Array of time points during which the light curve will be simulated.
+   :type time: array
+   :param kwargs: Additional arguments to be passed to batman.TransitModel. For TESS
+                  light curves, it is recommended to specify the supersample_factor and
+                  exp_time arguments for best results.
+
+   :returns: **lc** -- The light curve of the simulated planet transit for one full orbital
+             period. Light curve will have attribute 'params' that is an object
+             containing all of the input simulated parameters.
+   :rtype: 'LightCurve' object
+
+
+.. function:: tessobs_info(tic=None, ra=None, dec=None)
+
+   Function to retrieve observation information for objects observed by TESS.
+
+   !!Update to include exp time, pixel location, other observation-specific
+     quantities!!
+
+   :param tic: TIC ID of target to be queried. Must not be None if ra and dec are None.
+   :type tic: int or None
+   :param ra: RA of target to be queried. Must not be None if tic is None.
+   :type ra: float or None
+   :param dec: Dec of target to be queried. Must not be None if tic is None.
+   :type dec: float or None
+
+   :returns: **info** -- Dictionary continaing TESS observation info.
+   :rtype: dict
+
+
+.. function:: rms(data, norm_val=1.0)
+
+   Calculates the Root Mean Square of the provided data.
+
+   :param data: Data for which the root mean square will be calculated
+   :type data: numpy array
+   :param norm_val: The value(s) that the data array is normalized to or the value of the
+                    model that the data values are being compared against if RMS is non-
+                    uniform.
+   :type norm_val: float or numpy array
+
+   :returns: **rms** -- The calculated root mean square of the data.
+   :rtype: float
+
+
+.. function:: get_starfield(tic, sectors=None, aperture=None, cadence='2min', depth=None, target_out=False, show_plots=True)
+
+   Function to fetch and display the stars around a TESS target.
+
+   :param tic: TIC ID for the desired target source.
+   :type tic: int
+   :param sectors: TESS sectors in which the target was observed. If ``None``, all
+                   valid observed sectors will be collected and used.
+   :type sectors: array or list or None
+   :param aperture: Array of aperture arrays with pixel coordinates of the form
+                    ``[col, row]`` for each pixel included in the aperture for each
+                    TESS sector. If None, the apertures will attempt to be
+   :type aperture: numpy array or None
+
+
+.. function:: calcfpp_tr(lc=None, *args, period=None, t0=None, depth=None, tic=None, binsize=1, folded=False, target_in=None, target_out=False, show_plots=True, **kwargs)
+
+   Function to calculate the FPP for a signal using TRICERATOPS.
+
+   :param lc: Object that contains a folded light curve with time in units
+              of days from midtransit and flux normalized to 1. At
+              minimum, this must contain time and flux attributes, but may
+              contain ``flux_err`` as well.
+   :type lc: object
+   :param \*args: ``Time``, ``flux``, and optional ``flux_err`` arguments. Arguments
+                  passed must be arrays containing ``time`` from midtransit in days,
+                  ``flux`` normalized to 1, and optionally ``flux_err`` for each data
+                  point. lc must be ``None`` for args to be specified.
+   :param period: Orbital period of the signal in days. Not required if input
+                  light curve is already folded.
+   :type period: float
+   :param depth: Depth of midtransit. Not required if target_in is not ``None``.
+   :type depth: float
+   :param sectors: Array or list of sectors in which this signal was observed. Not
+                   required if target_in is not ``None``.
+   :type sectors: array or list
+   :param binsize: Number of points per bin for binning the folded light curve.
+   :type binsize: int
+   :param folded: Flag indicating if the light curve input is folded or not.
+   :type folded: bool
+   :param target_in: Input target object if `TRICERATOPS` has been run previously or
+                     the get_starfield plot has been run. Default is ``None``.
+   :type target_in: object
+   :param target_out: Flag to indicate whether the target object used in this
+                      function should be returned. If ``True``, an additional output
+                      will be expected.
+   :type target_out: bool
+
+   :returns: **target** -- Optional output containing the target object used in the
+             `TRICERATOPS` run in this function.
+   :rtype: object
+
+

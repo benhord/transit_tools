@@ -1,0 +1,88 @@
+:mod:`transit_tools.search`
+===========================
+
+.. py:module:: transit_tools.search
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   transit_tools.search.tls_search
+
+
+
+.. function:: tls_search(*args, tic=None, shape='default', star_params=None, rms_calc=True, norm_val=1.0, clean_lc=False, starparams_out=False, del_dur=1.0, verbose=False, nthreads=6, **kwargs)
+
+   Function to perform a search for periodic signals using the Transit Least
+   Squares (TLS) algorithm developed by Hippke & Heller 2018. While slower
+   than Box Least Squares, the transit shape used in the search is more
+   realistic.
+
+   :param \*args: If the len = 1, then the argument is assumed to be a
+                  `lightkurve.LightCurve` object with at least two columns, labeled
+                  ``'time'`` and ``'flux'``, respectively, with an optional
+                  ``'flux_err'`` column as the third column. If the len of > 1, then it
+                  is assumed the user is passing ``time``, ``flux``, and ``flux_err``
+                  (optional), respectively. These columns or arguments should be arrays
+                  of equal length.
+   :type \*args: `lightkurve.LightCurve` object or multiple numpy array arguments
+   :param tic: TIC ID of the source that the light curve comes from. This will be
+               used to query the TIC for the stellar parameters of the system. May
+               be set to ``None`` if a full dictionary of stellar params are provided
+               to the ``star_params`` keyword.
+   :type tic: int or None
+   :param shape: The shape used by TLS to search for periodic signals. The user may
+                 specify ``'default'``, ``'grazing'``, or ``'box'``. See Hippke &
+                 Heller 2018 for an in-depth description of these shapes.
+   :type shape: str
+   :param star_params: A dictionary containing stellar parameters to be used in the TLS
+                       search. The dictionary can contain an array of limb-darkening
+                       parameters, stellar radius, lower radius error, upper radius error,
+                       stellar mass, lower mass error, and upper mass error labeled ``'ab'``,
+                       ``'rstar'``, ``'rlow'``, ``'rhigh'``, ``'mstar'``, ``'mlow'``, and
+                       ``'mhigh'``, respectively. The error values are the errors themselves
+                       and not the upper and lower values for each of the parameters. A
+                       partial list may be included, but in this case, the TIC must also be
+                       given.
+   :type star_params: dict or None
+   :param rms_calc: A flag to denote whether the root mean square error will be applied
+                    in the case that error values are not provided.
+   :type rms_calc: bool
+   :param norm_val: Value that the light curve is normalized to. Default is 1. Only 1 or
+                    0 are valid normalizations for TLS.
+   :type norm_val: float
+   :param clean_lc: Flag to indicate whether or not to output a cleaned lightcurve with
+                    the recovered periodic signal masked out. Results in an additional
+                    expected output.
+   :type clean_lc: bool
+   :param starparams_out: Flag to indicate whether or not to output the dictionary of stellar
+                          parameters used in the TLS search. Results in an additional expected
+                          output.
+   :type starparams_out: bool
+   :param del_dur: How many durations worth of data points should be excluded from
+                   cleaned light curve centered on the transit center. Default is 1.
+                   Values < 1 will result in some in-transit points remaining while
+                   values > 1 will remove some points outside the transit.
+   :type del_dur: float
+   :param verbose: Flag to have function print more while it runs.
+   :type verbose: bool
+   :param nthreads: Number of threads to be used for running the signal search. Many
+                    times, cores have the capability to run multiple threads, so be sure
+                    to check your machine to optimize this parameter.
+   :type nthreads: int
+   :param \*\*kwargs: Optional arguments passed to the ``transitleastsquares.power``
+                      function.
+   :type \*\*kwargs: dict
+
+   :returns: * **results** (*dict*) -- Results of the TLS fit. See TLS documentation for the contents of this
+               dictionary and descriptions of each element.
+             * **cleaned_lc** (``lightkurve.LightCurve`` object, optional) -- A light curve with the transits masked out based on the results of the
+               TLS search.
+
+

@@ -1,0 +1,528 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>transit_tools.utils &mdash; Transit Tools  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Transit Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Quickstart.html">Quickstart Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools/issues">Submit an Issue</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools">Source at Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Transit Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">transit_tools.utils</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/autoapi/transit_tools/utils/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-transit_tools.utils">
+<span id="transit-tools-utils"></span><h1><a class="reference internal" href="#module-transit_tools.utils" title="transit_tools.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">transit_tools.utils</span></code></a><a class="headerlink" href="#module-transit_tools.utils" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transit_tools.utils.catalog_info" title="transit_tools.utils.catalog_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">catalog_info</span></code></a>(tic=None, ra=None, dec=None, cat='all', out_cat=False)</p></td>
+<td><p>Function to fetch catalog info about the target system from various</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#transit_tools.utils.tessobs_info" title="transit_tools.utils.tessobs_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tessobs_info</span></code></a>(tic=None, ra=None, dec=None)</p></td>
+<td><p>Function to retrieve observation information for objects observed by TESS.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transit_tools.utils.coord_to_tic" title="transit_tools.utils.coord_to_tic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coord_to_tic</span></code></a>(ra, dec)</p></td>
+<td><p>Function to convert input RA and Dec coordinates to the nearest TIC ID from</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#transit_tools.utils.known_pls" title="transit_tools.utils.known_pls"><code class="xref py py-obj docutils literal notranslate"><span class="pre">known_pls</span></code></a>(name=None, ra=None, dec=None, radius=5.0, table='exoplanets', values='all', verbose=False)</p></td>
+<td><p>A function to gather information on any known planets in a given system.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transit_tools.utils.name_to_tic" title="transit_tools.utils.name_to_tic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name_to_tic</span></code></a>(name)</p></td>
+<td><p>Function to convert common name to TIC ID. Queries the MAST for TIC entry</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#transit_tools.utils.tic_to_name" title="transit_tools.utils.tic_to_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tic_to_name</span></code></a>(tic, ra=None, dec=None)</p></td>
+<td><p>Function to determine the common name of a TIC ID or given RA/Dec position,</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transit_tools.utils.rms" title="transit_tools.utils.rms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rms</span></code></a>(data, norm_val=1.0)</p></td>
+<td><p>Calculates the Root Mean Square of the provided data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#transit_tools.utils.search_summary" title="transit_tools.utils.search_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_summary</span></code></a>(results, routine='tls')</p></td>
+<td><p>Function to display periodic signal search results in a user-friendly</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transit_tools.utils.fold" title="transit_tools.utils.fold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fold</span></code></a>(time, flux, period, flux_err=None, midpoint=None)</p></td>
+<td><p>Folds a timeseries based on a given period with the option to provide a</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#transit_tools.utils.mastQuery" title="transit_tools.utils.mastQuery"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mastQuery</span></code></a>(request)</p></td>
+<td><p>Function to make queries to the MAST easier. Helper function. See MAST site</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transit_tools.utils.canonical_name" title="transit_tools.utils.canonical_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">canonical_name</span></code></a>(name)</p></td>
+<td><p>Function to obtain the canonical name of an object from the MAST.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="transit_tools.utils.catalog_info">
+<code class="sig-prename descclassname">transit_tools.utils.</code><code class="sig-name descname">catalog_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tic</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dec</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cat</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">out_cat</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.utils.catalog_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to fetch catalog info about the target system from various
+catalogs. The GAIA catalog takes precedence over the TIC in the values
+where they overlap, such as RA and Dec.</p>
+<p>!!Change tic to full name processing!!
+!!Change to iterable catalog queries based on user input!!
+!!Allow for addition of new keywords rather than updating!!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – TIC ID of target object. If None, ra and dec must both not be None.</p></li>
+<li><p><strong>ra</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – RA of target object. If None, tic must not be None.</p></li>
+<li><p><strong>dec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Dec of target object. If None, tic must not be None.</p></li>
+<li><p><strong>cat</strong> (<em>string</em>) – Catalog(s) to be queried. Currently, only ‘tic’ and ‘gaia’ are supported.</p></li>
+<li><p><strong>out_cat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag determining whether the catagories searched will be output as an
+array of strings. If True, an additional output will be expected.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>info</strong> (<em>dict</em>) – Dictionary of stellar parameters for target object.</p></li>
+<li><p><strong>catalogs</strong> (<em>array, optional</em>) – Array containing strings denoting which catalogs were queried for stellar
+parameters.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.utils.tessobs_info">
+<code class="sig-prename descclassname">transit_tools.utils.</code><code class="sig-name descname">tessobs_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tic</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dec</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.utils.tessobs_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve observation information for objects observed by TESS.</p>
+<dl class="simple">
+<dt>!!Update to include exp time, pixel location, other observation-specific</dt><dd><p>quantities!!</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – TIC ID of target to be queried. Must not be None if ra and dec are None.</p></li>
+<li><p><strong>ra</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – RA of target to be queried. Must not be None if tic is None.</p></li>
+<li><p><strong>dec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Dec of target to be queried. Must not be None if tic is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>info</strong> – Dictionary continaing TESS observation info.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.utils.coord_to_tic">
+<code class="sig-prename descclassname">transit_tools.utils.</code><code class="sig-name descname">coord_to_tic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ra</span></em>, <em class="sig-param"><span class="n">dec</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.utils.coord_to_tic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to convert input RA and Dec coordinates to the nearest TIC ID from
+the TESS Input Catalog (TIC).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ra</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – The RA of the target source.</p></li>
+<li><p><strong>dec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – The Dec of the target source.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>tic</strong> – TIC ID of the source nearest to the input RA and Dec from the TIC.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.utils.known_pls">
+<code class="sig-prename descclassname">transit_tools.utils.</code><code class="sig-name descname">known_pls</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dec</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">radius</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">table</span><span class="o">=</span><span class="default_value">'exoplanets'</span></em>, <em class="sig-param"><span class="n">values</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.utils.known_pls" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function to gather information on any known planets in a given system.
+Queries the NASA Exoplanet Archive for objects and their known parameters.</p>
+<p>!!Reduce number of columns queried with each iteration for shorter runtime!!
+!!Allow to search for planets that are not confirmed on the archive!!
+!!Allow user to pass values through as list to be queried for more specific</p>
+<blockquote>
+<div><p>query values!!</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Common name of the system being checked. Optional if RA/Dec are provided.</p></li>
+<li><p><strong>ra</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – RA in decimal degrees. Optional if name is provided. If provided, Dec is
+also required.</p></li>
+<li><p><strong>dec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Dec in decimal degrees. Optional if name is provided. If provided, RA is
+also required.</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Radius in arcseconds around which the provided RA and Dec will be searched
+for planets.</p></li>
+<li><p><strong>table</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Specifies the table to search for planet parameters. See documentation on
+the Exoplanet Archive website for a full list of possible tables and their
+contents. Default is the ‘exoplanets’ table, which is the default for the
+Exoplanet Archive.</p></li>
+<li><p><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Specifies how many values are collected. Current supported options are
+‘minimum’ and ‘all’.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag to determine whether some of the parameters of the known planets in
+the system are printed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>info</strong> – List containing a dictionary of all known planet parameters for each
+planet in the queried system.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of dicts</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.utils.name_to_tic">
+<code class="sig-prename descclassname">transit_tools.utils.</code><code class="sig-name descname">name_to_tic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.utils.name_to_tic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to convert common name to TIC ID. Queries the MAST for TIC entry
+nearest to known position for common name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Common name to be converted to TIC.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>tic</strong> – TIC ID of closest match to input name’s position from TIC on MAST.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.utils.tic_to_name">
+<code class="sig-prename descclassname">transit_tools.utils.</code><code class="sig-name descname">tic_to_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tic</span></em>, <em class="sig-param"><span class="n">ra</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dec</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.utils.tic_to_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to determine the common name of a TIC ID or given RA/Dec position,
+if it has one. Queries the MAST and Simbad to gather this information.</p>
+<p>!!Keysort so planet doesn’t come first?!!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The TIC ID of the object for which the common name is desired.</p></li>
+<li><p><strong>ra</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – The RA in decimal degrees. Optional with Dec to circumvent querying MAST.</p></li>
+<li><p><strong>dec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – The Dec in decimal degrees. Optional with TA to circumvent querying MAST.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>name</strong> – The common name of the input TIC ID.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.utils.rms">
+<code class="sig-prename descclassname">transit_tools.utils.</code><code class="sig-name descname">rms</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">norm_val</span><span class="o">=</span><span class="default_value">1.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.utils.rms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the Root Mean Square of the provided data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – Data for which the root mean square will be calculated</p></li>
+<li><p><strong>norm_val</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><em>numpy array</em>) – The value(s) that the data array is normalized to or the value of the
+model that the data values are being compared against if RMS is non-
+uniform.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>rms</strong> – The calculated root mean square of the data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.utils.search_summary">
+<code class="sig-prename descclassname">transit_tools.utils.</code><code class="sig-name descname">search_summary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">results</span></em>, <em class="sig-param"><span class="n">routine</span><span class="o">=</span><span class="default_value">'tls'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.utils.search_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to display periodic signal search results in a user-friendly
+format.</p>
+<p>!!Update to print BLS parameters as well!!
+!!Upgrade to generic print statements agnostic of routine. (Just search for
+keywords and print whichever are available!!
+!!Consider moving to search.py!!
+!!Propogate uncertainties to derived quantities where TLS doesn’t!!
+!!Format sig figs better!!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – Dictionary containing results from the signal search</p></li>
+<li><p><strong>routine</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – String defining which search method was used. Important for formatting
+the outputs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.utils.fold">
+<code class="sig-prename descclassname">transit_tools.utils.</code><code class="sig-name descname">fold</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time</span></em>, <em class="sig-param"><span class="n">flux</span></em>, <em class="sig-param"><span class="n">period</span></em>, <em class="sig-param"><span class="n">flux_err</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">midpoint</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.utils.fold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Folds a timeseries based on a given period with the option to provide a
+midpoint around which to fold.</p>
+<p>!!Doesn’t work with current version. Needs update!!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time</strong> (<em>array</em>) – The time of the timeseries that is to be folded. Must be identical in
+length to the flux array.</p></li>
+<li><p><strong>flux</strong> (<em>array</em>) – The flux of the timeseries that is to be folded. Must be identical in
+length to the time array.</p></li>
+<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – The period with which the timeseries will be folded. Must be given in the
+same units as the time array.</p></li>
+<li><p><strong>flux_err</strong> (<em>array</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – The corresponding error values for the timeseries. Must be identical in
+length to the time and flux arrays. If not None, an additional output
+will be expected.</p></li>
+<li><p><strong>midpoint</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – The point around which the timeseries will be folded. If set to None, the
+first element in the time array will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>folded_time</strong> (<em>array</em>) – Array with the folded time values.</p></li>
+<li><p><strong>folded_flux</strong> (<em>array</em>) – Array with the folded flux values.</p></li>
+<li><p><strong>folded_flux_err</strong> (<em>array</em>) – Array with the folded flux_err values.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.utils.mastQuery">
+<code class="sig-prename descclassname">transit_tools.utils.</code><code class="sig-name descname">mastQuery</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">request</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.utils.mastQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to make queries to the MAST easier. Helper function. See MAST site
+for more details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – Dictionary of parameters that constitute the query to the MAST.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>head</strong> (<em>str</em>) – String containing header information.</p></li>
+<li><p><strong>content</strong> (<em>str</em>) – String containing desired information.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.utils.canonical_name">
+<code class="sig-prename descclassname">transit_tools.utils.</code><code class="sig-name descname">canonical_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.utils.canonical_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to obtain the canonical name of an object from the MAST.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of object to be queried for canonical name.</p></li>
+<li><p><strong>Results</strong> – </p></li>
+<li><p><strong>-------</strong> – </p></li>
+<li><p><strong>canonical_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Canonical name of the object according to the MAST.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Ben Hord.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

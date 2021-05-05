@@ -1,0 +1,52 @@
+:mod:`transit_tools.plotting`
+=============================
+
+.. py:module:: transit_tools.plotting
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   transit_tools.plotting.tls_vetsheet
+
+
+
+.. function:: tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png')
+
+   Function to plot a vetting sheet after running the
+   transit_tools.signal_search function. Output is formatted to fit onto a
+   standard 8"x11" sheet of paper.
+
+   !!Add functionality to plot without having to run search?!!
+   !!Add vertical lines for expected transit times on unprocessed LC!!
+   !!Change x-axis phase values for odd-even plot!!
+   !!Make processed and unprocessed x-axes line up, especially when LC is
+     masked. Maybe include grayed-out parts that were masked!!
+
+   :param lc: Input transit_tools 'lightcurve' object that has had a signal search
+              performed on it.
+   :type lc: 'lightcurve' object
+   :param results: Index of results attribute array of provided 'lightcurve' object.
+                   Indicates which set of results to plot if signal_search produced more
+                   than one set of output results. Can be set to -1 to display the most
+                   recent signal run that did not meet the significance threshold.
+   :type results: int
+   :param show: Flag to determine whether plots will be displayed or not. Must be set to
+                False or 'both' for output matplotlib object to be expected.
+   :type show: bool or str
+   :param save: Flag to determine whether the plots will be saved as a PNG.
+   :type save: bool
+   :param savename: File name for plots to be saved as if save is set to True.
+   :type savename: str or None
+
+   :returns: **plots** -- Output matplotlib plot object. Optional if show is set to False or
+             'both'.
+   :rtype: matplotlib object
+
+

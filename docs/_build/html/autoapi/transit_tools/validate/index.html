@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>transit_tools.validate &mdash; Transit Tools  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Transit Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Quickstart.html">Quickstart Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools/issues">Submit an Issue</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools">Source at Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Transit Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">transit_tools.validate</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/autoapi/transit_tools/validate/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-transit_tools.validate">
+<span id="transit-tools-validate"></span><h1><a class="reference internal" href="#module-transit_tools.validate" title="transit_tools.validate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">transit_tools.validate</span></code></a><a class="headerlink" href="#module-transit_tools.validate" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transit_tools.validate.get_starfield" title="transit_tools.validate.get_starfield"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_starfield</span></code></a>(tic, sectors=None, aperture=None, cadence='2min', depth=None, target_out=False, show_plots=True)</p></td>
+<td><p>Function to fetch and display the stars around a TESS target.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#transit_tools.validate.calcfpp_tr" title="transit_tools.validate.calcfpp_tr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calcfpp_tr</span></code></a>(lc=None, *args, period=None, t0=None, depth=None, tic=None, binsize=1, folded=False, target_in=None, target_out=False, show_plots=True, **kwargs)</p></td>
+<td><p>Function to calculate the FPP for a signal using TRICERATOPS.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="transit_tools.validate.get_starfield">
+<code class="sig-prename descclassname">transit_tools.validate.</code><code class="sig-name descname">get_starfield</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tic</span></em>, <em class="sig-param"><span class="n">sectors</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">aperture</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cadence</span><span class="o">=</span><span class="default_value">'2min'</span></em>, <em class="sig-param"><span class="n">depth</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">target_out</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">show_plots</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.validate.get_starfield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to fetch and display the stars around a TESS target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – TIC ID for the desired target source.</p></li>
+<li><p><strong>sectors</strong> (<em>array</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – TESS sectors in which the target was observed. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all
+valid observed sectors will be collected and used.</p></li>
+<li><p><strong>aperture</strong> (<em>numpy array</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Array of aperture arrays with pixel coordinates of the form
+<code class="docutils literal notranslate"><span class="pre">[col,</span> <span class="pre">row]</span></code> for each pixel included in the aperture for each
+TESS sector. If None, the apertures will attempt to be</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.validate.calcfpp_tr">
+<code class="sig-prename descclassname">transit_tools.validate.</code><code class="sig-name descname">calcfpp_tr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lc</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">period</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">t0</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">depth</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tic</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">binsize</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">folded</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">target_in</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">target_out</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">show_plots</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.validate.calcfpp_tr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to calculate the FPP for a signal using TRICERATOPS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – Object that contains a folded light curve with time in units
+of days from midtransit and flux normalized to 1. At
+minimum, this must contain time and flux attributes, but may
+contain <code class="docutils literal notranslate"><span class="pre">flux_err</span></code> as well.</p></li>
+<li><p><strong>*args</strong> – <code class="docutils literal notranslate"><span class="pre">Time</span></code>, <code class="docutils literal notranslate"><span class="pre">flux</span></code>, and optional <code class="docutils literal notranslate"><span class="pre">flux_err</span></code> arguments. Arguments
+passed must be arrays containing <code class="docutils literal notranslate"><span class="pre">time</span></code> from midtransit in days,
+<code class="docutils literal notranslate"><span class="pre">flux</span></code> normalized to 1, and optionally <code class="docutils literal notranslate"><span class="pre">flux_err</span></code> for each data
+point. lc must be <code class="docutils literal notranslate"><span class="pre">None</span></code> for args to be specified.</p></li>
+<li><p><strong>period</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Orbital period of the signal in days. Not required if input
+light curve is already folded.</p></li>
+<li><p><strong>depth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Depth of midtransit. Not required if target_in is not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>sectors</strong> (<em>array</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – Array or list of sectors in which this signal was observed. Not
+required if target_in is not <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>binsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of points per bin for binning the folded light curve.</p></li>
+<li><p><strong>folded</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag indicating if the light curve input is folded or not.</p></li>
+<li><p><strong>target_in</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – Input target object if <cite>TRICERATOPS</cite> has been run previously or
+the get_starfield plot has been run. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>target_out</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag to indicate whether the target object used in this
+function should be returned. If <code class="docutils literal notranslate"><span class="pre">True</span></code>, an additional output
+will be expected.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>target</strong> – Optional output containing the target object used in the
+<cite>TRICERATOPS</cite> run in this function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)">object</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Ben Hord.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+:mod:`transit_tools.batman`
+===========================
+
+.. py:module:: transit_tools.batman
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   transit_tools.batman.full_batlc
+   transit_tools.batman.batman_transit
+
+
+
+.. function:: full_batlc(period, rp, a, noise='obs', inlc=None, t0=None, sectors='all', cadence='2min', **kwargs)
+
+   Function to retrive a full simulated BATMAN light curve complete with
+   injected noise.
+
+   !!Allow custom noise model!!
+   !!Update name processing once name processing wrapper function written!!
+   !!Utilize actual stellar params somehow?!!
+   !!Search for known planets in the real system and pass those on as well!!
+   !!Write docstrings!!
+   !!Pass which TIC ID was used!!
+   !!Allow for generation of gaussian noise!!
+   !!Allow custom lc for inlc!!
+   !!Raise error for noise='obs' and inlc=None!!
+
+   :param period: Orbital period to be simulated. Should be in days.
+   :type period: float
+   :param rp: Radius of planet in units of host star radii. Essentially Rp/Rs.
+   :type rp: float
+   :param a: Semi-major axis of the orbit in units of host star radii.
+   :type a: float
+   :param noise: Noise to be included in simulation. Current options are 'obs' for
+                 injection into pre-existing light curve or None for a simulated light
+                 curve without noise. Gaussian noise is expected in the future.
+   :type noise: str or None
+   :param inlc: TIC ID of light curve for simulations to be injected into. Can be set to
+                None for a light curve to be randomly chosen from a pre-selected list in
+                transit_tools/files/lc_list.csv if noise='obs'.
+   :type inlc: None or int
+   :param t0: Mid-transit time of the first transit. If None, t0 will be randomly
+              generated to be somewhere within 1 period of the start of the
+              observation. Must be in the same units as period.
+   :type t0: float or None
+   :param sectors: Sectors to be considered for retrieving light curves specified by inlc.
+                   If 'all', all available light curves for selected inlc will be
+                   retrieved, otherwise only those contained in the user-provided array will
+                   be retrieved.
+   :type sectors: str or array
+   :param cadence: Cadence of TESS light curve to retrieve. Options are '2min', 'ffi_ml', or
+                   'eleanor'. This method is passed to transit_tools.fetch_lc.gather_lc and
+                   follows those hierarchy rules if a light curve at the given cadence
+                   cannot be found.
+   :type cadence: str
+   :param kwargs: Additional arguments to be passed to transit_tools.batman_transit.
+
+
+.. function:: batman_transit(period, rp, a, u=[0.4804, 0.1867], t0=0.0, inc=90.0, ecc=0.0, w=90.0, limb_dark='quadratic', cadence=0.01, length=None, time=None, **kwargs)
+
+   Function to generate a simulated 'LightCurve' object using the BATMAN
+   package developed by Laura Kreidberg. Please see BATMAN documentation for a
+   more in-depth description of each parameter.
+
+   !!Fix length argument. Make it remove parts of light curve from boths sides
+     of transit!!
+   !!Integrate supersample_factor and exp_time arguments better since they're
+     likely going to be common for TESS. Maybe automatically do it for user!!
+
+   :param period: Orbital period in days of the simulated planet.
+   :type period: float
+   :param rp: Radius of planet in units of stellar radii.
+   :type rp: float
+   :param a: Semi-major axis of planet orbit in units of stellar radii.
+   :type a: float
+   :param u: Limb darkening coefficients. Defaults to a G2V star in the Kepler
+             bandpass.
+   :type u: array
+   :param t0: Mid-transit time of the first transit.
+   :type t0: float
+   :param inc: Orbital inclination in degrees.
+   :type inc: float
+   :param ecc: Eccentricity of planet orbit. May cause simulation to run slowly if set
+               to a nonzero eccentricity and noise is added using a separate function.
+   :type ecc: float
+   :param w: Longitude of periastron in degrees.
+   :type w: float
+   :param limb_dark: Limb darkening model.
+   :type limb_dark: str
+   :param cadence: Cadence of data points in minutes.
+   :type cadence: float
+   :param length: Length of output light curve in days. If set to None, defaults to one
+                  orbital period in length centered on the first transit.
+   :type length: float or None
+   :param time: Array of time points during which the light curve will be simulated.
+   :type time: array
+   :param kwargs: Additional arguments to be passed to batman.TransitModel. For TESS
+                  light curves, it is recommended to specify the supersample_factor and
+                  exp_time arguments for best results.
+
+   :returns: **lc** -- The light curve of the simulated planet transit for one full orbital
+             period. Light curve will have attribute 'params' that is an object
+             containing all of the input simulated parameters.
+   :rtype: 'LightCurve' object
+
+

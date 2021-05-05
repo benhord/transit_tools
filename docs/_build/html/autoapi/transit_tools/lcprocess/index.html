@@ -1,0 +1,311 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>transit_tools.lcprocess &mdash; Transit Tools  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Transit Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Quickstart.html">Quickstart Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools/issues">Submit an Issue</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools">Source at Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Transit Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">transit_tools.lcprocess</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/autoapi/transit_tools/lcprocess/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-transit_tools.lcprocess">
+<span id="transit-tools-lcprocess"></span><h1><a class="reference internal" href="#module-transit_tools.lcprocess" title="transit_tools.lcprocess"><code class="xref py py-mod docutils literal notranslate"><span class="pre">transit_tools.lcprocess</span></code></a><a class="headerlink" href="#module-transit_tools.lcprocess" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transit_tools.lcprocess.process_lc" title="transit_tools.lcprocess.process_lc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process_lc</span></code></a>(lc, flatten_length=None, binsize=1, remove_outliers=None, remove_nans=True, mask_noise=False, mask_plinds=None, **kwargs)</p></td>
+<td><p>Function to process a light curve and return it after processing. The order</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#transit_tools.lcprocess.mask" title="transit_tools.lcprocess.mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask</span></code></a>(lc, upper=None, lower=None, out_mask=True)</p></td>
+<td><p>Function to mask out sections of the user-provided light curve.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="transit_tools.lcprocess.process_lc">
+<code class="sig-prename descclassname">transit_tools.lcprocess.</code><code class="sig-name descname">process_lc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lc</span></em>, <em class="sig-param"><span class="n">flatten_length</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">binsize</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">remove_outliers</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">remove_nans</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">mask_noise</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">mask_plinds</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.lcprocess.process_lc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to process a light curve and return it after processing. The order
+in which processing occurs is removing NaNs, removing noise based on sector,
+binning, removing outliers manually, and finally flattening, which includes
+not only flattening using the scipy.signal.savgol_filter function, but also
+iterative outlier clipping. See ‘lightkurve’ documentation for further
+information on the capabilities of these functions.</p>
+<p>!!Update so processing occurs in order of keywords listed!!
+!!Update to let user specify which planets from lc.known_pls will be</p>
+<blockquote>
+<div><p>included in mask for flattening (maybe by passing arr of indices?)!!</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lc</strong> (<em>LightCurve object</em>) – The light curve to be processed.</p></li>
+<li><p><strong>flatten_length</strong> (<em>odd int</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – The window length to be passed to scipy.signal.savgol_filter for the
+flattening. If None, no flattening will be performed.</p></li>
+<li><p><strong>binsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of points per bin that will be combined.</p></li>
+<li><p><strong>remove_outliers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – If set to a number, it represents the number of sigma above which to
+remove outliers from. If set to None, no outliers will be removed
+separately from those already removed by the flattening.</p></li>
+<li><p><strong>remove_nans</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag to determine if NaNs will be removed from the light curve.</p></li>
+<li><p><strong>mask_noise</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag to determine whether parts of the light curve will be removed
+based on how noisy those parts of each sector are on average and
+depending on the type of light curve.</p></li>
+<li><p><strong>mask_plinds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><em>array</em>) – Series of indices in known_pls property of the light curve that will be
+masked out before flattening. If None, all planets in known_pls will be
+masked out before flattening.</p></li>
+<li><p><strong>kwargs</strong> – Additional arguments to be passed to the ‘flatten’ method of the
+LightCurve object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>lc</strong> – Processed light curve. Also now has the attribute lc.trend if flattening
+was performed. This attribute contains the trend of the light curve
+prior to flattening.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>LightCurve object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="transit_tools.lcprocess.mask">
+<code class="sig-prename descclassname">transit_tools.lcprocess.</code><code class="sig-name descname">mask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lc</span></em>, <em class="sig-param"><span class="n">upper</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lower</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_mask</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.lcprocess.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to mask out sections of the user-provided light curve.</p>
+<p>!!Add interpolation option to fill in gaps with noise!!
+!!Add option to input a mask that can then be altered with further</p>
+<blockquote>
+<div><p>removals from light curve!!</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lc</strong> (<em>'LightCurve' object</em>) – The light curve to be masked.</p></li>
+<li><p><strong>upper</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Upper limit timestamp of the masked region. If lower is None, all
+timestamps before this value will be masked out. This value is not
+inclusive and will remain in the light curve.</p></li>
+<li><p><strong>lower</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Lower limit timestamp of the masked region. If upper is None, all
+timestamps after this value will be masked out. This value is not
+inclusive and will remain in the light curve.</p></li>
+<li><p><strong>out_mask</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag to determine whether the mask generated will be output. If True, an
+additional output will be expected.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>masked_lc</strong> (<em>‘LightCurve’ object</em>) – The light curve with the specified portions masked out.</p></li>
+<li><p><strong>mask</strong> (<em>array, optional</em>) – A boolean array of identical length to the time array from the input
+light curve with masked portions set to False and everything else set to
+True.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Ben Hord.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,243 @@
+:mod:`transit_tools.utils`
+==========================
+
+.. py:module:: transit_tools.utils
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   transit_tools.utils.catalog_info
+   transit_tools.utils.tessobs_info
+   transit_tools.utils.coord_to_tic
+   transit_tools.utils.known_pls
+   transit_tools.utils.name_to_tic
+   transit_tools.utils.tic_to_name
+   transit_tools.utils.rms
+   transit_tools.utils.search_summary
+   transit_tools.utils.fold
+   transit_tools.utils.mastQuery
+   transit_tools.utils.canonical_name
+
+
+
+.. function:: catalog_info(tic=None, ra=None, dec=None, cat='all', out_cat=False)
+
+   Function to fetch catalog info about the target system from various
+   catalogs. The GAIA catalog takes precedence over the TIC in the values
+   where they overlap, such as RA and Dec.
+
+   !!Change tic to full name processing!!
+   !!Change to iterable catalog queries based on user input!!
+   !!Allow for addition of new keywords rather than updating!!
+
+   :param tic: TIC ID of target object. If None, ra and dec must both not be None.
+   :type tic: int or None
+   :param ra: RA of target object. If None, tic must not be None.
+   :type ra: float or None
+   :param dec: Dec of target object. If None, tic must not be None.
+   :type dec: float or None
+   :param cat: Catalog(s) to be queried. Currently, only 'tic' and 'gaia' are supported.
+   :type cat: string
+   :param out_cat: Flag determining whether the catagories searched will be output as an
+                   array of strings. If True, an additional output will be expected.
+   :type out_cat: bool
+
+   :returns: * **info** (*dict*) -- Dictionary of stellar parameters for target object.
+             * **catalogs** (*array, optional*) -- Array containing strings denoting which catalogs were queried for stellar
+               parameters.
+
+
+.. function:: tessobs_info(tic=None, ra=None, dec=None)
+
+   Function to retrieve observation information for objects observed by TESS.
+
+   !!Update to include exp time, pixel location, other observation-specific
+     quantities!!
+
+   :param tic: TIC ID of target to be queried. Must not be None if ra and dec are None.
+   :type tic: int or None
+   :param ra: RA of target to be queried. Must not be None if tic is None.
+   :type ra: float or None
+   :param dec: Dec of target to be queried. Must not be None if tic is None.
+   :type dec: float or None
+
+   :returns: **info** -- Dictionary continaing TESS observation info.
+   :rtype: dict
+
+
+.. function:: coord_to_tic(ra, dec)
+
+   Function to convert input RA and Dec coordinates to the nearest TIC ID from
+   the TESS Input Catalog (TIC).
+
+   :param ra: The RA of the target source.
+   :type ra: float
+   :param dec: The Dec of the target source.
+   :type dec: float
+
+   :returns: **tic** -- TIC ID of the source nearest to the input RA and Dec from the TIC.
+   :rtype: int
+
+
+.. function:: known_pls(name=None, ra=None, dec=None, radius=5.0, table='exoplanets', values='all', verbose=False)
+
+   A function to gather information on any known planets in a given system.
+   Queries the NASA Exoplanet Archive for objects and their known parameters.
+
+   !!Reduce number of columns queried with each iteration for shorter runtime!!
+   !!Allow to search for planets that are not confirmed on the archive!!
+   !!Allow user to pass values through as list to be queried for more specific
+        query values!!
+
+   :param name: Common name of the system being checked. Optional if RA/Dec are provided.
+   :type name: str
+   :param ra: RA in decimal degrees. Optional if name is provided. If provided, Dec is
+              also required.
+   :type ra: float
+   :param dec: Dec in decimal degrees. Optional if name is provided. If provided, RA is
+               also required.
+   :type dec: float
+   :param radius: Radius in arcseconds around which the provided RA and Dec will be searched
+                  for planets.
+   :type radius: float
+   :param table: Specifies the table to search for planet parameters. See documentation on
+                 the Exoplanet Archive website for a full list of possible tables and their
+                 contents. Default is the 'exoplanets' table, which is the default for the
+                 Exoplanet Archive.
+   :type table: str
+   :param values: Specifies how many values are collected. Current supported options are
+                  'minimum' and 'all'.
+   :type values: str
+   :param verbose: Flag to determine whether some of the parameters of the known planets in
+                   the system are printed.
+   :type verbose: bool
+
+   :returns: **info** -- List containing a dictionary of all known planet parameters for each
+             planet in the queried system.
+   :rtype: list of dicts
+
+
+.. function:: name_to_tic(name)
+
+   Function to convert common name to TIC ID. Queries the MAST for TIC entry
+   nearest to known position for common name.
+
+   :param name: Common name to be converted to TIC.
+   :type name: str
+
+   :returns: **tic** -- TIC ID of closest match to input name's position from TIC on MAST.
+   :rtype: int
+
+
+.. function:: tic_to_name(tic, ra=None, dec=None)
+
+   Function to determine the common name of a TIC ID or given RA/Dec position,
+   if it has one. Queries the MAST and Simbad to gather this information.
+
+   !!Keysort so planet doesn't come first?!!
+
+   :param tic: The TIC ID of the object for which the common name is desired.
+   :type tic: int
+   :param ra: The RA in decimal degrees. Optional with Dec to circumvent querying MAST.
+   :type ra: float
+   :param dec: The Dec in decimal degrees. Optional with TA to circumvent querying MAST.
+   :type dec: float
+
+   :returns: **name** -- The common name of the input TIC ID.
+   :rtype: str
+
+
+.. function:: rms(data, norm_val=1.0)
+
+   Calculates the Root Mean Square of the provided data.
+
+   :param data: Data for which the root mean square will be calculated
+   :type data: numpy array
+   :param norm_val: The value(s) that the data array is normalized to or the value of the
+                    model that the data values are being compared against if RMS is non-
+                    uniform.
+   :type norm_val: float or numpy array
+
+   :returns: **rms** -- The calculated root mean square of the data.
+   :rtype: float
+
+
+.. function:: search_summary(results, routine='tls')
+
+   Function to display periodic signal search results in a user-friendly
+   format.
+
+   !!Update to print BLS parameters as well!!
+   !!Upgrade to generic print statements agnostic of routine. (Just search for
+   keywords and print whichever are available!!
+   !!Consider moving to search.py!!
+   !!Propogate uncertainties to derived quantities where TLS doesn't!!
+   !!Format sig figs better!!
+
+   :param results: Dictionary containing results from the signal search
+   :type results: dict
+   :param routine: String defining which search method was used. Important for formatting
+                   the outputs.
+   :type routine: str
+
+
+.. function:: fold(time, flux, period, flux_err=None, midpoint=None)
+
+   Folds a timeseries based on a given period with the option to provide a
+   midpoint around which to fold.
+
+   !!Doesn't work with current version. Needs update!!
+
+   :param time: The time of the timeseries that is to be folded. Must be identical in
+                length to the flux array.
+   :type time: array
+   :param flux: The flux of the timeseries that is to be folded. Must be identical in
+                length to the time array.
+   :type flux: array
+   :param period: The period with which the timeseries will be folded. Must be given in the
+                  same units as the time array.
+   :type period: float
+   :param flux_err: The corresponding error values for the timeseries. Must be identical in
+                    length to the time and flux arrays. If not None, an additional output
+                    will be expected.
+   :type flux_err: array or None
+   :param midpoint: The point around which the timeseries will be folded. If set to None, the
+                    first element in the time array will be used.
+   :type midpoint: float or None
+
+   :returns: * **folded_time** (*array*) -- Array with the folded time values.
+             * **folded_flux** (*array*) -- Array with the folded flux values.
+             * **folded_flux_err** (*array*) -- Array with the folded flux_err values.
+
+
+.. function:: mastQuery(request)
+
+   Function to make queries to the MAST easier. Helper function. See MAST site
+   for more details.
+
+   :param request: Dictionary of parameters that constitute the query to the MAST.
+   :type request: dict
+
+   :returns: * **head** (*str*) -- String containing header information.
+             * **content** (*str*) -- String containing desired information.
+
+
+.. function:: canonical_name(name)
+
+   Function to obtain the canonical name of an object from the MAST.
+
+   :param name: Name of object to be queried for canonical name.
+   :type name: str
+   :param Results:
+   :param -------:
+   :param canonical_name: Canonical name of the object according to the MAST.
+   :type canonical_name: str
+
+

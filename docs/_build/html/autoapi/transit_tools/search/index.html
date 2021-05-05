@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>transit_tools.search &mdash; Transit Tools  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Transit Tools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Quickstart.html">Quickstart Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools/issues">Submit an Issue</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools">Source at Github</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Transit Tools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">transit_tools.search</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/autoapi/transit_tools/search/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-transit_tools.search">
+<span id="transit-tools-search"></span><h1><a class="reference internal" href="#module-transit_tools.search" title="transit_tools.search"><code class="xref py py-mod docutils literal notranslate"><span class="pre">transit_tools.search</span></code></a><a class="headerlink" href="#module-transit_tools.search" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transit_tools.search.tls_search" title="transit_tools.search.tls_search"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tls_search</span></code></a>(*args, tic=None, shape='default', star_params=None, rms_calc=True, norm_val=1.0, clean_lc=False, starparams_out=False, del_dur=1.0, verbose=False, nthreads=6, **kwargs)</p></td>
+<td><p>Function to perform a search for periodic signals using the Transit Least</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="transit_tools.search.tls_search">
+<code class="sig-prename descclassname">transit_tools.search.</code><code class="sig-name descname">tls_search</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">tic</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">'default'</span></em>, <em class="sig-param"><span class="n">star_params</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rms_calc</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">norm_val</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">clean_lc</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">starparams_out</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">del_dur</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">nthreads</span><span class="o">=</span><span class="default_value">6</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#transit_tools.search.tls_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to perform a search for periodic signals using the Transit Least
+Squares (TLS) algorithm developed by Hippke &amp; Heller 2018. While slower
+than Box Least Squares, the transit shape used in the search is more
+realistic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> (<cite>lightkurve.LightCurve</cite> object or multiple numpy array arguments) – If the len = 1, then the argument is assumed to be a
+<cite>lightkurve.LightCurve</cite> object with at least two columns, labeled
+<code class="docutils literal notranslate"><span class="pre">'time'</span></code> and <code class="docutils literal notranslate"><span class="pre">'flux'</span></code>, respectively, with an optional
+<code class="docutils literal notranslate"><span class="pre">'flux_err'</span></code> column as the third column. If the len of &gt; 1, then it
+is assumed the user is passing <code class="docutils literal notranslate"><span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">flux</span></code>, and <code class="docutils literal notranslate"><span class="pre">flux_err</span></code>
+(optional), respectively. These columns or arguments should be arrays
+of equal length.</p></li>
+<li><p><strong>tic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – TIC ID of the source that the light curve comes from. This will be
+used to query the TIC for the stellar parameters of the system. May
+be set to <code class="docutils literal notranslate"><span class="pre">None</span></code> if a full dictionary of stellar params are provided
+to the <code class="docutils literal notranslate"><span class="pre">star_params</span></code> keyword.</p></li>
+<li><p><strong>shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The shape used by TLS to search for periodic signals. The user may
+specify <code class="docutils literal notranslate"><span class="pre">'default'</span></code>, <code class="docutils literal notranslate"><span class="pre">'grazing'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'box'</span></code>. See Hippke &amp;
+Heller 2018 for an in-depth description of these shapes.</p></li>
+<li><p><strong>star_params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – A dictionary containing stellar parameters to be used in the TLS
+search. The dictionary can contain an array of limb-darkening
+parameters, stellar radius, lower radius error, upper radius error,
+stellar mass, lower mass error, and upper mass error labeled <code class="docutils literal notranslate"><span class="pre">'ab'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'rstar'</span></code>, <code class="docutils literal notranslate"><span class="pre">'rlow'</span></code>, <code class="docutils literal notranslate"><span class="pre">'rhigh'</span></code>, <code class="docutils literal notranslate"><span class="pre">'mstar'</span></code>, <code class="docutils literal notranslate"><span class="pre">'mlow'</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">'mhigh'</span></code>, respectively. The error values are the errors themselves
+and not the upper and lower values for each of the parameters. A
+partial list may be included, but in this case, the TIC must also be
+given.</p></li>
+<li><p><strong>rms_calc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – A flag to denote whether the root mean square error will be applied
+in the case that error values are not provided.</p></li>
+<li><p><strong>norm_val</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Value that the light curve is normalized to. Default is 1. Only 1 or
+0 are valid normalizations for TLS.</p></li>
+<li><p><strong>clean_lc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag to indicate whether or not to output a cleaned lightcurve with
+the recovered periodic signal masked out. Results in an additional
+expected output.</p></li>
+<li><p><strong>starparams_out</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag to indicate whether or not to output the dictionary of stellar
+parameters used in the TLS search. Results in an additional expected
+output.</p></li>
+<li><p><strong>del_dur</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – How many durations worth of data points should be excluded from
+cleaned light curve centered on the transit center. Default is 1.
+Values &lt; 1 will result in some in-transit points remaining while
+values &gt; 1 will remove some points outside the transit.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Flag to have function print more while it runs.</p></li>
+<li><p><strong>nthreads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of threads to be used for running the signal search. Many
+times, cores have the capability to run multiple threads, so be sure
+to check your machine to optimize this parameter.</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – Optional arguments passed to the <code class="docutils literal notranslate"><span class="pre">transitleastsquares.power</span></code>
+function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>results</strong> (<em>dict</em>) – Results of the TLS fit. See TLS documentation for the contents of this
+dictionary and descriptions of each element.</p></li>
+<li><p><strong>cleaned_lc</strong> (<code class="docutils literal notranslate"><span class="pre">lightkurve.LightCurve</span></code> object, optional) – A light curve with the transits masked out based on the results of the
+TLS search.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Ben Hord.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
