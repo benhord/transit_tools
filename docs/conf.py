@@ -39,18 +39,15 @@ master_doc = 'index'
 # ones.
 extensions = [
     'sphinx_rtd_theme',
-    'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    'sphinx.ext.todo',
     'sphinx.ext.mathjax',
-    'sphinx.ext.autosectionlabel',
     'sphinx.ext.intersphinx',
     #'numpydoc'
-    'autoapi.extension'
 ]
+extensions.append('autoapi.extension')
 
 autoapi_type = 'python'
-autoapi_dirs = ['../', '../transit_tools']
+autoapi_dirs = ['../transit_tools']
 
 #autodoc_mock_imports = ['transit_tools']
 
