@@ -7,13 +7,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>API &mdash; Transit Tools  documentation</title>
+  <title>API &mdash; transit_tools  documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
 
   
   
@@ -55,7 +54,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Transit Tools
+            <a href="index.html" class="icon icon-home"> transit_tools
           
 
           
@@ -95,53 +94,16 @@
 <li class="toctree-l3"><a class="reference internal" href="#transit-search">Transit Search</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#plotting">Plotting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#light-curve-simulation">Light Curve Simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#signal-vetting-validation">Signal Vetting/Validation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.tls_search">tls_search</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.get_starfield">get_starfield</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.calcfpp_tr">calcfpp_tr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#signal-vetting-validation">Signal Vetting/Validation</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#utility-functions">Utility Functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#transit_tools.lightcurve">lightcurve</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.time">time</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.flux">flux</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.flux_err">flux_err</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.method">method</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.sector">sector</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.name">name</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.tic">tic</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.known_pls">known_pls</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.star_params">star_params</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.star_params_tls">star_params_tls</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.raw_lc">raw_lc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.trend">trend</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.mask_arr">mask_arr</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.routine">routine</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.sde_thresh">sde_thresh</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.results">results</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.cleanlc">cleanlc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.bad_search">bad_search</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.get_starparams">get_starparams</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.mask">mask</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.process">process</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.reset">reset</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.searchsum">searchsum</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.signal_search">signal_search</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.update_pls">update_pls</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#transit_tools.lightcurve.vetsheet">vetsheet</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#utility-functions">Utility Functions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Quickstart.html">Quickstart Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools/issues">Submit an Issue</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools">Source at Github</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a></li>
 </ul>
 
             
@@ -157,7 +119,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Transit Tools</a>
+          <a href="index.html">transit_tools</a>
         
       </nav>
 

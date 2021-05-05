@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Transit Tools'
+project = 'transit_tools'
 copyright = '2021, Ben Hord'
 author = 'Ben Hord'
 version = ''
@@ -38,21 +38,21 @@ master_doc = 'index'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.autodoc',
     'sphinx_rtd_theme',
     'sphinx.ext.napoleon',
     'sphinx.ext.mathjax',
     'sphinx.ext.intersphinx',
+    #'sphinx.ext.autosummary'
     #'numpydoc'
 ]
-extensions.append('autoapi.extension')
+#extensions.append('autoapi.extension')
 
-autoapi_type = 'python'
-autoapi_dirs = ['../transit_tools']
+#autoapi_type = 'python'
+#autoapi_dirs = ['../transit_tools']
 
 #autodoc_mock_imports = ['transit_tools']
-
 #autosummary_generate = True
-
 #numpydoc_show_class_members = False
 
 # Add any paths that contain templates here, relative to this directory.

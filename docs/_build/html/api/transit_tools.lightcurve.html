@@ -7,13 +7,12 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>transit_tools.lightcurve &mdash; Transit Tools  documentation</title>
+  <title>transit_tools.lightcurve &mdash; transit_tools  documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
 
   
   
@@ -53,7 +52,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> Transit Tools
+            <a href="../index.html" class="icon icon-home"> transit_tools
           
 
           
@@ -91,7 +90,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools/issues">Submit an Issue</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/benhord/transit_tools">Source at Github</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../autoapi/index.html">API Reference</a></li>
 </ul>
 
             
@@ -107,7 +105,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Transit Tools</a>
+          <a href="../index.html">transit_tools</a>
         
       </nav>
 
@@ -413,146 +411,7 @@ the specified <cite>sde_thresh</cite> value.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#transit_tools.lightcurve.__init__" title="transit_tools.lightcurve.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([lc, obj, method, sector, mission, …])</p></td>
-<td><p>Initialize self.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code>(others[, inplace])</p></td>
-<td><p>Append one or more other <cite>LightCurve</cite> object(s) to this one.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bin</span></code>([binsize, bins, method])</p></td>
-<td><p>Bins a lightcurve in chunks defined by <code class="docutils literal notranslate"><span class="pre">binsize</span></code> or <code class="docutils literal notranslate"><span class="pre">bins</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>()</p></td>
-<td><p>Returns a copy of this <cite>LightCurve</cite> object.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">errorbar</span></code>([linestyle])</p></td>
-<td><p>Plots the light curve using Matplotlib’s <cite>~matplotlib.pyplot.errorbar</cite> method.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_cdpp</span></code>([transit_duration, …])</p></td>
-<td><p>Estimate the CDPP noise metric using the Savitzky-Golay (SG) method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_gaps</span></code>([method])</p></td>
-<td><p>Fill in gaps in time.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten</span></code>([window_length, polyorder, …])</p></td>
-<td><p>Removes the low frequency trend using scipy’s Savitzky-Golay filter.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fold</span></code>(period[, t0, transit_midpoint])</p></td>
-<td><p>Folds the lightcurve at a specified <cite>period</cite> and reference time <cite>t0</cite>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_stingray</span></code>(lc)</p></td>
-<td><p>Create a new <cite>LightCurve</cite> from a <cite>stingray.Lightcurve</cite>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_timeseries</span></code>(ts)</p></td>
-<td><p>Creates a new <cite>LightCurve</cite> from an AstroPy <cite>~astropy.timeseries.TimeSeries</cite> object.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/transit_tools/index.html#transit_tools.lightcurve.get_starparams" title="transit_tools.lightcurve.get_starparams"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_starparams</span></code></a>([cat])</p></td>
-<td><p>Method to gather stellar parameters and save them as the star_params and stellar_params_tls attributes.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">interact_bls</span></code>([notebook_url, minimum_period, …])</p></td>
-<td><p>Display an interactive Jupyter Notebook widget to find planets.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/transit_tools/index.html#transit_tools.lightcurve.mask" title="transit_tools.lightcurve.mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mask</span></code></a>(**kwargs)</p></td>
-<td><p>Method to mask out parts of the light curve.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize</span></code>([unit])</p></td>
-<td><p>Returns a normalized version of the light curve.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>(**kwargs)</p></td>
-<td><p>Plot the light curve using Matplotlib’s <cite>~matplotlib.pyplot.plot</cite> method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_river</span></code>(period[, t0, ax, bin_points, …])</p></td>
-<td><p>Plot the light curve as a river plot.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/transit_tools/index.html#transit_tools.lightcurve.process" title="transit_tools.lightcurve.process"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process</span></code></a>(**kwargs)</p></td>
-<td><p>Method to process light curve for further analysis.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">query_solar_system_objects</span></code>([cadence_mask, …])</p></td>
-<td><p>Returns a list of asteroids or comets which affected the light curve.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_nans</span></code>()</p></td>
-<td><p>Removes cadences where the flux is NaN.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_outliers</span></code>([sigma, sigma_lower, …])</p></td>
-<td><p>Removes outlier data points using sigma-clipping.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/transit_tools/index.html#transit_tools.lightcurve.reset" title="transit_tools.lightcurve.reset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset</span></code></a>()</p></td>
-<td><p>Method to bring the raw, original light curve back as the main, working light curve.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">scatter</span></code>([colorbar_label, show_colorbar])</p></td>
-<td><p>Plots the light curve using Matplotlib’s <cite>~matplotlib.pyplot.scatter</cite> method.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/transit_tools/index.html#transit_tools.lightcurve.searchsum" title="transit_tools.lightcurve.searchsum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">searchsum</span></code></a>()</p></td>
-<td><p>Method to display periodic signal search results in a user-friendly format.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_properties</span></code>()</p></td>
-<td><p>Prints a description of all non-callable attributes.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/transit_tools/index.html#transit_tools.lightcurve.signal_search" title="transit_tools.lightcurve.signal_search"><code class="xref py py-obj docutils literal notranslate"><span class="pre">signal_search</span></code></a>([routine, plot_live, …])</p></td>
-<td><p>Method to search the light curve for periodic signals using a variety of search algorithms, including Transit Least Squares and Box Least Squares from a number of packages.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_corrector</span></code>([method])</p></td>
-<td><p>Returns a corrector object to remove instrument systematics.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_csv</span></code>([path_or_buf])</p></td>
-<td><p>Writes the light curve to a CSV file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_fits</span></code>([path, overwrite, flux_column_name])</p></td>
-<td><p>Converts the light curve to a FITS file in the Kepler/TESS file format.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_pandas</span></code>([columns])</p></td>
-<td><p>Converts the light curve to a Pandas <cite>~pandas.DataFrame</cite> object.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_periodogram</span></code>([method])</p></td>
-<td><p>Converts the light curve to a <cite>~lightkurve.periodogram.Periodogram</cite> power spectrum object.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_seismology</span></code>(**kwargs)</p></td>
-<td><p>Returns a <cite>~lightkurve.seismology.Seismology</cite> object for estimating quick-look asteroseismic quantities.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_stingray</span></code>()</p></td>
-<td><p>Returns a <cite>stingray.Lightcurve</cite> object.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_table</span></code>()</p></td>
-<td><p>Converts the light curve to an Astropy <cite>~astropy.table.Table</cite> object.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_timeseries</span></code>()</p></td>
-<td><p>Converts the light curve to an AstroPy <cite>~astropy.timeseries.TimeSeries</cite> object.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/transit_tools/index.html#transit_tools.lightcurve.update_pls" title="transit_tools.lightcurve.update_pls"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_pls</span></code></a>([name, per, t0, dur, params, append])</p></td>
-<td><p>Method to update the <cite>lightcurve.known_pls</cite> attribute with user-defined values or a provided dictionary.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/transit_tools/index.html#transit_tools.lightcurve.vetsheet" title="transit_tools.lightcurve.vetsheet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vetsheet</span></code></a>([pls, save])</p></td>
-<td><p>Method to plot the vetting sheet for a given set of signal_search results.</p></td>
-</tr>
-</tbody>
-</table>
 <p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy_time</span></code></p></td>
-<td><p>Returns the time values as an Astropy <cite>~astropy.time.Time</cite> object.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extra_columns</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flux_quantity</span></code></p></td>
-<td><p>Returns the flux as an Astropy <cite>~astropy.units.Quantity</cite> object.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flux_unit</span></code></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </div>
