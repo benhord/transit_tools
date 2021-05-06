@@ -10,22 +10,21 @@ import transit_tools.constants as c
 
 ##function to generate vetting sheet
 def tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
+    #!!Add functionality to plot without having to run search?!!
+    #!!Add vertical lines for expected transit times on unprocessed LC!!
+    #!!Change x-axis phase values for odd-even plot!!
+    #!!Make processed and unprocessed x-axes line up, especially when LC is 
+    #  masked. Maybe include grayed-out parts that were masked!!
     """
     Function to plot a vetting sheet after running the 
     transit_tools.signal_search function. Output is formatted to fit onto a
     standard 8"x11" sheet of paper.
 
-    !!Add functionality to plot without having to run search?!!
-    !!Add vertical lines for expected transit times on unprocessed LC!!
-    !!Change x-axis phase values for odd-even plot!!
-    !!Make processed and unprocessed x-axes line up, especially when LC is 
-      masked. Maybe include grayed-out parts that were masked!!
-
     Parameters
     ----------
-    lc : 'lightcurve' object
-       Input transit_tools 'lightcurve' object that has had a signal search
-       performed on it.
+    lc : `transit_tools.lightcurve` object
+       Input transit_tools `transit_tools.lightcurve` object that has had a 
+       TLS signal search performed on it.
     results : int
        Index of results attribute array of provided 'lightcurve' object. 
        Indicates which set of results to plot if signal_search produced more
@@ -202,6 +201,91 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
 
     if save:
         plt.savefig(savename)
+
+def bls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
+    """
+    Function to plot a vetting sheet after running the 
+    transit_tools.signal_search function. Output is formatted to fit onto a
+    standard 8"x11" sheet of paper.
+
+    Parameters
+    ----------
+    lc : `transit_tools.lightcurve` object
+        Input transit_tools `transit_tools.lightcurve` object that has had a 
+        BLS signal search performed on it.
+    results : int
+        Index of results attribute array of provided 'lightcurve' object. 
+        Indicates which set of results to plot if signal_search produced more
+        than one set of output results. Can be set to -1 to display the most
+        recent signal run that did not meet the significance threshold.
+    show : bool or str
+        Flag to determine whether plots will be displayed or not. Must be set to
+        False or 'both' for output matplotlib object to be expected.
+    save : bool
+        Flag to determine whether the plots will be saved as a PNG.
+    savename : str or None
+        File name for plots to be saved as if save is set to True.
+
+    Returns
+    -------
+    plots : matplotlib object
+       Output matplotlib plot object. Optional if show is set to False or 
+       'both'.
+    """
+    if not hasattr(lc, 'results') or len(lc.results) == 0:
+        raise ValueError('lightcurve object has no results.')
+    elif len(lc.results) > 0:
+        res = lc.results[results]
+        bls = lc.blsobjs[results] #rerun on cleanlc[results]?
+        model = bls.get_transit_model(period=res['period'],
+                                      transit_time=res['t0'],
+                                      duration=res['duration'])
+        
+    if results == 0 or len(lc.results) == 0:
+        time = lc.time
+        flux = lc.flux
+        flux_err = lc.flux_err
+    else:
+        time = lc.cleanlc[results].time
+        flux = lc.cleanlc[results].flux
+        flux_err = lc.cleanlc[results].flux_err
+
+    lc_tmp = LightCurve(time, flux, flux_err)
+    
+    #setting up figure
+    fig = plt.figure(figsize=(8, 9.2))
+    gs = fig.add_gridspec(5, 2)
+
+    #phase-folded light curve with transit model
+    ax = fig.add_subplot(gs[0, 1])
+
+    fold = lc_tmp.fold(res['period'], t0=res['t0'])
+    binfold = fold.bin(20)
+    
+    ax.scatter(fold.time, fold.flux, color='blue', s=0.2,
+               alpha=0.5, zorder=2)
+    model.fold(res['period'], t0=res['t0']).plot(ax=ax, color='r', lw=2,
+                                                 alpha=0.7)
+    ax.scatter(binfold.time, binfold.flux, c='k', s=2.)
+    
+    ax.set_xlim(-0.05, 0.05)
+    ax.set_xlabel('Phase')
+    ax.set_ylabel('Relative Flux')
+
+
+
+
+
+
+
+    plt.tight_layout()
+    
+    if show:
+        plt.show()
+
+    if save:
+        plt.savefig(savename)
+
     
 
 ##search-specific plots

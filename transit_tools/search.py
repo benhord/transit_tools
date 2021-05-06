@@ -187,7 +187,9 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
     else:
         return results
 
-def bls_search(*args, minimum_period=1, maximum_period=None, frequency_factor=1, per_trials=10000, period=None, rms_calc=True, clean_lc=False, del_dur=1.0):
+def bls_search(*args, minimum_period=1, maximum_period=None,
+               frequency_factor=1, per_trials=10000, period=None,
+               rms_calc=True, clean_lc=False, del_dur=1.0, blsobj_out=False):
     """
     Function to search a light curve using the Box Least Squares function
 
@@ -216,6 +218,10 @@ def bls_search(*args, minimum_period=1, maximum_period=None, frequency_factor=1,
         cleaned light curve centered on the transit center. Default is 1. 
         Values < 1 will result in some in-transit points remaining while 
         values > 1 will remove some points outside the transit.
+    blsobj_out : bool
+        Flag to determine if the bls periodogram object will be included in 
+        the outputs. If ``True``, another output will be expected. Default
+        ``False``.
     **kwargs
         Additional arguments to be passed to `lightkurve.BoxLeastSquaresPeriodogram.from_lightcurve` and `astropy.timeseries.BoxLeastSquares.power`.
 
@@ -271,10 +277,15 @@ def bls_search(*args, minimum_period=1, maximum_period=None, frequency_factor=1,
         mask = bls.get_transit_mask(period=per, transit_time=t0,
                                     duration=(del_dur * dur))
         lc_clean = lc[mask]
-
+        
+    if clean_lc and not blsobj_out: 
         return results, lc_clean
-    else:
+    elif not clean_lc and blsobj_out:
+        return results, bls
+    elif not clean_lc and not blsobj_out:
         return results
+    elif clean_lc and blsobj_out:
+        return results, lc_clean, bls
 
 
         

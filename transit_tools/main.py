@@ -104,6 +104,9 @@ class lightcurve(LightCurve):
     bad_search : dict
         Results from the most recent call of `signal_search` that did not meet
         the specified `sde_thresh` value.
+    blsobjs : list of dicts
+        List of dicts containing the BLS periodogram objects produced by each 
+        BLS run in the most recent BLS run.
     """
     
     def __init__(self, lc=None, *args, obj=None, method="2min", sector=None,
@@ -437,15 +440,18 @@ class lightcurve(LightCurve):
                                                cleanlc_i.flux_err))
                 
             if self.routine == 'bls' or self.routine == 'BLS':
-                print('BLS is not implemented yet. Please be patient!')
+                self.blsobjs = []
 
                 tmp_lc = LightCurve(time, flux, flux_err)
                 
-                results_i, cleanlc_i = bls_search(tmp_lc, clean_lc=True,
-                                                  **kwargs)
+                results_i, cleanlc_i, blsobj_i = bls_search(tmp_lc,
+                                                            clean_lc=True,
+                                                            blsobj_out=True,
+                                                            **kwargs)
 
                 self.results = np.append(self.results, results_i)
                 self.cleanlc.append(cleanlc_i)
+                self.blsobjs.append(blsobj_i)
 
             if plot_live:
                 print('Please be patient. This feature is being worked on!')
@@ -460,9 +466,9 @@ class lightcurve(LightCurve):
        ##Individual method to save all diagnostic plots and other methods to
        #   view each individually.
 
-    def vetsheet(self, pls='all', save=False, **kwargs):
+    def vetsheet(self, pls='all', routine=None, save=False, **kwargs):
         #!!Maybe plot failed run if no significant signals are found?!!
-
+        #!!Add functionality to combine all pngs into one for multiple runs!!
         """
         Method to plot the vetting sheet for a given set of signal_search
         results.
@@ -474,6 +480,10 @@ class lightcurve(LightCurve):
             all significant results will be displayed in separate windows. If 
             set to -1, the most recent set of results that did not meet the 
             significance threshold will be displayed.
+        routine : str
+            The search routine that you would like to plot the vetsheets for.
+            Currently ``'tls'`` and ``'bls'`` are supported. Default is 
+            whichever was most recently run.
         save : bool
             Flag to determine whether the plot is saved or not. Save filename 
             is specified and passed as a part of `**kwargs**`.
@@ -483,20 +493,28 @@ class lightcurve(LightCurve):
         """
         if not hasattr(self, 'routine'):
             raise ValueError('Please run signal_search first')
+
+        if routine is None:
+            routine = self.routine
         
         if pls == 'all':
             results = range(len(self.results))
         elif pls >= 0:
             results = [pls]
 
-        if pls == -1:
-            tls_vetsheet(self, results=-1, save=save, **kwargs)
-        else:
+        if routine != 'tls' and routine != 'TLS' and pls == -1:
+            raise ValueError('No bad run saved for this routine!')
+
+        if routine == 'tls' or routine == 'TLS':
+            if pls == -1:
+                tls_vetsheet(self, results=-1, save=save, **kwargs)
+            else:
+                for i in results:
+                    tls_vetsheet(self, results=i, save=save, **kwargs)
+
+        elif routine == 'bls' or routine == 'BLS':
             for i in results:
-                tls_vetsheet(self, results=i, save=save, **kwargs)
-                #add argument to combine pngs if necessary
-                #if save:
-                    #combine pngs
+                bls_vetsheet(self, results=i, save=save, **kwargs)
 
     #def saveplot(self, filename='summary.png'):
     #    """
