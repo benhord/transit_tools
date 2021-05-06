@@ -264,7 +264,7 @@ class lightcurve(LightCurve):
 
         self._updatelc(lc)
 
-    #method to update lc
+    ###method to update lc
     def _updatelc(self, lc):
         """
         Method to update the light curve that will be used if manual
@@ -340,7 +340,7 @@ class lightcurve(LightCurve):
     ###Method to run BLS
        ###combine with TLS into single search function
     def signal_search(self, routine='tls', plot_live=False, max_runs=5, sde=7.0,
-                      exact=True, **kwargs):
+                      exact=False, **kwargs):
         #!!Update to allow for search of known planets first and rejection of 
         #  signal until known signal is found. Quit after X trials!!
         #!!Update incomplete docustring!!
@@ -364,10 +364,11 @@ class lightcurve(LightCurve):
             Placeholder argument for the option to view vetting plots as runs 
             are finished for a more interactive transit search.
         max_runs : int
-            The maximum number of runs allowed 
+            The maximum number of runs allowed. This will be the number of runs
+            for BLS runs.
         sde : float
             The threshold for the Source Detection Efficiency to be used to 
-            determine whether a signal is significant or not.
+            determine whether a signal is significant or not in TLS runs.
         exact : bool
             Flag to indicate that the exact number of iterations specified in 
             max_runs will be performed.
@@ -398,21 +399,21 @@ class lightcurve(LightCurve):
         #start iteration loop here and enclose both TLS and BLS code in it
         while run < max_runs:
             print('Run ' + str(run + 1) + ' for source ' + str(self.id))
-            
+
+            if len(self.cleanlc) == 0:
+                time = self.time
+                flux = self.flux
+                flux_err = self.flux_err
+            else:
+                time = self.cleanlc[run-1].time
+                flux = self.cleanlc[run-1].flux
+                flux_err = self.cleanlc[run-1].flux_err
+                
             if self.routine == 'tls' or self.routine == 'TLS':
                 if not hasattr(self, 'star_params_tls'):
                     self.star_params_tls = None
                     
                 #change so tic or star params don't have to be passed for sims
-                    
-                if len(self.cleanlc) == 0:
-                    time = self.time
-                    flux = self.flux
-                    flux_err = self.flux_err
-                else:
-                    time = self.cleanlc[run-1].time
-                    flux = self.cleanlc[run-1].flux
-                    flux_err = self.cleanlc[run-1].flux_err
                     
                 results_i, cleanlc_i, self.star_params_tls = tls_search(
                     time,
@@ -435,8 +436,16 @@ class lightcurve(LightCurve):
                 self.cleanlc.append(LightCurve(cleanlc_i.time, cleanlc_i.flux,
                                                cleanlc_i.flux_err))
                 
-            if routine == 'bls' or routine == 'BLS':
+            if self.routine == 'bls' or self.routine == 'BLS':
                 print('BLS is not implemented yet. Please be patient!')
+
+                tmp_lc = LightCurve(time, flux, flux_err)
+                
+                results_i, cleanlc_i = bls_search(tmp_lc, clean_lc=True,
+                                                  **kwargs)
+
+                self.results = np.append(self.results, results_i)
+                self.cleanlc.append(cleanlc_i)
 
             if plot_live:
                 print('Please be patient. This feature is being worked on!')

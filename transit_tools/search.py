@@ -58,7 +58,7 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
     clean_lc : bool
         Flag to indicate whether or not to output a cleaned lightcurve with 
         the recovered periodic signal masked out. Results in an additional 
-        expected output.
+        expected output. Default ``False``.
     starparams_out : bool
         Flag to indicate whether or not to output the dictionary of stellar
         parameters used in the TLS search. Results in an additional expected
@@ -167,7 +167,7 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
                           u=dc['ab'], transit_template=shape,
                           use_threads=nthreads, **kwargs)
 
-    #cleaning light curve if lc_clean flag
+    #cleaning light curve if clean_lc flag
     if clean_lc:
         intransit = tls.transit_mask(time, results.period,
                                      del_dur * results.duration, results.T0)
@@ -186,7 +186,98 @@ def tls_search(*args, tic=None, shape='default', star_params=None,
         return results, lc_clean, dc
     else:
         return results
+
+def bls_search(*args, minimum_period=1, maximum_period=None, frequency_factor=1, per_trials=10000, period=None, rms_calc=True, clean_lc=False, del_dur=1.0):
+    """
+    Function to search a light curve using the Box Least Squares function
+
+    Parameters
+    ----------
+    *args
+        either t, f , f_err or lightkurve obj
+    minimum_period : float
+        Minimum of period range to search. Default 0.1.
+    maximum_period : float or None
+        Maximum of period range to search in same units of the light curve. If None, defaults to half the duration of the light curve.
+    per_trials : int or None
+        Number of trials to search in the period range. Default is 10000. Might consider deprecating.
+    periods : `np.array`
+        User can specify exact periods to sample rather than the min, max, and number of trials.
+    frequency_factor : float
+        Spacing between frequencies. Used to generate period search grid.
+    rms_calc : bool
+        If the RMS should be calculated in the event of no error input.
+    clean_lc : bool
+        Flag to indicate whether or not to output a cleaned lightcurve with 
+        the recovered periodic signal masked out. Results in an additional 
+        expected output. Default ``False``.
+    del_dur : float
+        How many durations worth of data points should be excluded from 
+        cleaned light curve centered on the transit center. Default is 1. 
+        Values < 1 will result in some in-transit points remaining while 
+        values > 1 will remove some points outside the transit.
+    **kwargs
+        Additional arguments to be passed to `lightkurve.BoxLeastSquaresPeriodogram.from_lightcurve` and `astropy.timeseries.BoxLeastSquares.power`.
+
+    Returns
+    -------
+    results : dict
+       Results of the BLS fit.
+    cleaned_lc : ``lightkurve.LightCurve`` object, optional
+       A light curve with the transits masked out based on the results of the 
+       BLS search.
+    """
+    #Parsing light curve input args
+    if len(args) == 1:
+        lc = args[0]
+        try:
+            if lc.flux_err is None:
+                print('No flux errors provided')
+        except:
+            print('No flux errors provided')
+
+    elif len(args) > 1:
+        time = args[0]
+        flux = args[1]
+        lc = LightCurve(time, flux, flux_err=None)
+        if len(args) == 3:
+            if args[2] is not None:
+                lc.flux_err = args[2]
+            else:
+                print('No flux_errors provided')
+        else:
+            print('No flux errors provided')
+            
+    if rms_calc == True and lc.flux_err is None:
+        lc.flux_err = np.ones(len(flux)) * rms(flux, norm_val=norm_val)
+        print('RMS will be used for errors')
+
+    #parsing period grid controls
+    if period is not None:
+        bls = lc.to_periodogram(method='bls', period=period, **kwargs)
+    else:
+        bls = lc.to_periodogram(method='bls', minimum_period=minimum_period,
+                                maximum_period=maximum_period,
+                                frequency_factor=frequency_factor)
+
+    per = bls.period_at_max_power
+    t0 = bls.transit_time_at_max_power
+    dur = bls.duration_at_max_power
+
+    results = {'period' : per.value, 't0' : t0, 'duration' : dur.value}
     
+    #cleaning light curve if lc_clean flag
+    if clean_lc:
+        mask = bls.get_transit_mask(period=per, transit_time=t0,
+                                    duration=(del_dur * dur))
+        lc_clean = lc[mask]
+
+        return results, lc_clean
+    else:
+        return results
+
+
+        
 #bls from astropy
 
 #river plot tls
