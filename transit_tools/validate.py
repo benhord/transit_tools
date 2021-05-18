@@ -144,7 +144,7 @@ def calcfpp_tr(lc=None, *args, period=None, t0=None, depth=None,
             else:
                 flux_err = np.ones(len(time)) * rms(flux)
 
-        lc = lk.TessLightCurve(time, flux, flux_err=flux_err)
+        lc = lk.LightCurve(time, flux, flux_err=flux_err)
 
     if not hasattr(lc, 'flux_err'):
         lc.flux_err = np.ones(len(lc.time)) * rms(lc.flux)
