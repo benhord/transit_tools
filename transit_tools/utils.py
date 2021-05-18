@@ -569,3 +569,6 @@ def canonical_name(name):
 
     #return outData['resolvedCoordinate'][0]['canonicalName']
     return outData
+
+#function to convert semi-major axis into stellar radii units (or other units)
+#  given stellar radius and what units semi-major axis is in
