@@ -126,6 +126,8 @@ class lightcurve(LightCurve):
         #!!Enable RA/Dec search for light curves!!
         #!!If lc is not none or args are given, allow for obj to still search
         #  for known_pls and stellar info!!
+        #!!Clean up custom light curve method to be more flexible. Currently
+        #  has issues accepting just time and flux!!
 
         self.sector = sector
         self.method = method
@@ -133,7 +135,8 @@ class lightcurve(LightCurve):
         
         if lc is not None or len(args) != 0:
             self.method = 'custom'
-        
+            self.known_pls = None
+            
         if isinstance(obj, str):
             try:
                 self.tic = name_to_tic(obj)
@@ -183,17 +186,6 @@ class lightcurve(LightCurve):
             if not mission in ['Tess', 'tess', 'TESS']:
                 raise ValueError('Specified mission not currently supported!')
             self.mission = mission
-            
-        if self.method != 'custom' and self.method != 'batman':
-            self.lc, self.method, self.sector = gather_lc(
-                self.tic,
-                method=str(self.method),
-                sectors=self.sector,
-                return_method=True,
-                return_sectors=True,
-                **kwargs
-            )
-            self.id = self.tic
 
         if self.method == 'batman' or self.method == 'BATMAN' or self.method == 'Batman':
             self.id = 'batman'
@@ -219,7 +211,7 @@ class lightcurve(LightCurve):
 
             #update known pls w/ simulated params
             
-        if self.method == 'custom':
+        elif self.method == 'custom':
             self.id = 'custom'
             self.tic = None
             self.name = self.id
@@ -237,10 +229,28 @@ class lightcurve(LightCurve):
                 
                 if len(args) == 3:
                     self.flux_err = args[2]
-                    
+
+        else: #self.method != 'custom' and self.method != 'batman':
+            self.lc, self.method, self.sector = gather_lc(
+                self.tic,
+                method=str(self.method),
+                sectors=self.sector,
+                return_method=True,
+                return_sectors=True,
+                **kwargs
+            )
+            self.id = self.tic
+            self.lc.time = self.lc.time.value
+            self.lc.flux = self.lc.flux.value
+            self.lc.flux_err = self.lc.flux_err.value
+            
         super().__init__(time=self.lc.time, flux=self.lc.flux,
                          flux_err=self.lc.flux_err)
 
+        self.time = self.time.value
+        self.flux = self.flux.value
+        self.flux_err = self.flux_err.value
+        
         if find_knownpls and self.method != 'custom' and self.method !='batman':
             try:
                 if self.name != 'Null':
@@ -404,13 +414,13 @@ class lightcurve(LightCurve):
             print('Run ' + str(run + 1) + ' for source ' + str(self.id))
 
             if len(self.cleanlc) == 0:
-                time = self.time
-                flux = self.flux
-                flux_err = self.flux_err
+                time = self.time.value
+                flux = self.flux.value
+                flux_err = self.flux_err.value
             else:
-                time = self.cleanlc[run-1].time
-                flux = self.cleanlc[run-1].flux
-                flux_err = self.cleanlc[run-1].flux_err
+                time = self.cleanlc[run-1].time.value
+                flux = self.cleanlc[run-1].flux.value
+                flux_err = self.cleanlc[run-1].flux_err.value
                 
             if self.routine == 'tls' or self.routine == 'TLS':
                 if not hasattr(self, 'star_params_tls'):

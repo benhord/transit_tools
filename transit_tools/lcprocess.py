@@ -155,3 +155,17 @@ def mask(lc, upper=None, lower=None, out_mask=True):
         return masked_lc, mask
     else:
         return lc
+
+def gen_transitmask(lc, period, t0, duration):
+    """
+    Generates boolean array for masking out periodic signals in a light curve.
+
+    !!Need to allow user to pass in mask and add to it!!
+    !!Need to allow for period and t0 to be list and iterate through!!
+    """
+    mask = np.zeros_like(lc.time, dtype=bool)
+    
+    for i in range(int((max(lc.time.value) - min(lc.time.value)) // period + 1)):
+        mask[(lc.time.value > (t0 + (period * i) - (duration / 2))) & (lc.time.value < (t0 + (period * i) + (duration / 2)))] = True
+
+    return mask

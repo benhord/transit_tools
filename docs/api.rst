@@ -45,3 +45,11 @@ Utility Functions
 ~~~~~~~~~~~~~~~~~
 
 There are some functions included in Transit Tools that do not perform analysis of a light curve but instead are simply used as helper functions.
+
+.. autofunction:: catalog_info
+
+.. autofunction:: tessobs_info
+
+.. autofunction:: coord_to_tic
+
+.. autofunction:: known_pls

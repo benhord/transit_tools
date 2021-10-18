@@ -22,14 +22,13 @@ from astropy.time import Time
    #for any stellar information, put any relevant info into both a self.star
    #  attribute but also a self.star_params_tls attribute
 def catalog_info(tic=None, ra=None, dec=None, cat='all', out_cat=False):
+    #!!Change tic to full name processing!!
+    #!!Change to iterable catalog queries based on user input!!
+    #!!Allow for addition of new keywords rather than updating!!
     """
     Function to fetch catalog info about the target system from various 
     catalogs. The GAIA catalog takes precedence over the TIC in the values
     where they overlap, such as RA and Dec.
-
-    !!Change tic to full name processing!!
-    !!Change to iterable catalog queries based on user input!!
-    !!Allow for addition of new keywords rather than updating!!
 
     Parameters
     ----------
@@ -95,11 +94,10 @@ def catalog_info(tic=None, ra=None, dec=None, cat='all', out_cat=False):
 #function to import observation information
    #observation information based on self.method keyword (eg ccd, sector, etc.)
 def tessobs_info(tic=None, ra=None, dec=None):
+    #!!Update to include exp time, pixel location, other observation-specific
+    #  quantities!!
     """
     Function to retrieve observation information for objects observed by TESS.
-
-    !!Update to include exp time, pixel location, other observation-specific
-      quantities!!
 
     Parameters
     ----------
@@ -167,16 +165,17 @@ def coord_to_tic(ra, dec):
     
     return tic
 
-def known_pls(name=None, ra=None, dec=None, radius=5.0, table='exoplanets',
+def known_pls(name=None, ra=None, dec=None, radius=5.0, table='ps',
               values='all', verbose=False):
+    #!!Reduce number of columns queried with each iteration for shorter 
+    #  runtime!!
+    #!!Allow to search for planets that are not confirmed on the archive!!
+    #!!Allow user to pass values through as list to be queried for more 
+    #  specific query values!!
+    #!!Not working with object parsing!!
     """
     A function to gather information on any known planets in a given system. 
     Queries the NASA Exoplanet Archive for objects and their known parameters.
-
-    !!Reduce number of columns queried with each iteration for shorter runtime!!
-    !!Allow to search for planets that are not confirmed on the archive!!
-    !!Allow user to pass values through as list to be queried for more specific
-         query values!!
 
     Parameters
     ----------
