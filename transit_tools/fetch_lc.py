@@ -13,14 +13,13 @@ from .utils import rms, tessobs_info, coord_to_tic
 
 def gather_lc(tic, method='2min', sectors='all', return_method=False,
               return_sectors=False, obsinfo=None, **kwargs):
+    #!!Add ability to support common names as inputs in absence of TIC!!
+    #!!Add ability for sector cuts in FFI light curves!!
+    #!!Add obsinfo keyword to pass obsinfo if it exists!!
     """
     Function to gather the light curve of a given TIC using the specified 
     method. Currently, 2 minute SPOC pipeline light curves, machine learning FFI
     light curves, and eleanor light curves are supported.
-
-    !!Add ability to support common names as inputs in absence of TIC!!
-    !!Add ability for sector cuts in FFI light curves!!
-    !!Add obsinfo keyword to pass obsinfo if it exists!!
 
     Parameters
     ----------
@@ -345,12 +344,11 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
                 width=15, bkg_size=31, do_psf=False, do_pca=False,
                 out_flux='corr_flux', norm=True, errorcalc=True,
                 qual_flag=True):
+    #!!Add more docstrings for all keywords!!
+    #!!Add common name processing instead of just tic!!
     """
     Function to get a light curve from the TESS full frame images (FFIs) using
     the Python package eleanor.
-
-    !!Add more docustrings for all keywords!!
-    !!Add common name processing instead of just tic!!
 
     Parameters
     ----------
