@@ -23,11 +23,19 @@ Many of the analysis functions that are wrapped into the `lightcurve` object can
 Light Curve Fetching
 --------------------
 
+.. autofunction:: gather_lc
+
+.. autofunction:: get_2minlc
+
+.. autofunction:: get_eleanor
+
 Transit Search
 --------------
 
 .. autofunction:: tls_search
 
+.. autofunction:: bls_search
+		  
 Plotting
 --------
 
@@ -53,3 +61,11 @@ There are some functions included in Transit Tools that do not perform analysis 
 .. autofunction:: coord_to_tic
 
 .. autofunction:: known_pls
+
+.. autofunction:: name_to_tic
+
+.. autofunction:: tic_to_name
+
+.. autofunction:: rms
+
+.. autofunction:: canonical_name
