@@ -1,6 +1,9 @@
 import numpy as np
-from astroquery.mast import Observations
+from astroquery.mast import Observations, Tesscut
+from astropy.coordinates import SkyCoord
 from lightkurve import TessLightCurveFile, LightCurve
+import lightkurve as lk
+import pandas as pd
 import eleanor
 import os
 import pickle
@@ -11,8 +14,9 @@ from .utils import rms, tessobs_info, coord_to_tic
 # from the header (or infers if header is unavailable) to be passed as part of
 # lightkurve object (could be gathered by helper function later)
 
-def gather_lc(tic, method='2min', sectors='all', return_method=False,
-              return_sectors=False, obsinfo=None, **kwargs):
+def gather_lc(coords=None, tic=None, name=None, cadence='shortest', ffi_only=False, method='2min', sectors='all',
+              return_method=False,
+              return_sectors=False, obsinfo=None, verbose=False, **kwargs):
     #!!Add ability to support common names as inputs in absence of TIC!!
     #!!Add ability for sector cuts in FFI light curves!!
     #!!Add obsinfo keyword to pass obsinfo if it exists!!
@@ -23,6 +27,12 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
 
     Parameters
     ----------
+    coords : tuple or array
+       Coords of input
+    name : string
+       common name
+    ffi_only : bool
+       whether to default to 2min or have everything be ffis
     tic : int
        TESS Input Catalog ID for desired target. At this time, common names are
        not accepted input, only TIC IDs.
@@ -60,24 +70,48 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
     sectors : numpy array, optional
        The sectors that the light curve was gathered from.
     """
-    if sectors == None: sectors = 'all'
+    if coords is None and tic is None and name is None:
+        raise ValueError("You must specify either (RA, Dec), a TIC ID, or " +
+                         "the name of the target!")
 
-    if obsinfo is None:
-        obsinfo = tessobs_info(tic=tic)
+    #Fetching the TESS sectors that the target was observed in
+    if coords is not None:
+        coordinates = SkyCoord(coords[0], coords[1], unit="deg")
+        sector_table = Tesscut.get_sectors(coordinates=coordinates)
+    else:
+        if tic is not None:
+            name = "TIC " + str(tic)
+            
+        sector_table = Tesscut.get_sectors(objectname=str(name))
+
+    #Comprehension of sector inputs
+    if sectors == None: sectors = 'all'
+    
+    #if obsinfo is None:
+    #    obsinfo = tessobs_info(tic=tic)
 
     if sectors != 'all':
-        secs = list(set(obsinfo['sector']) & set(sectors))
-        #secs = sectors #check which sectors it's actually observed in
-    else:
-        secs = obsinfo['sector']
-    
-    if method == '2min':
         try:
-            if return_sectors:
-                lc, sectors = get_2minlc(tic, secs, out_sec=return_sectors,
-                                         **kwargs)
-            else:
-                lc = get_2minlc(tic, secs, out_sec=return_sectors, **kwargs)
+            temp = float(sectors)
+            sectors = list(sectors)
+        except:
+            sectors = sectors
+        
+        secs = list(set(sector_table['sector'].value) & set(sectors))
+    else:
+        secs = sector_table['sector'].value
+
+    sec_clipboard = secs
+        
+    #Loop through sectors to fetch light curves
+    if ffi_only is not None:
+        try:
+            lc = get_mastlc()
+            #if return_sectors:
+            #    lc, sectors = get_2minlc(tic, secs, out_sec=return_sectors,
+            #                             **kwargs)
+            #else:
+            #    lc = get_2minlc(tic, secs, out_sec=return_sectors, **kwargs)
         except:
             print('No TESS 2 minute light curves found! Trying FFIs...')
             method = 'ffi_ml'
@@ -114,7 +148,13 @@ def gather_lc(tic, method='2min', sectors='all', return_method=False,
     elif not return_method and not return_sectors:
         return lc
             
-def get_2minlc(tic, sectors='all', thresh=None, out_sec=False, pdc_flag=True):
+def get_mastlc(name=None, coords=None, tic=None, sectors='all',
+               author=['SPOC', 'TESS-SPOC'], cadence='shortest', out_sec=False):
+    #!!!Need to do some comprehension if multiple authors are specified so
+    #   that their list order also denotes their priority order!!!
+    #!!!mix_cadence keyword!!!
+    #!!!ffi_only or no_ffi flags!!
+    #!!!Add ability to bin sectors to a given cadence!!!
     """
     Function to retrieve 2 minute cadence TESS lightcurve for a given TIC ID 
     and given sectors. Returns a combined lightcurve in the form of a
@@ -123,27 +163,30 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False, pdc_flag=True):
 
     Parameters
     ----------
+    name : str
+       Name of the target requested.
+    coords : tuple, 2-element list, or SkyCoord coordinates
+       RA and Dec of the target being queried. Can be in decimal or sexigesimal.
     tic : integer
        TESS Input Catalog ID for desired target. At this time, common names are
        not accepted input, only TIC IDs.
-    sectors : list, numpy array or 'all'
+    sectors : list, numpy array, or 'all'
        List of desired sectors to include when fetching the SPOC-processed light
-       curve. If 'all' is specified, all available 2 minute PDCSAP light curves
+       curve. If 'all' is specified, all available light curves
        will be downloaded.
-    thresh : string of form AA##
-       Threshold to specify a range of sectors without knowing the specific 
-       sectors that contain the target. 'AA' should be either 'gt' or 'lt' for 
-       'greater than' and 'less than', respectively. ## is the threshold sector.
-       The sector number specified in the threshold will not be included in the
-       sector query. EX: 'lt13' will return all 2 minute light curves of the 
-       target from sectors prior to, but not including, sector 13.
-    out_sec : boolean
+    author : str or list
+       Specifies the author of the light curves. Useful for retrieving light
+       curves created by non-SPOC entities that have been posted on MAST.
+       Default 'SPOC'.
+    cadence : str or int
+       Specifies the desired cadence of the light curves. Options are 'shortest'
+       for the shortest cadence in each sector, '2min' or 120 for 2 minute
+       cadence, and '20sec' or 20 for 20 second cadence. Default is 'shortest'.
+    out_sec : bool
        A flag to determine whether the sectors from which light curves were
        downloaded are included as an output. If True, command will provide two
        outputs, the light curve object and a numpy array of sectors, in that 
        order.
-    pdc_flag : boolean
-       Flag determining whether 2 minute light curves are PDC or SAP.
 
     Returns
     -------
@@ -153,75 +196,67 @@ def get_2minlc(tic, sectors='all', thresh=None, out_sec=False, pdc_flag=True):
     secs : numpy array, optional
        List of sectors from which light curve was gathered.
     """
+    if coords is None and tic is None and name is None:
+        raise ValueError("Valid coordinates, a TIC ID, or a name must be " +
+                         "specified!")
 
-    obsTable = Observations.query_criteria(dataproduct_type=['timeseries'], 
-                                           target_name=tic,
-                                           obs_collection='TESS')
+    if cadence == '2min' or cadence == 120 or cadence == '2minutes':
+        exptime = 120 #add def_authors here for short or long cadence flags?
+        #add flag for only short cadence and no ffis
+    elif cadence == '20sec' or cadence == 20 or cadence == '20seconds':
+        exptime = 20
+    elif cadence == '30min' or cadence == 1800 or cadence == '30minutes':
+        exptime = 1800
+    elif cadence == '10min' or cadence == 600 or cadence == '10minutes':
+        exptime = 600
 
-    lc_str = "lc.fits"
-    good_ind = []
-    secs = []
+    if tic is not None:
+        name = "TIC " + str(tic)
 
-    if thresh: #get sectors from gt or lt range
-        for i in range(len(obsTable['dataURL'])):
-            if (thresh[:2] == 'lt' and
-                str(obsTable['dataURL'][i]).find(lc_str) > 0 and
-                int(obsTable['dataURL'][i][37:41]) < int(thresh[2:])):
-                good_ind.append(i)
-            if (thresh[:2] == 'gt' and
-                str(obsTable['dataURL'][i]).find(lc_str) > 0 and
-                int(obsTable['dataURL'][i][37:41]) > int(thresh[2:])):
-                good_ind.append(i)
+    if name is not None:
+        search_result = lk.search_lightcurve(name, author=author)
+    else:
+        search_result = lk.search_lightcurve((coords[0]+" "+coords[1]),
+                                             author=author)
 
-    elif sectors != 'all': #get just specified sectors
-        for sec in sectors:
-            sec_str = "s" + str(sec).zfill(4)
-            for i in range(len(obsTable['dataURL'])):
-                if (str(obsTable['dataURL'][i]).find(lc_str) > 0 and
-                    str(obsTable['dataURL'][i]).find(sec_str) > 0):
-                    good_ind.append(i)
-                    
-    elif sectors == 'all': #get all sectors from list
-        for i in range(len(obsTable['dataURL'])):
-            if str(obsTable['dataURL'][i]).find(lc_str) > 0:
-                good_ind.append(i)
+    if len(search_result) == 0:
+        raise ValueError('No valid sectors found for target with specified ' +
+                         'inputs!')
 
-    if len(good_ind) == 0:
-        #print("WARNING: NO VALID SECTORS IN GIVEN RANGE!!")
-        raise ValueError("ERROR: No valid sectors in given range!! " +
-                         "Try running the command again with a different " +
-                         "sector range.")
-                
-    obsTable = obsTable[good_ind] #returns only good indices for table
+    secs = list(map(int, [row[12:] for row in search_result.table['mission']]))
+
+    #remove unwanted sectors
+    if sectors != 'all':
+        if not isinstance(sectors, list):
+            sectors = list(sectors)
+        search_result = search_result[:][[(element in sectors) for element in
+                                          secs]]
+        if len(search_result) == 0:
+            raise ValueError('None of the specified sectors found for the ' +
+                             'specified target!')
     
-    #get lightcurve from MAST
-    id = str(tic).zfill(16)
-    for i in range(len(good_ind)):
-        sec_str = "s" + str(obsTable['dataURL'][i][37:41])
-        secs.append(int(obsTable['dataURL'][i][37:41]))
-        lc_loc = ("https://archive.stsci.edu/missions/tess/tid/" + str(sec_str)
-                  + "/" + id[:4] + "/" + id[4:8] + "/" + id[8:12] + "/" +
-                  id[12:16] + "/" + str(obsTable['dataURL'][i])[18:])
+    #remove duplicate sectors based on shortest cadence or specify exptime
+    if cadence != 'shortest':
+        search_result[search_result.table['exptime'] == exptime]
+    else:
+        df = pd.DataFrame([[int(row['mission'][12:]), int(row['exptime'])] for
+                           row in search_result.table],
+                          columns=['sector', 'exptime'])
 
-        if i == 0:
-            if pdc_flag:
-                lc = (TessLightCurveFile(lc_loc).PDCSAP_FLUX.normalize().
-                      remove_nans())
-            elif not pdc_flag:
-                lc = (TessLightCurveFile(lc_loc).SAP_FLUX.normalize().
-                      remove_nans())
-            
-        else:
-            if pdc_flag:
-                lc_new = (TessLightCurveFile(lc_loc).PDCSAP_FLUX.normalize().
-                          remove_nans())
-            elif not pdc_flag:
-                lc_new = (TessLightCurveFile(lc_loc).SAP_FLUX.normalize().
-                          remove_nans())
-            lc = lc.append(lc_new)
+        keep = np.zeros(len(df['sector']), dtype=bool)
+        keep[df.loc[df.groupby('sector').exptime.idxmin()].index] = True
+
+        search_result = search_result[keep]
+
+    if len(search_result) == 0:
+        raise ValueError('No light curves found at the specified cadence!')
+        
+    #download light curves
+    lc_col = search_result.download_all()
+    lc = lc_col.stitch()
 
     if out_sec:
-        return lc, np.array(secs)
+        return lc, secs
     else:
         return lc
 
