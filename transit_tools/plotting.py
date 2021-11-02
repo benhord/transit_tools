@@ -45,9 +45,9 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
        'both'.
     """
     if results == -1 and len(lc.results) > 0:
-        time = lc.cleanlc[-1].time
-        flux = lc.cleanlc[-1].flux
-        flux_err = lc.cleanlc[-1].flux_err
+        time = lc.cleanlc[-1].time.value
+        flux = lc.cleanlc[-1].flux.value
+        flux_err = lc.cleanlc[-1].flux_err.value
     elif len(lc.results) > 0:
         res = lc.results[results]
 
@@ -55,13 +55,13 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
         res = lc.bad_search[0]
 
     if results == 0 or len(lc.results) == 0:
-        time = lc.time
-        flux = lc.flux
-        flux_err = lc.flux_err
+        time = lc.time.value
+        flux = lc.flux.value
+        flux_err = lc.flux_err.value
     else:
-        time = lc.cleanlc[results].time
-        flux = lc.cleanlc[results].flux
-        flux_err = lc.cleanlc[results].flux_err
+        time = lc.cleanlc[results].time.value
+        flux = lc.cleanlc[results].flux.value
+        flux_err = lc.cleanlc[results].flux_err.value
     
     #setting up figure
     fig = plt.figure(figsize=(8, 9.2))
@@ -76,7 +76,7 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
             alpha=0.7)
     ax.scatter(res.folded_phase, res.folded_y, color='blue', s=0.2, alpha=0.5,
             zorder=2)
-    ax.scatter(fold.time, fold.flux, s=2., c='k')
+    ax.scatter(fold.time.value, fold.flux.value, s=2., c='k')
     
     ax.set_xlim(0.45, 0.55)
     ax.set_xlabel('Phase')
@@ -85,14 +85,15 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
     #raw light curve
     ax = fig.add_subplot(gs[1, :])
 
-    ax.scatter(lc.raw_lc.time, lc.raw_lc.flux, s=0.2, c='b', alpha=0.5)
+    ax.scatter(lc.raw_lc.time.value, lc.raw_lc.flux.value, s=0.2, c='b',
+               alpha=0.5)
     
     ax.set_xlabel('Time [BTJD]')
     ax.set_ylabel('Raw Relative Flux')
-    ax.set_xlim(lc.raw_lc.time.min(), lc.raw_lc.time.max())
+    ax.set_xlim(lc.raw_lc.time.value.min(), lc.raw_lc.time.value.max())
 
     if hasattr(lc, 'trend'):
-        plt.plot(lc.trend.time, lc.trend.flux, c='g')
+        plt.plot(lc.trend.time.value, lc.trend.flux.value, c='g')
 
     #processed light curve with transit model
     ax = fig.add_subplot(gs[2, :])
@@ -153,8 +154,8 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
     oe_odd = oe.fold(2*res.period, res.T0)
     oe_even = oe.fold(2*res.period, res.T0+res.period)
 
-    ax.scatter(oe_odd.time+0.5, oe_odd.flux, s=0.2, c='b', label='Odd')
-    ax.scatter(oe_even.time+0.5, oe_even.flux, s=0.2, c='r', label='Even')
+    ax.scatter(oe_odd.time.value+0.5, oe_odd.flux.value, s=0.2, c='b', label='Odd')
+    ax.scatter(oe_even.time.value+0.5, oe_even.flux.value, s=0.2, c='r', label='Even')
     
     ax.set_xlim(0.475, 0.525)
     ax.set_xlabel('Phase')
