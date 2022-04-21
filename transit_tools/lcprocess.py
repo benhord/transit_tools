@@ -56,7 +56,7 @@ def process_lc(lc, flatten_length=None, binsize=1, remove_outliers=None,
         print('Feature in progress')
     
     if binsize:
-        lc = lc.bin(binsize)
+        lc = lc.bin(time_bin_size=binsize)
 
     if remove_outliers:
         lc = lc.remove_outliers(sigma=remove_outliers)

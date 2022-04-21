@@ -109,7 +109,7 @@ class lightcurve(LightCurve):
         BLS run in the most recent BLS run.
     """
     
-    def __init__(self, lc=None, *args, obj=None, method="2min", sector=None,
+    def __init__(self, *args, lc=None, obj=None, method="2min", sector=None,
                  mission='TESS', find_knownpls=True, values='all', **kwargs):
         #Have 2min, ffi_ml (which points to Brian's lcs), and eleanor.
         #This assumes you're looking for TESS lcs, can be generalized later.
@@ -152,7 +152,7 @@ class lightcurve(LightCurve):
             except:
                 print('For some reason, the name provided was not found on ' +
                       'the MAST. Proceeding with just the TIC.')
-                self.name='Null'
+                self.name = 'Null'
         
         @property
         def sector(self):
@@ -205,9 +205,9 @@ class lightcurve(LightCurve):
                 self.known_pls = [lc.known_pls]
             self.sector = lc.sectors
             
-            self.time = lc.time
-            self.flux = lc.flux
-            self.flux_err = lc.flux_err
+            self.lc.time = lc.time
+            self.lc.flux = lc.flux
+            self.lc.flux_err = lc.flux_err
 
             #update known pls w/ simulated params
             
@@ -223,22 +223,26 @@ class lightcurve(LightCurve):
                 raise ValueError('Please make sure you provide both time ' +
                                  'and flux or an object name to query')
             elif len(args) > 1:
-                self.time = args[0]
-                self.flux = args[1]
-                self.flux_err = None
+                self.lc = LightCurve(time=args[0], flux=args[1])
+                
+                #self.lc.time = args[0]
+                #self.lc.flux = args[1]
+                #self.lc.flux_err = None
                 
                 if len(args) == 3:
-                    self.flux_err = args[2]
+                    self.lc.flux_err = args[2]
+                    #self.lc.flux_err = args[2]
 
         else: #self.method != 'custom' and self.method != 'batman':
             self.lc, self.method, self.sector = gather_lc(
-                self.tic,
+                tic=self.tic,
                 method=str(self.method),
                 sectors=self.sector,
                 return_method=True,
                 return_sectors=True,
                 **kwargs
             )
+            self.lc = self.lc.remove_nans()
             self.id = self.tic
             self.lc.time = self.lc.time.value
             self.lc.flux = self.lc.flux.value
@@ -294,10 +298,16 @@ class lightcurve(LightCurve):
             raw_lc = LightCurve(self.time, self.flux, flux_err=self.flux_err)
             self.raw_lc = raw_lc
 
-        self.time = lc.time
-        self.flux = lc.flux
+        #delattr(self, time)
+        #delattr(self, flux)
+        #delattr(self, flux_err)
+
+        self.lc = lc
+        
+        self.time = self.lc.time.value
+        self.flux = self.lc.flux.value
         #check if lc.flux_err exists
-        self.flux_err = lc.flux_err
+        self.flux_err = self.lc.flux_err.value
 
         if hasattr(lc, 'trend'):
             self.trend = lc.trend
@@ -345,6 +355,39 @@ class lightcurve(LightCurve):
             self.mask_arr = [all(tup) for tup in zip(self.mask_arr, mask_arr)]
         else:
             self.mask_arr = mask_arr
+
+    def binlc(self, **kwargs):
+        """
+        Method to bin the light curve. Wraps the lightkurve.LightCurve.bin 
+        function.
+
+        Parameters
+        ----------
+        **kwargs
+            Additional arguments that will be passed to the
+            lightkurve.LightCurve.bin function.
+        """
+
+        if not hasattr(self, 'raw_lc'):
+            raw_lc = LightCurve(self.time.value, self.flux.value,
+                                self.flux_err.value)
+            self.raw_lc = raw_lc
+
+        #lc = LightCurve(self.time.value, self.flux.value,
+        #                self.flux_err.value).bin(**kwargs)
+
+        print(self.time.value)
+        print(len(self.time))
+        print(self.flux.value)
+        print(self.flux_err.value)
+        
+        self.lc = self.lc.bin(**kwargs)
+
+        print(len(self.lc.time.value))
+        
+        #self = self.bin(**kwargs)
+        
+        self._updatelc(self.lc)
             
     ###Method for user-provided stellar params (utils.py), input is a dict
        #these will be used as default and override any other gathered params
