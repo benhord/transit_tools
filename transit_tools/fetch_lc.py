@@ -4,7 +4,7 @@ from astropy.coordinates import SkyCoord
 from lightkurve import TessLightCurveFile, LightCurve
 import lightkurve as lk
 import pandas as pd
-import eleanor
+#import eleanor
 import os
 import pickle
 
@@ -14,12 +14,13 @@ from .utils import rms, tessobs_info, coord_to_tic
 # from the header (or infers if header is unavailable) to be passed as part of
 # lightkurve object (could be gathered by helper function later)
 
-def gather_lc(coords=None, tic=None, name=None, cadence='shortest', ffi_only=False, method='2min', sectors='all',
+def gather_lc(coords=None, tic=None, name=None, cadence='shortest', ffi_only=False, method='2min', sectors='all', eleanor_flag=False,
               return_method=False,
               return_sectors=False, obsinfo=None, verbose=False, **kwargs):
     #!!Add ability to support common names as inputs in absence of TIC!!
     #!!Add ability for sector cuts in FFI light curves!!
     #!!Add obsinfo keyword to pass obsinfo if it exists!!
+    #!!Add keyword to track 'author' and 'cadence' keywords for each sector?!!
     """
     Function to gather the light curve of a given TIC using the specified 
     method. Currently, 2 minute SPOC pipeline light curves, machine learning FFI
@@ -84,49 +85,83 @@ def gather_lc(coords=None, tic=None, name=None, cadence='shortest', ffi_only=Fal
             
         sector_table = Tesscut.get_sectors(objectname=str(name))
 
+    if len(sector_table) == 0:
+        raise ValueError('No valid sectors found for specified target!')
+        
     #Comprehension of sector inputs
-    if sectors == None: sectors = 'all'
-    
-    #if obsinfo is None:
-    #    obsinfo = tessobs_info(tic=tic)
-
-    if sectors != 'all':
-        try:
-            temp = float(sectors)
+    if sectors != 'all' and sectors != None:
+        if not isinstance(sectors, list):
             sectors = list(sectors)
-        except:
-            sectors = sectors
         
         secs = list(set(sector_table['sector'].value) & set(sectors))
     else:
         secs = sector_table['sector'].value
 
     sec_clipboard = secs
-        
-    #Loop through sectors to fetch light curves
-    if ffi_only is not None:
+
+    #Trying to fetch light curves from MAST
+    if not eleanor_flag: #and not custom_only?
         try:
-            lc = get_mastlc()
+            lc, mast_sec = get_mastlc(tic=tic, name=name, coords=coords,
+                                      sectors=sec_clipboard, out_sec=True,
+                                      cadence=cadence, **kwargs)
+            sec_clipboard = [x for x in sec_clipboard if x not in mast_sec]
+        except:
+            print('No light curves found on the MAST. Trying another method...')
+
+    #Trying to generate light curves from eleanor
+
+    ####
+    #ELEANOR FUNCITON NEEDS TO BE DOUBLE-CHECKED!
+    ####
+    if eleanor_flag == True and len(sec_clipboard) > 0:
+        try:
+            lc, el_sec = get_eleanor(tic=tic, sectors=secs, out_sec=True,
+                                     **kwargs)
+            sec_clipboard = [x for x in sec_clipboard if x not in el_sec]
+        except:
+            print('eleanor could not find light curves for these sectors.' +
+                  ' Trying another method...')
+
+    #Trying to generate light curves via FFI cutouts
+    if len(sec_clipboard) > 0:
+        try:
+            lc, get_ffilc = ffi_cutout()
+            sec_clipboard = [x for x in sec_clipboard if x not in cut_sec]
+        except:
+            print('Issue with fetching FFI cutouts!')
+
+    #Printing the sectors (if any) that did not have light curves
+    if len(sec_clipboard) > 0:
+        print('Sectors ' + str(sec_clipboard) + ' did not have light curves!!')
+
+
+
+            
+    #Loop through sectors to fetch light curves
+    #if ffi_only is not None:
+    #    try:
+    #        lc = get_mastlc()
             #if return_sectors:
             #    lc, sectors = get_2minlc(tic, secs, out_sec=return_sectors,
             #                             **kwargs)
             #else:
             #    lc = get_2minlc(tic, secs, out_sec=return_sectors, **kwargs)
-        except:
-            print('No TESS 2 minute light curves found! Trying FFIs...')
-            method = 'ffi_ml'
+    #    except:
+    #        print('No TESS 2 minute light curves found! Trying FFIs...')
+    #        method = 'ffi_ml'
             
-    if method == 'ffi_ml':
-        try:
-            if return_sectors:
-                lc, sectors = get_mlffi(tic=tic, sectors=secs,
-                                        out_sec=return_sectors, **kwargs)
-            else:
-                lc = get_mlffi(tic=tic, sectors=secs, out_sec=return_sectors,
-                               **kwargs)
-        except:
-            print('No ML light curves found locally. Trying with eleanor...')
-            method = 'eleanor'
+    #if method == 'ffi_ml':
+    #    try:
+    #        if return_sectors:
+    #            lc, sectors = get_mlffi(tic=tic, sectors=secs,
+    #                                    out_sec=return_sectors, **kwargs)
+    #        else:
+    #            lc = get_mlffi(tic=tic, sectors=secs, out_sec=return_sectors,
+    #                           **kwargs)
+    #    except:
+    #        print('No ML light curves found locally. Trying with eleanor...')
+    #        method = 'eleanor'
         
     if method == 'eleanor':
         try:
@@ -142,9 +177,9 @@ def gather_lc(coords=None, tic=None, name=None, cadence='shortest', ffi_only=Fal
     if return_method and not return_sectors:
         return lc, method
     elif not return_method and return_sectors:
-        return lc, sectors
+        return lc, secs
     elif return_method and return_sectors:
-        return lc, method, sectors
+        return lc, method, secs
     elif not return_method and not return_sectors:
         return lc
             
@@ -177,7 +212,7 @@ def get_mastlc(name=None, coords=None, tic=None, sectors='all',
     author : str or list
        Specifies the author of the light curves. Useful for retrieving light
        curves created by non-SPOC entities that have been posted on MAST.
-       Default 'SPOC'.
+       Default ['SPOC', 'TESS-SPOC'].
     cadence : str or int
        Specifies the desired cadence of the light curves. Options are 'shortest'
        for the shortest cadence in each sector, '2min' or 120 for 2 minute
@@ -237,7 +272,7 @@ def get_mastlc(name=None, coords=None, tic=None, sectors='all',
     
     #remove duplicate sectors based on shortest cadence or specify exptime
     if cadence != 'shortest':
-        search_result[search_result.table['exptime'] == exptime]
+        search_result = search_result[search_result.table['exptime'] == exptime]
     else:
         df = pd.DataFrame([[int(row['mission'][12:]), int(row['exptime'])] for
                            row in search_result.table],
@@ -250,7 +285,9 @@ def get_mastlc(name=None, coords=None, tic=None, sectors='all',
 
     if len(search_result) == 0:
         raise ValueError('No light curves found at the specified cadence!')
-        
+
+    secs = list(map(int, [row[12:] for row in search_result.table['mission']]))
+    
     #download light curves
     lc_col = search_result.download_all()
     lc = lc_col.stitch()
@@ -441,6 +478,8 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
        Optional output array containing the sectors that the combined light 
        curve was extracted from.
     """
+    import eleanor
+    
     if tic is None and coords is None:
         raise ValueError('Please make sure either tic or coords have valid ' +
                          'input')
@@ -494,3 +533,36 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
         return lc, secs
     else:
         return lc
+
+def get_ffilc(name=None, tic=None, coords=None, sectors='all'):
+    """
+    """
+    if name is None and tic is None and coords is None:
+        raise ValueError('Please specify a name, TIC ID, or coordinates!')
+
+    if name is None and tic is not None:
+        name = 'TIC ' + str(tic)
+
+    if coords is not None:
+        if isinstance(coords, tuple) or isinstance(coords, list):
+            coords = SkyCoord(coords[0], coords[1], unit='deg')
+        
+    if sectors == 'all' and coords is not None:
+        sector_table = Tesscut.get_sectors(coordinates=coord)
+        sectors = list(map(int, [row[6:10] for row in
+                                 sector_table['sectorName']]))
+        #tesscut add more here to parse sectors?
+    elif sectors == 'all' and name is not None:
+        sector_table = Tesscut.get_sectors(objectname=name)
+        sectors = list(map(int, [row[6:10] for row in
+                                 sector_table['sectorName']]))
+
+
+
+        
+    
+    if name is None and tic is not None:
+        name = "TIC " + str(tic)
+        search_result = lk.search_tesscut(name, sector=sectors)
+    else:
+        print('hi')
