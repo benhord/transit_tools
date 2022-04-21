@@ -59,9 +59,9 @@ def tls_vetsheet(lc, results=0, show=True, save=False, savename='vetsheet.png'):
         flux = lc.flux.value
         flux_err = lc.flux_err.value
     else:
-        time = lc.cleanlc[results].time.value
-        flux = lc.cleanlc[results].flux.value
-        flux_err = lc.cleanlc[results].flux_err.value
+        time = lc.cleanlc[results-1].time.value
+        flux = lc.cleanlc[results-1].flux.value
+        flux_err = lc.cleanlc[results-1].flux_err.value
     
     #setting up figure
     fig = plt.figure(figsize=(8, 9.2))
