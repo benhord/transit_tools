@@ -184,7 +184,8 @@ def gather_lc(coords=None, tic=None, name=None, cadence='shortest', ffi_only=Fal
         return lc
             
 def get_mastlc(name=None, coords=None, tic=None, sectors='all',
-               author=['SPOC', 'TESS-SPOC'], cadence='shortest', out_sec=False):
+               author=['SPOC', 'TESS-SPOC'], cadence='shortest', out_sec=False,
+               strict_cadence=False):
     #!!!Need to do some comprehension if multiple authors are specified so
     #   that their list order also denotes their priority order!!!
     #!!!mix_cadence keyword!!!
@@ -222,6 +223,11 @@ def get_mastlc(name=None, coords=None, tic=None, sectors='all',
        downloaded are included as an output. If True, command will provide two
        outputs, the light curve object and a numpy array of sectors, in that 
        order.
+    strict_cadence : bool
+       A flag to determine whether or not to be strict with cadence 
+       requirements. If set to True, only the specified cadence(s) will be
+       considered and light curves will not be fetched with other cadences if
+       the specified ones are not available.
 
     Returns
     -------
@@ -271,17 +277,17 @@ def get_mastlc(name=None, coords=None, tic=None, sectors='all',
                              'specified target!')
     
     #remove duplicate sectors based on shortest cadence or specify exptime
-    if cadence != 'shortest':
+    if cadence != 'shortest' and strict_cadence is True:
         search_result = search_result[search_result.table['exptime'] == exptime]
-    else:
-        df = pd.DataFrame([[int(row['mission'][12:]), int(row['exptime'])] for
-                           row in search_result.table],
-                          columns=['sector', 'exptime'])
 
-        keep = np.zeros(len(df['sector']), dtype=bool)
-        keep[df.loc[df.groupby('sector').exptime.idxmin()].index] = True
+    df = pd.DataFrame([[int(row['mission'][12:]), int(row['exptime'])] for
+                       row in search_result.table],
+                      columns=['sector', 'exptime'])
 
-        search_result = search_result[keep]
+    keep = np.zeros(len(df['sector']), dtype=bool)
+    keep[df.loc[df.groupby('sector').exptime.idxmin()].index] = True
+
+    search_result = search_result[keep]
 
     if len(search_result) == 0:
         raise ValueError('No light curves found at the specified cadence!')
