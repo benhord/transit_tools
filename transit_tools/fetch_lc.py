@@ -76,7 +76,7 @@ def gather_lc(coords=None, tic=None, name=None, cadence='shortest',
         raise ValueError("You must specify either (RA, Dec), a TIC ID, or " +
                          "the name of the target!")
 
-    #Fetching the TESS sectors that the target was observed in
+    # Fetching the TESS sectors that the target was observed in
     if coords is not None:
         coordinates = SkyCoord(coords[0], coords[1], unit="deg")
         sector_table = Tesscut.get_sectors(coordinates=coordinates)
@@ -89,7 +89,7 @@ def gather_lc(coords=None, tic=None, name=None, cadence='shortest',
     if len(sector_table) == 0:
         raise ValueError('No valid sectors found for specified target!')
         
-    #Comprehension of sector inputs
+    # Comprehension of sector inputs
     if sectors != 'all' and sectors != None:
         if not isinstance(sectors, list):
             sectors = list(sectors)
@@ -99,81 +99,55 @@ def gather_lc(coords=None, tic=None, name=None, cadence='shortest',
         secs = sector_table['sector'].value
 
     sec_clipboard = secs
-
-    #Trying to fetch light curves from MAST
+    methods = list(sec_clipboard)
+    
+    # Trying to fetch light curves from MAST
     if not eleanor_flag: #and not custom_only?
         try:
-            lc, mast_sec = get_mastlc(tic=tic, name=name, coords=coords,
-                                      sectors=sec_clipboard, out_sec=True,
-                                      cadence=cadence, **kwargs)
+            mastlc, mast_sec = get_mastlc(tic=tic, name=name, coords=coords,
+                                          sectors=sec_clipboard, out_sec=True,
+                                          cadence=cadence, **kwargs)
             sec_clipboard = [x for x in sec_clipboard if x not in mast_sec]
         except:
             print('No light curves found on the MAST. Trying another method...')
 
-    #Trying to generate light curves from eleanor
+    # Trying to generate light curves from eleanor if eleanor_flag is True
 
     ####
     #ELEANOR FUNCITON NEEDS TO BE DOUBLE-CHECKED!
     ####
     if eleanor_flag == True and len(sec_clipboard) > 0:
         try:
-            lc, el_sec = get_eleanor(tic=tic, sectors=secs, out_sec=True,
-                                     **kwargs)
+            ellc, el_sec = get_eleanor(tic=tic, sectors=secs, out_sec=True,
+                                       **kwargs)
             sec_clipboard = [x for x in sec_clipboard if x not in el_sec]
         except:
             print('eleanor could not find light curves for these sectors.' +
                   ' Trying another method...')
 
-    #Trying to generate light curves via FFI cutouts
+    # Trying to generate light curves via FFI cutouts
     if len(sec_clipboard) > 0:
         try:
-            lc, get_ffilc = ffi_cutout()
-            sec_clipboard = [x for x in sec_clipboard if x not in cut_sec]
+            ffilc, ffi_sec = get_ffilc(name=name, tic=tic, coords=coords,
+                                       out_sec=True, **kwargs)
+            sec_clipboard = [x for x in sec_clipboard if x not in ffi_sec]
         except:
             print('Issue with fetching FFI cutouts!')
 
-    #Printing the sectors (if any) that did not have light curves
+    # Combine light curves into a single light curve
+    if 'mastlc' in locals():
+        lc = mastlc
+        if 'ellc' in locals(): lc = lc.append(ellc)
+        if 'ffilc' in locals(): lc = lc.append(ffilc)
+    elif 'ellc' in locals():
+        lc = ellc
+        if 'ffilc' in locals(): lc = lc.append(ffilc)
+    else:
+        lc = ffilc
+            
+    # Printing the sectors (if any) that did not have light curves
     if len(sec_clipboard) > 0:
         print('Sectors ' + str(sec_clipboard) + ' did not have light curves!!')
-
-
-
-            
-    #Loop through sectors to fetch light curves
-    #if ffi_only is not None:
-    #    try:
-    #        lc = get_mastlc()
-            #if return_sectors:
-            #    lc, sectors = get_2minlc(tic, secs, out_sec=return_sectors,
-            #                             **kwargs)
-            #else:
-            #    lc = get_2minlc(tic, secs, out_sec=return_sectors, **kwargs)
-    #    except:
-    #        print('No TESS 2 minute light curves found! Trying FFIs...')
-    #        method = 'ffi_ml'
-            
-    #if method == 'ffi_ml':
-    #    try:
-    #        if return_sectors:
-    #            lc, sectors = get_mlffi(tic=tic, sectors=secs,
-    #                                    out_sec=return_sectors, **kwargs)
-    #        else:
-    #            lc = get_mlffi(tic=tic, sectors=secs, out_sec=return_sectors,
-    #                           **kwargs)
-    #    except:
-    #        print('No ML light curves found locally. Trying with eleanor...')
-    #        method = 'eleanor'
-        
-    if method == 'eleanor':
-        try:
-            if return_sectors:
-                lc, sectors = get_eleanor(tic=tic, sectors=secs,
-                                          out_sec=return_sectors, **kwargs)
-            else:
-                lc = get_eleanor(tic=tic, sectors=secs,
-                                 out_sec=return_sectors, **kwargs)
-        except:
-            raise ValueError('No light curves found for the specified sectors!')
 
     if return_method and not return_sectors:
         return lc, method
@@ -541,8 +515,39 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
     else:
         return lc
 
-def get_ffilc(name=None, tic=None, coords=None, sectors='all'):
+def get_ffilc(name=None, tic=None, coords=None, sectors='all', cutout_size=20,
+              target_threshold=15, back_threshold=0.001, return_sectors=False):
+    #!!Prevent function from failing when encountering a sector with no data!!
     """
+    Function to generate a light curve using cutouts of TESS Full Frame Images
+    (FFIs). This procedure follows a very similar procedure to the lightkurve
+    examples with some additional input validation and functionality.
+
+    name : str
+       The name of the target, if it has one.
+    tic : int
+       The TIC ID of the target, if it has one. This will be converted into a
+       name by adding 'TIC ' to the beginning.
+    coords : list or tuple
+       The RA and Dec of the target.
+    sectors : str or list
+       A list of integer sectors corresponding to the TESS sectors desired.
+       The string 'all' can be used to query all sectors that the target was
+       observed in according to TessCut.
+    cutout_size : int
+       The height and width of the FFI cutout in units of TESS pixels. These
+       cutouts will always be square so only one value should be provided.
+    target_threshold : float
+       A value for the number of sigma by which a pixel needs to be brighter
+       than the median flux to be included in the aperture mask for the target
+       signal.
+    back_threshold : float
+       A value for the number of sigma by which a pixel needs to be brighter 
+       than the median flux to be included in the aperture mask for the 
+       background flux.
+    return_sectors : bool
+       Determines whether to output the sectors that a light curve was 
+       successfully generated for. If ``True``, two outputs will be expected.
     """
     if name is None and tic is None and coords is None:
         raise ValueError('Please specify a name, TIC ID, or coordinates!')
@@ -558,18 +563,60 @@ def get_ffilc(name=None, tic=None, coords=None, sectors='all'):
         sector_table = Tesscut.get_sectors(coordinates=coord)
         sectors = list(map(int, [row[6:10] for row in
                                  sector_table['sectorName']]))
-        #tesscut add more here to parse sectors?
+
     elif sectors == 'all' and name is not None:
         sector_table = Tesscut.get_sectors(objectname=name)
         sectors = list(map(int, [row[6:10] for row in
                                  sector_table['sectorName']]))
 
-
-
+    out_sec = list(sectors)
         
-    
-    if name is None and tic is not None:
-        name = "TIC " + str(tic)
-        search_result = lk.search_tesscut(name, sector=sectors)
+    # Loop through each sector to retrieve light curve
+    for i in range(len(sectors)):
+        # Preferably search with coordinates but search with name if available
+        if coords is not None:
+            search_result = lk.search_tesscut(coords, sector=sectors[i])
+        elif name is not None:
+            search_result = lk.search_tesscut(name, sector=sectors[i])
+
+        # Skipping any sectors with no data for the target
+        if len(search_result) == 0:
+            del out_sec[i]
+            continue
+            
+        # Gather Target Pixel File
+        tpf = search_result.download(cutout_size=cutout_size)
+
+        # Generate target and background masks and extract light curves
+        target_mask = tpf.create_threshold_mask(threshold=target_threshold,
+                                                reference_pixel='center')
+        n_target_pixels = target_mask.sum()
+        target_lc = tpf.to_lightcurve(aperture_mask=target_mask)
+
+        background_mask = ~tpf.create_threshold_mask(threshold=back_threshold,
+                                                    reference_pixel=None)
+        n_background_pixels = background_mask.sum()
+        background_lc_per_pixel = tpf.to_lightcurve(
+            aperture_mask=background_mask) / n_background_pixels
+        background_estimate_lc = background_lc_per_pixel * n_target_pixels
+
+        # Correct the target flux for background
+        corrected_lc = (target_lc - background_estimate_lc.flux).normalize()
+
+        # Appending to existing light curve if it exists
+        if i == 0 or 'lc' not in locals():
+            lc = corrected_lc
+        else:
+            lc = lc.append(corrected_lc)
+
+    # Throw an error if none of the specified sectors have data for the target
+    if 'lc' not in locals():
+        raise ValueError('No valid data for sector range!')
+
+    # Remove NaNs
+    lc = lc.remove_nans()
+
+    if return_sectors is not True:
+        return lc
     else:
-        print('hi')
+        return lc, out_sec
