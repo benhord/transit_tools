@@ -14,9 +14,10 @@ from .utils import rms, tessobs_info, coord_to_tic
 # from the header (or infers if header is unavailable) to be passed as part of
 # lightkurve object (could be gathered by helper function later)
 
-def gather_lc(coords=None, tic=None, name=None, cadence='shortest', ffi_only=False, method='2min', sectors='all', eleanor_flag=False,
-              return_method=False,
-              return_sectors=False, obsinfo=None, verbose=False, **kwargs):
+def gather_lc(coords=None, tic=None, name=None, cadence='shortest',
+              ffi_only=False, method='2min', sectors='all', eleanor_flag=False,
+              return_method=False, return_sectors=False, obsinfo=None,
+              verbose=False, **kwargs):
     #!!Add ability to support common names as inputs in absence of TIC!!
     #!!Add ability for sector cuts in FFI light curves!!
     #!!Add obsinfo keyword to pass obsinfo if it exists!!
