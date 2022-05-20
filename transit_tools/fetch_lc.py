@@ -38,9 +38,6 @@ def gather_lc(coords=None, tic=None, name=None, cadence='shortest',
     tic : int
        TESS Input Catalog ID for desired target. At this time, common names are
        not accepted input, only TIC IDs.
-    method : str
-       The method with which the light curve will be acquired. Options are 
-       '2min', 'ffi_ml', and 'eleanor'.
     sectors : str or list or numpy array
        List of sectors to be included in the fetching of the light curve. If
        'all' or None is passed, all available light curves will be fetched. 
