@@ -236,7 +236,6 @@ class lightcurve(LightCurve):
         else: #self.method != 'custom' and self.method != 'batman':
             self.lc, self.method, self.sector = gather_lc(
                 tic=self.tic,
-                method=str(self.method),
                 sectors=self.sector,
                 return_method=True,
                 return_sectors=True,

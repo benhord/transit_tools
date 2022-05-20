@@ -15,7 +15,7 @@ from .utils import rms, tessobs_info, coord_to_tic
 # lightkurve object (could be gathered by helper function later)
 
 def gather_lc(coords=None, tic=None, name=None, cadence='shortest',
-              ffi_only=False, method='2min', sectors='all', eleanor_flag=False,
+              ffi_only=False, sectors='all', eleanor_flag=False,
               return_method=False, return_sectors=False, obsinfo=None,
               verbose=False, **kwargs):
     #!!Add ability to support common names as inputs in absence of TIC!!
@@ -108,6 +108,7 @@ def gather_lc(coords=None, tic=None, name=None, cadence='shortest',
                                           sectors=sec_clipboard, out_sec=True,
                                           cadence=cadence, **kwargs)
             sec_clipboard = [x for x in sec_clipboard if x not in mast_sec]
+            methods = ['mast' if x in mast_sec else x for x in methods]
         except:
             print('No light curves found on the MAST. Trying another method...')
 
@@ -121,6 +122,7 @@ def gather_lc(coords=None, tic=None, name=None, cadence='shortest',
             ellc, el_sec = get_eleanor(tic=tic, sectors=secs, out_sec=True,
                                        **kwargs)
             sec_clipboard = [x for x in sec_clipboard if x not in el_sec]
+            methods = ['eleanor' if x in el_sec else x for x in methods]
         except:
             print('eleanor could not find light curves for these sectors.' +
                   ' Trying another method...')
@@ -129,8 +131,9 @@ def gather_lc(coords=None, tic=None, name=None, cadence='shortest',
     if len(sec_clipboard) > 0:
         try:
             ffilc, ffi_sec = get_ffilc(name=name, tic=tic, coords=coords,
-                                       out_sec=True, **kwargs)
+                                       return_sectors=True, **kwargs)
             sec_clipboard = [x for x in sec_clipboard if x not in ffi_sec]
+            methods = ['ffi' if x in ffi_sec else x for x in methods]
         except:
             print('Issue with fetching FFI cutouts!')
 
@@ -142,19 +145,21 @@ def gather_lc(coords=None, tic=None, name=None, cadence='shortest',
     elif 'ellc' in locals():
         lc = ellc
         if 'ffilc' in locals(): lc = lc.append(ffilc)
-    else:
+    elif 'ffilc' in locals():
         lc = ffilc
-            
+    else:
+        raise ValueError('No light curve produced!')
+
     # Printing the sectors (if any) that did not have light curves
     if len(sec_clipboard) > 0:
         print('Sectors ' + str(sec_clipboard) + ' did not have light curves!!')
 
     if return_method and not return_sectors:
-        return lc, method
+        return lc, methods
     elif not return_method and return_sectors:
         return lc, secs
     elif return_method and return_sectors:
-        return lc, method, secs
+        return lc, methods, secs
     elif not return_method and not return_sectors:
         return lc
             
@@ -518,6 +523,7 @@ def get_eleanor(sectors='all', tic=None, coords=None, out_sec=False, height=15,
 def get_ffilc(name=None, tic=None, coords=None, sectors='all', cutout_size=20,
               target_threshold=15, back_threshold=0.001, return_sectors=False):
     #!!Prevent function from failing when encountering a sector with no data!!
+    #!!Add a way to output collection of tpfs!!
     """
     Function to generate a light curve using cutouts of TESS Full Frame Images
     (FFIs). This procedure follows a very similar procedure to the lightkurve
@@ -540,7 +546,8 @@ def get_ffilc(name=None, tic=None, coords=None, sectors='all', cutout_size=20,
     target_threshold : float
        A value for the number of sigma by which a pixel needs to be brighter
        than the median flux to be included in the aperture mask for the target
-       signal.
+       signal. If the target is dim, it is recommended to decrease this number,
+       although that runs the risk of increased background contamination.
     back_threshold : float
        A value for the number of sigma by which a pixel needs to be brighter 
        than the median flux to be included in the aperture mask for the 
@@ -615,8 +622,8 @@ def get_ffilc(name=None, tic=None, coords=None, sectors='all', cutout_size=20,
 
     # Remove NaNs
     lc = lc.remove_nans()
-
-    if return_sectors is not True:
-        return lc
-    else:
+    
+    if return_sectors is True:
         return lc, out_sec
+    else:
+        return lc
