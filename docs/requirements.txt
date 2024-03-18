@@ -1,7 +1,7 @@
 numpy==1.18.1
 astroquery==0.4.1
 lightkurve==1.11.1
-astropy==4.0.1.post1
+astropy==5.3.3
 transitleastsquares==1.0.23
 eleanor==2.0.1
 triceratops==0.2.2
